@@ -7,12 +7,15 @@ use Throwable;
 trait CssClass
 {
     /**
+     * Internal storage of CSS classes added.
+     *
      * @var array
      */
     protected array $cssClassesArray = [];
 
     /**
-     * Get or set the class attribute.
+     * Get or set (replace) the class attribute. Setter accepts array or
+     * space-seperated class list.
      *
      * @param string|array|null $class
      * @return string|static
@@ -74,18 +77,28 @@ trait CssClass
     }
 
     /**
+     * Remove ALL classes).
+     *
+     * @return static
+     */
+    public function classEmpty(): static
+    {
+        $this->cssClassesArray = [];
+        return $this;
+    }
+
+    /**
      * Prepend a list of CSS classes to the classes array (space=-separated
      * classes list is supported).
      *
      * @param string ...$classes
      * @return static
-     *@todo is array_diff() necessary?
+     * @todo is array_diff() necessary?
      */
     public function classPrepend(string ...$classes): static
     {
         $classes = $this->classParse($classes);
         $this->cssClassesArray = array_merge($classes, array_diff($this->cssClassesArray, $classes));
-        // $this->class = empty($this->cssClassesArray) ? '' : implode(' ', $this->cssClassesArray);
         return $this;
     }
 

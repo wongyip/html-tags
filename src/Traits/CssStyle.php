@@ -14,7 +14,7 @@ trait CssStyle
     protected array $cssRules = [];
 
     /**
-     * Get or set the style attribute.
+     * Get or set (replace) the style attribute.
      *
      * @param string|null $style
      * @return string|static
@@ -73,6 +73,8 @@ trait CssStyle
     }
 
     /**
+     * Remove ALL rules.
+     *
      * @return static
      */
     public function styleEmpty(): static

@@ -43,6 +43,8 @@ abstract class TagAbstract
     protected string $tagName;
 
     /**
+     * Instantiate a new Tag.
+     *
      * @param string|null $tagName
      * @param array|null $tagAttrs
      */
