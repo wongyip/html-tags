@@ -1,0 +1,22 @@
+{
+    "name": "wongyip/php-html",
+    "description": "HTML Tags Renderer",
+    "authors": [
+        {
+            "name": "Wongyip",
+            "email": "wongyip@outlook.com",
+            "homepage": "https://github.com/wongyip"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wongyip\\HTML\\": "src",
+            "Wongyip\\HTML\\Test\\": "test"
+        }
+    },
+    "minimum-stability": "dev",
+	"prefer-stable" : true
+}
