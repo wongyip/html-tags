@@ -1,6 +1,8 @@
 {
-    "name": "wongyip/php-html",
+    "name": "wongyip/html-tags",
     "description": "HTML Tags Renderer",
+    "license": "MIT",
+    "homepage": "https://github.com/wongyip/library-helpers",
     "authors": [
         {
             "name": "Wongyip",
