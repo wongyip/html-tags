@@ -2,25 +2,29 @@
 
 namespace Wongyip\HTML\Traits;
 
+use Wongyip\HTML\Traits\Default\ContentsText;
+
 /**
  * Inner contents manipulation trait, the input contents are stored in the
  * $contents array, the output for rendering is composed by the contentText()
  * method.
  *
- * @see Tag::contentsText() for the default implementation.
+ * @see ContentsText::contentsText() for the default implementation.
  */
 trait Contents
 {
     /**
-     * Inner text-content.
+     * Inner text contents.
      *
      * @var array
      */
     protected array $contents = [];
 
     /**
+     * Get existing, or set (replace) the $contents array.
+     *
      * @param string|array|null $contents
-     * @return array|$this
+     * @return array|static
      */
     public function contents(string|array $contents = null): array|static
     {
@@ -32,37 +36,37 @@ trait Contents
     }
 
     /**
-     * @param array|string $contents
-     * @return $this
+     * Alias to contentsAppend().
+     *
+     * @param string ...$contents
+     * @return static
      */
-    public function contentsAdd(array|string $contents): static
+    public function contentsAdd(string ...$contents): static
     {
-        return $this->contentsAppend($contents);
+        return $this->contentsAppend(...$contents);
     }
 
     /**
-     * @param array|string $contents
-     * @return $this
+     * Append contents to the $contents array.
+     *
+     * @param string ...$contents
+     * @return static
      */
-    public function contentsAppend(array|string $contents): static
+    public function contentsAppend(string ...$contents): static
     {
-        $this->contents = array_merge(
-            $this->contents,
-            is_array($contents) ? $contents : [$contents]
-        );
+        $this->contents = array_merge($this->contents, $contents);
         return $this;
     }
 
     /**
-     * @param array|string $contents
-     * @return $this
+     * Prepend contents to the $contents array.
+     *
+     * @param string ...$contents
+     * @return static
      */
-    public function contentsPrepend(array|string $contents): static
+    public function contentsPrepend(string ...$contents): static
     {
-        $this->contents = array_merge(
-            is_array($contents) ? $contents : [$contents],
-            $this->contents
-        );
+        $this->contents = array_merge($contents, $this->contents);
         return $this;
     }
 }
