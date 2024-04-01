@@ -124,11 +124,13 @@ abstract class TagAbstract
     /**
      * Shorthand instantiate.
      *
+     * @param string|null $tagName
+     * @param array|null $tagAttrs
      * @return static
      */
-    public static function make(): static
+    public static function make(string $tagName = null, array $tagAttrs = null): static
     {
-        return new static();
+        return new static($tagName, $tagAttrs);
     }
 
     /**
