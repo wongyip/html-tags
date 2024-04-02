@@ -14,15 +14,18 @@ class Comment extends TagAbstract
     use ContentsText;
 
     /**
+     * Not used at all.
+     *
      * @var string
+     * @deprecated
      */
     protected string $tagName = '!--';
 
     /**
-     * Tag attributes in addition to common attributes. Every child tag object
-     * should extend this method to provide a list of supported attributes.
+     * Implemented as required, but not used at all.
      *
      * @return array|string[]
+     * @deprecated
      */
     protected function addAttrs(): array
     {
@@ -30,7 +33,9 @@ class Comment extends TagAbstract
     }
 
     /**
-     * @inheritdoc
+     * Override parent, closing a comment block, ignores tagName.
+     *
+     * @return string
      */
     public function close(): string
     {
@@ -38,6 +43,8 @@ class Comment extends TagAbstract
     }
 
     /**
+     * Override parent, open a comment block, ignores tagName and attributes.
+     *
      * @inheritdoc
      */
     public function open(): string

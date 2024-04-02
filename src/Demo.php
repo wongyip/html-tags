@@ -88,7 +88,7 @@ class Demo
      *
      * @return void
      */
-    public static function usage1(): void
+    public static function example1(): void
     {
         $div = new Tag('div');
         $div->class('c1 c2')->contents('Example <div> tag with t1 & t2 CSS classes.');
@@ -105,7 +105,7 @@ class Demo
      *
      * @return void
      */
-    public static function usage2(): void
+    public static function example2(): void
     {
         print_r([
             'code' => "Anchor::make()->classAdd('btn', 'btn-primary')->contents('OK')->render();",
