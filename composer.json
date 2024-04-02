@@ -15,8 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Wongyip\\HTML\\": "src",
-            "Wongyip\\HTML\\Test\\": "test"
+            "Wongyip\\HTML\\": "src"
         }
     },
     "minimum-stability": "dev",

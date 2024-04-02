@@ -5,42 +5,56 @@ namespace Wongyip\HTML\Utils;
 class CSS
 {
     /**
-     * Convert CSS Style string to rule-style associative array.
+     * Convert CSS style string to array of rules ('property: value;' strings).
+     *
+     * e.g. ['width: 100%;', 'foo: bar;'] >>> 'width: 100%; foo: bar;'
+     *
      * N.B. No validation and no error reporting.
      *
-     * e.g. 'foo: bar; width: 100%;' -> ['foo' => 'bar', 'width' => '100%']
+     * @param array $rules
+     * @return string
+     */
+    static function parseRulesStyle(array $rules): string
+    {
+        return implode(' ', $rules);
+    }
+
+    /**
+     * Convert CSS style string to array of rules ('property: value;' strings).
      *
-     * @param string $input
+     * e.g. 'width: 100%; foo: bar;' >>> ['width: 100%;', 'foo: bar;']
+     *
+     * N.B. No validation and no error reporting.
+     *
+     * @param string $style
+     * @param array|null $errors
      * @return array
      */
-    static function parseStyleRules(string $input): array
+    static function parseStyleRules(string $style, array &$errors = null): array
     {
-        // In case of multiple rules.
-        $inputs = str_contains($input, ';') ? explode(';', trim($input, ';')) : [$input];
-
-        // Parse
-        $ruleStyles = [];
-        foreach ($inputs as $rs) {
-            if (str_contains($rs, ':')) {
-                list($rule, $style) = explode(':', $rs);
-                $rule = trim($rule);
-                if (preg_match("/^a-z*$|^[a-z]*[a-z\-]*[a-z]*$/i", $rule)) {
-                    $style = trim(trim($style), ';');
-                    if (!empty($style)) {
-                        $ruleStyles[$rule] = trim(trim($style), ';');
+        $rules = [];
+        $errors = [];
+        foreach (explode(';', $style) as $rule) {
+            $rule = trim($rule, "; \n\r\t\v\0");
+            if (!empty($rule)) {
+                if (preg_match("/([^:]*):(.*)/", $rule, $matches)) {
+                    $property = trim($matches[1]);
+                    if (preg_match("/^[^ ]*$/", $property)) {
+                        $value = trim($matches[2]);
+                        if (!empty($value)) {
+                            $rules[] = sprintf('%s: %s;', $property, $value);
+                        }
+                        else {
+                            $errors[] = sprintf('Empty value in rule "%s".', $rule);
+                        }
+                    } else {
+                        $errors[] = sprintf('Invalid property "%s" in rule "%s".', $property, $rule);
                     }
-                    else {
-                        // Log::warning(sprintf('CssUtils.toRuleStyleArray: empty style ignored in rule "%s".', $rs));
-                    }
+                } else {
+                    $errors[] = sprintf('Mal-formatted rule "%s".', $rule);
                 }
-                else {
-                    // Log::warning(sprintf('CssUtils.toRuleStyleArray: syntax error in rule "%s" (invalid rule name).', $rs));
-                }
-            }
-            else {
-                // Log::warning(sprintf('CssUtils.toRuleStyleArray: syntax error in $rule "%s" (missing colon).', $rs));
             }
         }
-        return $ruleStyles;
+        return $rules;
     }
 }

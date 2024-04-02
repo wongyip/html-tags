@@ -236,7 +236,7 @@ abstract class TagAbstract
             $attrs[] = sprintf('%s="%s"', $attr, htmlspecialchars($val, ENT_COMPAT));
         }
         return empty($attrs)
-            ? sprintf($this->isSelfClosing() ? '<%s />'  : '<%s>',    $this->tagName())
+            ? sprintf($this->isSelfClosing() ? '<%s />' : '<%s>', $this->tagName())
             : sprintf($this->isSelfClosing() ? '<%s %s />' : '<%s %s>', $this->tagName(), implode(' ', $attrs));
     }
 
@@ -253,8 +253,8 @@ abstract class TagAbstract
     }
 
     /**
-     * Get all available attributes. No setter, since attributes list must be
-     * stated on instantiate.
+     * Get all available attributes (except complex attributes). There is no
+     * setter as change of available attributes is not sensible.
      *
      * @return array
      */

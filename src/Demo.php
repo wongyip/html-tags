@@ -84,4 +84,32 @@ class Demo
             'output' => Anchor::make()->classAdd('btn', 'btn-primary')->contents('OK')->render(),
         ]);
     }
+
+    /**
+     * @return void
+     */
+    public static function cssStyle(): void
+    {
+        $tag = Tag::make()->contents('Testing');
+        $tag->style('margin: 10px; font-size: 2em; color: green; --empty-rule: ; wrong rule: ignored;');
+        $tag->stylePrepend('font-size: 1em; color: red');
+        $tag->styleAppend('font-size: 3rem;', 'color: blue;');
+        $tag->styleUnset('margin');
+
+        echo "Code:" . PHP_EOL;
+        echo "\$tag = Tag::make()->contents('Testing');" . PHP_EOL;
+        echo "\$tag->style('margin: 10px; font-size: 2em; color: green; --empty-rule: ; wrong rule: ignored;');" . PHP_EOL;
+        echo "\$tag->stylePrepend('font-size: 1em; color: red');" . PHP_EOL;
+        echo "\$tag->styleAppend('font-size: 3rem;', 'color: blue;');" . PHP_EOL;
+        echo "\$tag->styleUnset('margin');" . PHP_EOL;
+        echo "echo \$tag->style();" . PHP_EOL;
+        echo "echo \$tag->render();" . PHP_EOL;
+
+        echo PHP_EOL ;
+
+        echo "Output:" . PHP_EOL;
+        echo $tag->style() . PHP_EOL;
+        echo $tag->render() . PHP_EOL;
+        echo PHP_EOL;
+    }
 }

@@ -4,6 +4,9 @@ namespace Wongyip\HTML\Traits;
 
 use Throwable;
 
+/**
+ * CSS class attribute manipulation trait
+ */
 trait CssClass
 {
     /**
@@ -11,7 +14,7 @@ trait CssClass
      *
      * @var array
      */
-    protected array $cssClassesArray = [];
+    protected array $cssClasses = [];
 
     /**
      * Get or set (replace) the class attribute. Setter accepts array or
@@ -23,7 +26,7 @@ trait CssClass
     public function class(string|array $class = null): string|static
     {
         if ($class) {
-            $this->cssClassesArray = is_array($class) ? $class : explode(' ', $class);
+            $this->cssClasses = is_array($class) ? $class : explode(' ', $class);
             return $this;
         }
         return implode(' ', $this->classes());
@@ -36,7 +39,7 @@ trait CssClass
      */
     public function classes(): array
     {
-        return $this->classesHook($this->cssClassesArray);
+        return $this->classesHook($this->cssClasses);
     }
 
     /**
@@ -60,7 +63,7 @@ trait CssClass
     {
         $classes = $this->classParse($classes);
         // @todo is array_diff() necessary?
-        $this->cssClassesArray = array_merge($this->cssClassesArray, $classes);
+        $this->cssClasses = array_merge($this->cssClasses, $classes);
         return $this;
     }
 
@@ -83,7 +86,7 @@ trait CssClass
      */
     public function classEmpty(): static
     {
-        $this->cssClassesArray = [];
+        $this->cssClasses = [];
         return $this;
     }
 
@@ -98,7 +101,7 @@ trait CssClass
     public function classPrepend(string ...$classes): static
     {
         $classes = $this->classParse($classes);
-        $this->cssClassesArray = array_merge($classes, array_diff($this->cssClassesArray, $classes));
+        $this->cssClasses = array_merge($classes, array_diff($this->cssClasses, $classes));
         return $this;
     }
 
@@ -113,7 +116,7 @@ trait CssClass
     {
         $classes = $this->classParse($classes);
         if (!empty($classes)) {
-            $this->cssClassesArray = array_diff($this->cssClassesArray, $classes);
+            $this->cssClasses = array_diff($this->cssClasses, $classes);
         }
         return $this;
     }
@@ -130,7 +133,7 @@ trait CssClass
             return array_map('trim', explode(' ', implode(' ', is_array($classes) ? $classes : [$classes])));
         }
         catch (Throwable $e) {
-            error_log(sprintf('Error in %s (message: %s).', __METHOD__, $e->getMessage()));
+            error_log(sprintf('CssClass.classParse() - Error: %s (%d).', $e->getMessage(), $e->getCode()));
             return [];
         }
     }

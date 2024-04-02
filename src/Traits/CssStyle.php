@@ -4,10 +4,14 @@ namespace Wongyip\HTML\Traits;
 
 use Wongyip\HTML\Utils\CSS;
 
+/**
+ * CSS style attribute manipulation trait
+ */
 trait CssStyle
 {
     /**
-     * Associative array of CSS rule => style.
+     * CSS rules array, where rules are CSS style in"css-property: css-style;"
+     * format.
      *
      * @var array
      */
@@ -25,11 +29,7 @@ trait CssStyle
             $this->cssRules = CSS::parseStyleRules($style);
             return $this;
         }
-        $rules = [];
-        foreach ($this->styles() as $rule => $style) {
-            $rules[] = sprintf('%s: %s;', trim($rule), trim(rtrim(trim($style), ';')));
-        }
-        return implode(' ', $rules);
+        return CSS::parseRulesStyle($this->styles());
     }
 
     /**
@@ -52,23 +52,53 @@ trait CssStyle
     {
         return $rules;
         /* e.g.
-        $custom = ['color', 'brown'];
-        return array_unique(array_merge($styles, $custom));
+        $customRules = ['color: brown;', 'width: 100%;'];
+        return array_merge($rules, $customRules);
         */
     }
 
     /**
-     * @param string $rule
-     * @param string|null $style
+     * Alias to styleAppend().
+     *
+     * @param string ...$rules
      * @return static
      */
-    public function styleAdd(string $rule, string $style = null): static
+    public function styleAdd(string ...$rules): static
     {
-        foreach (self::parseCssStyleRules($rule, $style) as $r => $s) {
-            // Because order's matter for CSS rules.
-            $this->styleRemove($r);
-            $this->cssRules[$r] = $s;
+        return $this->styleAppend(...$rules);
+    }
+
+    /**
+     * Append rules to current $rules array, input accepts string(s) in
+     * 'rule: style;' format (semicolon is optional).
+     *
+     * @param string ...$rules
+     * @return static
+     */
+    public function styleAppend(string ...$rules): static
+    {
+        $appends = [];
+        foreach ($rules as $rule) {
+            $appends = array_merge($appends, CSS::parseStyleRules($rule));
         }
+        $this->cssRules = array_merge($this->cssRules, $appends);
+        return $this;
+    }
+
+    /**
+     * Prepend rules to current $rules array, input accepts string(s) in
+     * 'rule: style;' format (semicolon is optional).
+     *
+     * @param string ...$rules
+     * @return static
+     */
+    public function stylePrepend(string ...$rules): static
+    {
+        $prepends = [];
+        foreach ($rules as $rule) {
+            $prepends = array_merge($prepends, CSS::parseStyleRules($rule));
+        }
+        $this->cssRules = array_merge($prepends, $this->cssRules);
         return $this;
     }
 
@@ -84,36 +114,21 @@ trait CssStyle
     }
 
     /**
-     * @param string $rule
+     * Unset all rules of the given property. E.g. styleUnset('border') removes
+     * all elements in $cssRules that start with 'border:'.
+     *
+     * @param string $property
      * @return static
      */
-    public function styleRemove(string $rule): static
+    public function styleUnset(string $property): static
     {
-        if (key_exists($rule, $this->cssRules)) {
-            unset($this->cssRules[$rule]);
-        }
-        else {
-            // Just in case a rule-colon-style string is passed in.
-            $rules = array_keys(self::parseCssStyleRules($rule));
-            foreach ($rules as $r) {
-                if (key_exists($r, $this->cssRules)) {
-                    unset($this->cssRules[$rule]);
-                }
+        $modified = [];
+        foreach ($this->cssRules as $rule) {
+            if (!str_starts_with($rule, "$property:")) {
+                $modified[] = $rule;
             }
         }
+        $this->cssRules = $modified;
         return $this;
-    }
-
-    /**
-     * @param string $rule
-     * @param string|null $style
-     * @return array
-     */
-    private static function parseCssStyleRules(string $rule, string $style = null): array
-    {
-        if (empty($style)) {
-            return CSS::parseStyleRules($rule);
-        }
-        return CSS::parseStyleRules("$rule: $style");
     }
 }
