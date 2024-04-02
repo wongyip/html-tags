@@ -47,11 +47,39 @@ class Demo
      *
      * @return void
      */
+    public static function comment(): void
+    {
+        $tag = Comment::make()->contents('Comment tag ignores the tagName property & all other attributes.')->tagName('div')->class('skipped-class');
+        print_r([
+            'code' => "\$tag = Comment::make()->contents('Comment tag ignores the tagName property & all other attributes.')->tagName('div')->class('skipped-class')",
+            '$tag' => $tag,
+            '$tag->render()' => $tag->render(),
+        ]);
+    }
+
+    /**
+     * Contents manipulation.
+     *
+     * @return void
+     */
     public static function contents(): void
     {
         print_r([
             'code' => "Tag::make()->contents('contents')->contentsAdd('contentsAdd1', 'contentAdd2')->contentsPrepend('contentsPrepend')->render();",
             'output' => Tag::make()->contents('contents')->contentsAdd('contentsAdd1', 'contentAdd2')->contentsPrepend('contentsPrepend')->render(),
+        ]);
+    }
+
+    /**
+     * Demo about tagName.
+     *
+     * @return void
+     */
+    public static function tagName(): void
+    {
+        print_r([
+            'code' => "Tag::make('p')->tagName('DIV')->tagName('script')->tagName('style')->tagName('wrong tag')->contents('A div tag is rendered finally.')->render();",
+            'output' => Tag::make('p')->tagName('DIV')->tagName('script')->tagName('style')->tagName('wrong tag')->contents('A div tag is rendered finally.')->render(),
         ]);
     }
 

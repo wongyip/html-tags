@@ -5,7 +5,7 @@ namespace Wongyip\HTML;
 use Wongyip\HTML\Traits\Default\ContentsText;
 
 /**
- * A minimal implemented of the TagAbstract with the following details:
+ * A minimal implementation of the TagAbstract with the following details:
  *
  *  1. It is a "\<span>" tag by default as defined in $tagName property.
  *  2. No additional attributes is supported, so the implementation of

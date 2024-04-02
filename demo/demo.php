@@ -26,6 +26,9 @@ Demo::cssStyle();
 echo PHP_EOL . 'Demo::selfClosingTag();' . PHP_EOL . str_repeat('-', 80) . PHP_EOL;
 Demo::selfClosingTag();
 
+echo PHP_EOL . 'Demo::tagName();' . PHP_EOL . str_repeat('-', 80) . PHP_EOL;
+Demo::tagName();
+
 echo PHP_EOL . 'Demo::usage1();' . PHP_EOL . str_repeat('-', 80) . PHP_EOL;
 Demo::usage1();
 

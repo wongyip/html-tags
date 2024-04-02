@@ -5,7 +5,7 @@ namespace Wongyip\HTML;
 use Wongyip\HTML\Traits\Default\ContentsText;
 
 /**
- * A minimal implemented of a "\<a>" (anchor) tag with the following details:
+ * A minimal implementation an "\<a>" (anchor) tag with the following details:
  *
  *  1. Additional attributes is supported via the addAttrs() method.
  *  2. Add. attributes' get-setters are annotated with @-method for code-hint.

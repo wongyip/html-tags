@@ -9,7 +9,7 @@ use Wongyip\HTML\Traits\CssClass;
 use Wongyip\HTML\Traits\CssStyle;
 
 /**
- * Abstract class with most method implements.
+ * Abstract class with most methods implements.
  *
  * Attributes Get-setters
  * @method string|static id(string|null $value = null)
@@ -21,6 +21,13 @@ use Wongyip\HTML\Traits\CssStyle;
 abstract class TagAbstract
 {
     use Contents, CssClass, CssStyle;
+
+    /**
+     * Ultimate default tagName.
+     *
+     * @var string
+     */
+    const DEFAULT_TAG_NAME = 'span';
 
     /**
      * Internal storage of attributes listed in $tagAttrs, which have value set
@@ -41,12 +48,6 @@ abstract class TagAbstract
      * @var array
      */
     protected static array $complexAttrs = ['class', 'style'];
-    /**
-     * Ultimate default.
-     *
-     * @var string
-     */
-    private static string $defaultTagName = 'span';
     /**
      * These attributes are get or set as in the $attributes array.
      *
@@ -72,17 +73,18 @@ abstract class TagAbstract
      */
     public function __construct(string $tagName = null, array $extraAttrs = null)
     {
-        // Overwrite
+        // Override
         if ($tagName) {
+            // Might not success if not accepted.
             $this->tagName($tagName);
         }
-        // Ultimate default
-        elseif (!isset($this->tagName)) {
-            $this->tagName = strtolower(static::$defaultTagName);
-        }
+
         // Normalize
-        else {
-            $this->tagName = strtolower($this->tagName);
+        $this->tagName = isset($this->tagName) ? strtolower($this->tagName) : 'span';
+
+        // Patch
+        if (in_array($this->tagName, ['script', 'style'])) {
+            $this->tagName('span');
         }
 
         // Compile attributes list.
@@ -264,23 +266,38 @@ abstract class TagAbstract
     }
 
     /**
-     * Get or set the tagName property. Note that !doctype and !-- (comment)
-     * tags are not allowed.
+     * Get or set the tagName property. Note that script and style tags are not
+     * allowed, while !doctype tag is not supported.
      *
      * @param string|null $tagName
      * @return string|$this
      */
     public function tagName(string $tagName = null): string|static
     {
-        if ($tagName) {
-            if (preg_match("/^[a-z]+$/i", $tagName)) {
-                $this->tagName = strtolower($tagName);
+        $tagName = strtolower($tagName);
+        // Setter
+        if (!empty($tagName)) {
+
+            // Allowed
+            if (!in_array($tagName, ['script', 'style'])) {
+                if (preg_match("/^[a-z]+$/", $tagName)) {
+                    $this->tagName = $tagName;
+                }
+                else {
+                    error_log(sprintf('TagAbstract.tagName() - Error: tagName may contains alphabets only, input "%s" is invalid.', $tagName));
+                }
             }
             else {
-                error_log(sprintf('TagAbstract.tagName() - Error: unaccepted input "%s".', $tagName));
+                error_log(sprintf('TagAbstract.tagName() - Error: <%s> tag is not support.', $tagName));
+            }
+
+            // Ultimate default
+            if (!isset($this->tagName)) {
+                $this->tagName = 'span';
             }
             return $this;
         }
+        // Getter
         return $this->tagName;
     }
 }
