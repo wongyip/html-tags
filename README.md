@@ -7,7 +7,9 @@ This package is aimed to provide a fast and simple way to render "some" HTML tag
 composer require wongyip/html-tags
 ```
 
-## Example 1
+## Examples
+
+### Usage 1
 ```php
 use Wongyip\HTNL\Tag;
 $div = new Tag('div');
@@ -16,9 +18,12 @@ echo $div->render();
 ```
 Expected output: `<div class="c1 c2">Example &lt;div&gt; tag with t1 &amp; t2 CSS classes.</div>`
 
-## Example 2
+### Usage 2
 ```php
 use Wongyip\HTNL\Anchor;
 echo Anchor::make()->classAdd('btn', 'btn-primary')->contents('OK')->render();
 ```
 Expected output: `<a class="btn btn-primary">OK</a>`
+
+---
+More examples in [`Demo::class`](src/Demo.php).

@@ -85,6 +85,7 @@ abstract class TagAbstract
             $this->tagName = strtolower($this->tagName);
         }
 
+        // Compile attributes list.
         $this->tagAttrs = array_diff(
             array_unique(
                 array_merge(
@@ -128,6 +129,14 @@ abstract class TagAbstract
         }
         throw new Exception(sprintf('Undefined method %s() called.', $name));
     }
+
+    /**
+     * Tag attributes in addition to common attributes. Every child tag object
+     * should extend this method to provide a list of supported attributes.
+     *
+     * @return array|string[]
+     */
+    abstract protected function addAttrs(): array;
 
     /**
      * Get or set all tag attributes.
@@ -242,14 +251,6 @@ abstract class TagAbstract
             ? $this->open()
             : $this->open() . htmlspecialchars($this->contentsText()) . $this->close();
     }
-
-    /**
-     * Tag attributes in addition to common attributes. Every child tag object
-     * should extend this method to provide a list of supported attributes.
-     *
-     * @return array|string[]
-     */
-    abstract protected function addAttrs(): array;
 
     /**
      * Get all available attributes. No setter, since attributes list must be
