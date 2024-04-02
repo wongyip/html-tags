@@ -54,7 +54,7 @@ abstract class TagAbstract
      */
     protected array $tagAttrs;
     /**
-     * HTML Tag Name.
+     * HTML Tag Name in lower-case.
      *
      * @var string
      */
@@ -78,7 +78,7 @@ abstract class TagAbstract
         }
         // Ultimate default
         elseif (!isset($this->tagName)) {
-            $this->tagName = static::$defaultTagName;
+            $this->tagName = strtolower(static::$defaultTagName);
         }
         // Normalize
         else {
@@ -174,7 +174,7 @@ abstract class TagAbstract
      */
     public function close(): string
     {
-        return sprintf('</%s>', $this->tagName());
+        return $this->isSelfClosing() ? '' : sprintf('</%s>', $this->tagName);
     }
 
     /**
@@ -183,6 +183,21 @@ abstract class TagAbstract
      * @return string
      */
     abstract public function contentsText(): string;
+
+    /**
+     * Determine if this is a self-closing tag.
+     *
+     * @return bool
+     */
+    protected function isSelfClosing(): bool
+    {
+        return in_array($this->tagName, [
+            // HTML5
+            'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr',
+            // Obsolete
+            'command', 'frame', 'keygen', 'menuitem'
+        ]);
+    }
 
     /**
      * Shorthand instantiate.
@@ -212,8 +227,8 @@ abstract class TagAbstract
             $attrs[] = sprintf('%s="%s"', $attr, htmlspecialchars($val, ENT_COMPAT));
         }
         return empty($attrs)
-            ? sprintf('<%s>', $this->tagName())
-            : sprintf('<%s %s>', $this->tagName(), implode(' ', $attrs));
+            ? sprintf($this->isSelfClosing() ? '<%s />'  : '<%s>',    $this->tagName())
+            : sprintf($this->isSelfClosing() ? '<%s %s />' : '<%s %s>', $this->tagName(), implode(' ', $attrs));
     }
 
     /**
@@ -223,7 +238,9 @@ abstract class TagAbstract
      */
     public function render(): string
     {
-        return $this->open() . htmlspecialchars($this->contentsText()) . $this->close();
+        return $this->isSelfClosing()
+            ? $this->open()
+            : $this->open() . htmlspecialchars($this->contentsText()) . $this->close();
     }
 
     /**
