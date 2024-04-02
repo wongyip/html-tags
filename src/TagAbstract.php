@@ -9,7 +9,7 @@ use Wongyip\HTML\Traits\CssClass;
 use Wongyip\HTML\Traits\CssStyle;
 
 /**
- * A basic tag to be implemented.
+ * Abstract class with most method implements.
  *
  * Attributes Get-setters
  * @method string|static id(string|null $value = null)

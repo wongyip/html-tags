@@ -5,7 +5,12 @@ namespace Wongyip\HTML;
 use Wongyip\HTML\Traits\Default\ContentsText;
 
 /**
- * A minimal implemented of the \<a\> tag.
+ * A minimal implemented of a "\<a>" (anchor) tag with the following details:
+ *
+ *  1. Additional attributes is supported via the addAttrs() method.
+ *  2. Add. attributes' get-setters are annotated with @-method for code-hint.
+ *  3. Additional helper method: targetBlank() is added.
+ *  4. Uses default ContentsText method to compose text contents.
  *
  * Attributes Get-setters
  * @method string|static href(string|null $value = null)
@@ -33,6 +38,7 @@ class Anchor extends TagAbstract
     }
 
     /**
+     * Set the target attribute to '_blank'.
      * @return static
      */
     public function targetBlank(): static

@@ -14,7 +14,6 @@ if ($demo = $argv[1]) {
     exit;
 }
 
-
 echo PHP_EOL . 'Demo::attributes();' . PHP_EOL . str_repeat('-', 80) . PHP_EOL;
 Demo::attributes();
 
