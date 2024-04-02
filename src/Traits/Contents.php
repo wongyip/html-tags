@@ -21,18 +21,19 @@ trait Contents
     protected array $contents = [];
 
     /**
-     * Get existing, or set (replace) the $contents array.
+     * Get existing contents (as string), or set (replace) the existing
+     * $contents (string or array).
      *
      * @param string|array|null $contents
-     * @return array|static
+     * @return string|static
      */
-    public function contents(string|array $contents = null): array|static
+    public function contents(string|array $contents = null): string|static
     {
         if ($contents) {
             $this->contents = is_array($contents) ? $contents : [$contents];
             return $this;
         }
-        return $this->contents;
+        return $this->contentsText();
     }
 
     /**

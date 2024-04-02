@@ -3,6 +3,7 @@
 namespace Wongyip\HTML;
 
 use Exception;
+use Throwable;
 use Wongyip\HTML\Traits\Contents;
 use Wongyip\HTML\Traits\CssClass;
 use Wongyip\HTML\Traits\CssStyle;
@@ -32,6 +33,14 @@ abstract class TagAbstract
      */
     protected static array $commonAttrs = ['id', 'name'];
     /**
+     * These are NOT stored directly in the $attributes array.
+     *
+     * @var array
+     */
+    protected static array $complexAttrs = ['class', 'style'];
+    /**
+     * These are attributes allowed to store in the $attributes array.
+     *
      * @var array
      */
     protected array $tagAttrs;
@@ -45,18 +54,28 @@ abstract class TagAbstract
     /**
      * Instantiate a new Tag.
      *
+     * Notes:
+     *  1. Overwrite class-defined tagName if $tagName is provided.
+     *  2. Merge in to commonAttrs and addAttrs if $extraAttrs is provided.
+     *
      * @param string|null $tagName
-     * @param array|null $tagAttrs
+     * @param array|null $extraAttrs
      */
-    public function __construct(string $tagName = null, array $tagAttrs = null)
+    public function __construct(string $tagName = null, array $extraAttrs = null)
     {
         if ($tagName) {
             $this->tagName = $tagName;
         }
-        $this->tagAttrs = array_merge(
-            static::$commonAttrs,
-            $this->addAttrs(),
-            $tagAttrs ?? []
+
+        $this->tagAttrs = array_diff(
+            array_unique(
+                array_merge(
+                    static::$commonAttrs,
+                    $this->addAttrs(),
+                    $extraAttrs ?? []
+                )
+            ),
+            static::$complexAttrs
         );
     }
 
@@ -68,7 +87,9 @@ abstract class TagAbstract
      */
     public function __call(string $name, array $arguments)
     {
-        // Attributes
+        /**
+         * Get or set attribute if it is present in $tagAttrs.
+         */
         if (in_array($name, $this->tagAttrs)) {
             if (isset($arguments[0])) {
                 $this->attributes[$name] = $arguments[0];
@@ -77,35 +98,56 @@ abstract class TagAbstract
             return $this->attributes[$name] ?? null;
         }
         /**
-         * Properties without matching function.
-         * @todo Some properties are not supposed to change were exposed now.
+         * Get or set property if it exists.
+         * @todo Some properties are not supposed to change may exposed.
          */
         if (property_exists($this, $name)) {
             if (isset($arguments[0])) {
                 $this->$name = $arguments[0];
                 return $this;
             }
-            return $this->$name ?? null;
+            return $this->$name;
         }
-        throw new Exception(sprintf('Undefined method %s().', $name));
+        throw new Exception(sprintf('Undefined method %s() called.', $name));
     }
 
     /**
-     * Get all tag attributes with value set.
+     * Get or set all tag attributes.
      *
-     * @return array
+     * Notes:
+     *  1. Unrecognized attributes are ignored.
+     *  2. Tag "contents" is NOT an attribute.
+     *
+     * @param array|null $attributes
+     * @return array|static
      */
-    public function attributes() : array
+    public function attributes(array $attributes = null) : array|static
     {
-        $attributes = $this->attributes;
-        if ($class = $this->class()) {
-            $attributes['class'] = $class;
+        if ($attributes) {
+            foreach ($attributes as $setter => $val) {
+                try {
+                    if (in_array($setter, $this->tagAttrs) || in_array($setter, static::$complexAttrs)){
+                        $this->$setter($val);
+                    }
+                    else {
+                        error_log(sprintf('TagAbstract.attributes() - Unrecognized attribute "%s"', $setter));
+                    }
+                }
+                catch (Throwable $e) {
+                    error_log(sprintf('TagAbstract.attributes() - Error: %s (%d)', $e->getMessage(), $e->getCode()));
+                }
+            }
+            return $this;
         }
-        if ($style = $this->style()) {
-            $attributes['style'] = $style;
+        $attributes = $this->attributes;
+        foreach (static::$complexAttrs as $getter) {
+            if ($val = $this->$getter()) {
+                $attributes[$getter] = $val;
+            }
         }
         return $attributes;
     }
+
     /**
      * Closing tag.
      *
@@ -126,13 +168,17 @@ abstract class TagAbstract
     /**
      * Shorthand instantiate.
      *
+     * Notes:
+     *  1. Overwrite class-defined tagName if $tagName is provided.
+     *  2. Merge in to commonAttrs and addAttrs if $extraAttrs is provided.
+     *
      * @param string|null $tagName
-     * @param array|null $tagAttrs
+     * @param array|null $extraAttrs
      * @return static
      */
-    public static function make(string $tagName = null, array $tagAttrs = null): static
+    public static function make(string $tagName = null, array $extraAttrs = null): static
     {
-        return new static($tagName, $tagAttrs);
+        return new static($tagName, $extraAttrs);
     }
 
     /**
