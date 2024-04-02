@@ -16,30 +16,39 @@ use Wongyip\HTML\Traits\CssStyle;
  * @method string|static name(string|null $value = null)
  *
  * Properties Get-setters
- * @method string|static tagName(string|null $setter = null)
+ * -- None at the moment.
  */
 abstract class TagAbstract
 {
     use Contents, CssClass, CssStyle;
 
     /**
-     * Tag attributes (with value set only).
+     * Internal storage of attributes listed in $tagAttrs, which have value set
+     * already (excluding attributes listed in $complexAttrs).
      *
      * @var array|string[]
      */
     protected array $attributes = [];
     /**
+     * These are attributes present in all tags.
+     *
      * @var array|string[]
      */
     protected static array $commonAttrs = ['id', 'name'];
     /**
-     * These are NOT stored directly in the $attributes array.
+     * These are stored out of the $attributes array.
      *
      * @var array
      */
     protected static array $complexAttrs = ['class', 'style'];
     /**
-     * These are attributes allowed to store in the $attributes array.
+     * Ultimate default.
+     *
+     * @var string
+     */
+    private static string $defaultTagName = 'span';
+    /**
+     * These attributes are get or set as in the $attributes array.
      *
      * @var array
      */
@@ -63,8 +72,17 @@ abstract class TagAbstract
      */
     public function __construct(string $tagName = null, array $extraAttrs = null)
     {
+        // Overwrite
         if ($tagName) {
-            $this->tagName = $tagName;
+            $this->tagName($tagName);
+        }
+        // Ultimate default
+        elseif (!isset($this->tagName)) {
+            $this->tagName = static::$defaultTagName;
+        }
+        // Normalize
+        else {
+            $this->tagName = strtolower($this->tagName);
         }
 
         $this->tagAttrs = array_diff(
@@ -115,8 +133,9 @@ abstract class TagAbstract
      * Get or set all tag attributes.
      *
      * Notes:
-     *  1. Unrecognized attributes are ignored.
-     *  2. Tag "contents" is NOT an attribute.
+     *  1. Not a direct get-setter.
+     *  2. Unrecognized attributes are ignored (not in $tagAttrs, nor $complexAttrs).
+     *  4. Tag "contents" is NOT an attribute.
      *
      * @param array|null $attributes
      * @return array|static
@@ -216,12 +235,34 @@ abstract class TagAbstract
     abstract protected function addAttrs(): array;
 
     /**
-     * Get all available attributes.
+     * Get all available attributes. No setter, since attributes list must be
+     * stated on instantiate.
      *
      * @return array
      */
     public function tagAttrs(): array
     {
         return $this->tagAttrs;
+    }
+
+    /**
+     * Get or set the tagName property. Note that !doctype and !-- (comment)
+     * tags are not allowed.
+     *
+     * @param string|null $tagName
+     * @return string|$this
+     */
+    public function tagName(string $tagName = null): string|static
+    {
+        if ($tagName) {
+            if (preg_match("/^[a-z]+$/i", $tagName)) {
+                $this->tagName = strtolower($tagName);
+            }
+            else {
+                error_log(sprintf('TagAbstract.tagName() - Error: unaccepted input "%s".', $tagName));
+            }
+            return $this;
+        }
+        return $this->tagName;
     }
 }
