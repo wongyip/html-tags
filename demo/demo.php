@@ -4,14 +4,6 @@ use Wongyip\HTML\Demo;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-/**
- * Throw Exception
- *
-$tag = \Wongyip\HTML\Tag::make()->commonAttrs(['ho', 'la']);
-print_r($tag);
-exit;
- */
-
 if ($demo = $argv[1]) {
     if (method_exists(Demo::class, $demo)) {
         Demo::$demo();
@@ -42,3 +34,4 @@ Demo::selfClosingTag();
 
 echo PHP_EOL . 'Demo::tagName();' . PHP_EOL . str_repeat('-', 80) . PHP_EOL;
 Demo::tagName();
+

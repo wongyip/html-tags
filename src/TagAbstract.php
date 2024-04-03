@@ -30,11 +30,11 @@ abstract class TagAbstract
      */
     const DEFAULT_TAG_NAME = 'span';
     /**
-     * List of all static properties, which should be ignored by __call().
+     * All static properties, which should be ignored by __call().
      *
      * @var array|string[]
      */
-    protected array $__staticProperties;
+    protected array $__staticProps;
     /**
      * Internal storage of attributes listed in $tagAttrs, which have value set
      * already (excluding attributes listed in $complexAttrs).
@@ -104,12 +104,6 @@ abstract class TagAbstract
             ),
             static::$complexAttrs
         );
-
-        /**
-         * List out static properties so the __call() method will ignore them.
-         * @see TagAbstract::__call()
-         */
-        $this->__staticProperties = array_keys((new ReflectionClass($this))->getStaticProperties() ?? []);
     }
 
     /**
@@ -131,15 +125,25 @@ abstract class TagAbstract
             return $this->attrsStore[$name] ?? null;
         }
         /**
-         * Get or set property if it exists.
-         * @todo Some properties are not supposed to change may be exposed.
+         * Get or set property if:
+         *  1. Property name is NOT starting with _ (underscore).
+         *  2. Property exists.
+         *  3. Property is not static.
+         *
+         * @note Some properties are not supposed to change may be exposed.
          */
-        if (property_exists($this, $name) && !in_array($name, $this->__staticProperties)) {
-            if (isset($arguments[0])) {
-                $this->$name = $arguments[0];
-                return $this;
+        if (property_exists($this, $name)) {
+            if (!str_starts_with($name, '_')) {
+                if (!$this->isStaticProp($name)) {
+                    if (isset($arguments[0])) {
+                        $this->$name = $arguments[0];
+                        return $this;
+                    }
+                    return $this->$name;
+                }
+                throw new Exception(sprintf('Access to static property (%s) is not allowed.', $name));
             }
-            return $this->$name;
+            throw new Exception(sprintf('Access to property with name started with underscore (%s) is not allowed.', $name));
         }
         throw new Exception(sprintf('Undefined method %s() called.', $name));
     }
@@ -319,5 +323,19 @@ abstract class TagAbstract
         }
         // Getter
         return $this->tagName;
+    }
+
+    /**
+     * Check if the given property is static.
+     *
+     * @param string $property
+     * @return bool
+     */
+    protected function isStaticProp(string $property): bool
+    {
+        if (!isset($this->__staticProps)) {
+            $this->__staticProps = array_keys((new ReflectionClass($this))->getStaticProperties() ?? []);
+        }
+        return in_array($property, $this->__staticProps);
     }
 }

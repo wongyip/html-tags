@@ -10,10 +10,10 @@ use Wongyip\HTML\Traits\Default\ContentsText;
  *
  *  1. Additional attributes is supported via the addAttrs() method.
  *  2. Add. attributes' get-setters are annotated with @-method for code-hint.
- *  3. Additional helper method: targetBlank() is added.
+ *  3. Additional helper target[Blank|Parent|Self|Top] methods.
  *  4. Uses default ContentsText method to compose text contents.
  *
- * Attributes Get-setters
+ * Attributes Get-setters.
  * @method string|static href(string|null $value = null)
  * @method string|static title(string|null $value = null)
  * @method string|static target(string|null $value = null)
@@ -41,13 +41,14 @@ class Anchor extends TagAbstract
      */
     public function __call(string $name, array $arguments)
     {
+        // Target attribute setters.
         if (preg_match("/^target([A-Z][a-z]+)$/", $name, $matches)) {
             $target = strtolower($matches[1]);
             if (in_array($target, ['blank', 'parent', 'self', 'top'])) {
                 return $this->target('_' . $target);
             }
-            // Just it go.
         }
+        // Fallback
         return parent::__call($name, $arguments);
     }
 

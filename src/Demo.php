@@ -2,6 +2,9 @@
 
 namespace Wongyip\HTML;
 
+use Exception;
+use Throwable;
+
 class Demo
 {
     /**
@@ -68,6 +71,43 @@ class Demo
             'code' => "Tag::make()->contents('contents')->contentsAdd('contentsAdd1', 'contentAdd2')->contentsPrepend('contentsPrepend')->render();",
             'output' => Tag::make()->contents('contents')->contentsAdd('contentsAdd1', 'contentAdd2')->contentsPrepend('contentsPrepend')->render(),
         ]);
+    }
+
+    /**
+     * Errors
+     *
+     * @return void
+     */
+    public static function errors(): void
+    {
+        self::printHeader('Test Error 1: setting of static prop. via the __call() method.');
+        try {
+            echo "Core: \$tag = Tag::make()->commonAttrs(['mo', 'la']);" . PHP_EOL;
+            $tag = Tag::make()->commonAttrs(['mo', 'la']);
+        }
+        catch (Throwable $e) {
+            self::printError($e);
+        }
+
+        self::printHeader('Test Error 2: setting of prop. with name started with underscore.');
+        try {
+            echo "Core: \$tag = Tag::make()->__staticProps(['mo', 'la']);" . PHP_EOL;
+            $tag = Tag::make()->__staticProps(['mo', 'la']);
+        }
+        catch (Throwable $e) {
+            self::printError($e);
+        }
+
+        self::printHeader('Test Error 3: setting of non-existing property.');
+        try {
+            echo "Core: \$tag = Tag::make()->something('not exists');" . PHP_EOL;
+            $tag = Tag::make()->something('not exists');
+        }
+        catch (Throwable $e) {
+            self::printError($e);
+        }
+
+        echo PHP_EOL;
     }
 
     /**
@@ -139,5 +179,39 @@ class Demo
         echo $tag->style() . PHP_EOL;
         echo $tag->render() . PHP_EOL;
         echo PHP_EOL;
+    }
+
+    /**
+     * @param string $header
+     * @param string|null $char
+     * @param int|null $length
+     * @return void
+     */
+    private static function printHeader(string $header, string $char = null, int $length = null): void
+    {
+        $char = $char ?? '=';
+        $length = $length ?? 80;
+        echo PHP_EOL . $header . PHP_EOL .str_repeat($char, $length) . PHP_EOL;
+    }
+
+    /**
+     * @param string|null $char
+     * @param int|null $length
+     * @return void
+     */
+    private static function printLine(string $char = null, int $length = null): void
+    {
+        $char = $char ?? '=';
+        $length = $length ?? 80;
+        echo str_repeat($char, $length) . PHP_EOL;
+    }
+
+    /**
+     * @param Throwable|Exception $e
+     * @return void
+     */
+    private static function printError(Throwable|Exception $e): void
+    {
+        echo sprintf('Error: %s (%d)', $e->getMessage(), $e->getCode()) . PHP_EOL;
     }
 }
