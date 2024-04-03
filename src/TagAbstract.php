@@ -271,7 +271,7 @@ abstract class TagAbstract
     {
         return $this->isSelfClosing()
             ? $this->open($adHocAttrs)
-            : $this->open($adHocAttrs) . $this->contentsRendered() . $this->close();
+            : $this->open($adHocAttrs) . $this->contents() . $this->close();
     }
 
     /**
@@ -300,11 +300,11 @@ abstract class TagAbstract
 
             // Allowed
             if (!in_array($tagName, ['script', 'style'])) {
-                if (preg_match("/^[a-z]+$/", $tagName)) {
+                if (preg_match("/^[a-z][a-z1-6]*\$/", $tagName)) {
                     $this->tagName = $tagName;
                 }
                 else {
-                    error_log(sprintf('TagAbstract.tagName() - Error: tagName may contains alphabets only, input "%s" is invalid.', $tagName));
+                    error_log(sprintf('TagAbstract.tagName() - Error: tagName "%s" is invalid.', $tagName));
                 }
             }
             else {

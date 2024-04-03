@@ -5,7 +5,7 @@ namespace Wongyip\HTML\Traits;
 use Throwable;
 
 /**
- * CSS class attribute manipulation trait
+ * CSS class attribute manipulation trait.
  */
 trait CssClass
 {

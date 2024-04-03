@@ -5,7 +5,7 @@ namespace Wongyip\HTML\Traits;
 use Wongyip\HTML\Utils\CSS;
 
 /**
- * CSS style attribute manipulation trait
+ * CSS style attribute manipulation trait.
  */
 trait CssStyle
 {

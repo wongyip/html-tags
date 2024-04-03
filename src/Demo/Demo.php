@@ -1,9 +1,12 @@
 <?php
 
-namespace Wongyip\HTML;
+namespace Wongyip\HTML\Demo;
 
-use Exception;
 use Throwable;
+use Wongyip\HTML\Anchor;
+use Wongyip\HTML\Comment;
+use Wongyip\HTML\Tag;
+use Wongyip\HTML\Utils\Output;
 
 class Demo
 {
@@ -90,37 +93,51 @@ class Demo
     }
 
     /**
+     * Contents manipulation.
+     *
+     * @return void
+     */
+    public static function extensions(): void
+    {
+        echo sprintf(
+            "Code:\n\n%s\n\nOutput:\n\n%s\n\n",
+            "Section::make()->contents(Tag::make('p')->contents('Paragraph 1'), Tag::make('p')->contents('Paragraph 2'))->render()",
+            Section::make()->contents(Tag::make('p')->contents('Paragraph 1'), Tag::make('p')->contents('Paragraph 2'))->render()
+        );
+    }
+
+    /**
      * Errors
      *
      * @return void
      */
     public static function errors(): void
     {
-        self::printHeader('Test Error 1: setting of static prop. via the __call() method.');
+        Output::header('Test Error 1: setting of static prop. via the __call() method.');
         try {
             echo "Core: \$tag = Tag::make()->commonAttrs(['mo', 'la']);" . PHP_EOL;
             $tag = Tag::make()->commonAttrs(['mo', 'la']);
         }
         catch (Throwable $e) {
-            self::printError($e);
+            Output::error($e);
         }
 
-        self::printHeader('Test Error 2: setting of prop. with name started with underscore.');
+        Output::header('Test Error 2: setting of prop. with name started with underscore.');
         try {
             echo "Core: \$tag = Tag::make()->__staticProps(['mo', 'la']);" . PHP_EOL;
             $tag = Tag::make()->__staticProps(['mo', 'la']);
         }
         catch (Throwable $e) {
-            self::printError($e);
+            Output::error($e);
         }
 
-        self::printHeader('Test Error 3: setting of non-existing property.');
+        Output::header('Test Error 3: setting of non-existing property.');
         try {
             echo "Core: \$tag = Tag::make()->something('not exists');" . PHP_EOL;
             $tag = Tag::make()->something('not exists');
         }
         catch (Throwable $e) {
-            self::printError($e);
+            Output::error($e);
         }
 
         echo PHP_EOL;
@@ -144,7 +161,7 @@ class Demo
      *
      * @return void
      */
-    public static function example1(): void
+    public static function basic(): void
     {
         $div = new Tag('div');
         $div->class('c1 c2')->contents('Example <div> tag with t1 & t2 CSS classes.');
@@ -198,19 +215,6 @@ class Demo
     }
 
     /**
-     * @param string $header
-     * @param string|null $char
-     * @param int|null $length
-     * @return void
-     */
-    private static function printHeader(string $header, string $char = null, int $length = null): void
-    {
-        $char = $char ?? '=';
-        $length = $length ?? 80;
-        echo PHP_EOL . $header . PHP_EOL .str_repeat($char, $length) . PHP_EOL;
-    }
-
-    /**
      * @return void
      */
     public static function nested(): void
@@ -241,25 +245,5 @@ class Demo
             $tag->render()
         );
     }
-
-    /**
-     * @param string|null $char
-     * @param int|null $length
-     * @return void
-     */
-    private static function printLine(string $char = null, int $length = null): void
-    {
-        $char = $char ?? '=';
-        $length = $length ?? 80;
-        echo str_repeat($char, $length) . PHP_EOL;
-    }
-
-    /**
-     * @param Throwable|Exception $e
-     * @return void
-     */
-    private static function printError(Throwable|Exception $e): void
-    {
-        echo sprintf('Error: %s (%d)', $e->getMessage(), $e->getCode()) . PHP_EOL;
-    }
 }
+

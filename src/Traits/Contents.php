@@ -5,11 +5,14 @@ namespace Wongyip\HTML\Traits;
 use Wongyip\HTML\TagAbstract;
 
 /**
+ * Contents manipulation trait.
  */
 trait Contents
 {
+    use ContentsExtensions;
+
     /**
-     * Inner text contents.
+     * Enclosed contents.
      *
      * @var array|string[]|TagAbstract[]
      */
@@ -24,11 +27,20 @@ trait Contents
      */
     public function contents(string|TagAbstract ...$contents): string|static
     {
+        // Setter
         if (!empty($contents)) {
             array_push($this->contents, ...$contents);
             return $this;
         }
-        return $this->contentsRendered();
+        // Grab all render contents.
+        $contents = array_merge($this->contentsPrefixed(), $this->contents, $this->contentsSuffixed());
+        $rendered = '';
+        foreach ($contents as $content) {
+            $rendered .= is_string($content)
+                ? htmlspecialchars($content)
+                : (is_a($content, TagAbstract::class) ? $content->render() : '');
+        }
+        return $rendered;
     }
 
     /**
@@ -64,17 +76,5 @@ trait Contents
     {
         $this->contents = array_merge($contents, $this->contents);
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    private function contentsRendered(): string
-    {
-        $contents = '';
-        foreach ($this->contents as $content) {
-            $contents .= (is_string($content) ?  htmlspecialchars($content) : $content->render());
-        }
-        return $contents;
     }
 }
