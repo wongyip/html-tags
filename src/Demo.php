@@ -108,8 +108,8 @@ class Demo
     public static function example2(): void
     {
         print_r([
-            'code' => "Anchor::make()->classAdd('btn', 'btn-primary')->contents('OK')->render();",
-            'output' => Anchor::make()->classAdd('btn', 'btn-primary')->contents('OK')->render(),
+            'code' => "Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render();",
+            'output' => Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render(),
         ]);
     }
 

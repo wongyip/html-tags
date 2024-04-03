@@ -21,9 +21,9 @@ Expected output: `<div class="c1 c2">Example &lt;div&gt; tag with t1 &amp; t2 CS
 ### Example 2
 ```php
 use Wongyip\HTML\Anchor;
-echo Anchor::make()->classAdd('btn', 'btn-primary')->contents('OK')->render();
+echo Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render(),
 ```
-Expected output: `<a class="btn btn-primary">OK</a>`
+Expected output: `<a href="/path/to/go" target="_blank" class="btn btn-primary">Go</a>`
 
 *See [`Demo::class`](src/Demo.php) for more examples.*
 

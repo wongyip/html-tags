@@ -2,6 +2,7 @@
 
 namespace Wongyip\HTML;
 
+use Exception;
 use Wongyip\HTML\Traits\Default\ContentsText;
 
 /**
@@ -16,6 +17,12 @@ use Wongyip\HTML\Traits\Default\ContentsText;
  * @method string|static href(string|null $value = null)
  * @method string|static title(string|null $value = null)
  * @method string|static target(string|null $value = null)
+ *
+ * Target attribute setters.
+ * @method static targetBlank() Opens the linked document in a new window or tab.
+ * @method static targetParent() Opens the linked document in the parent frame.
+ * @method static targetSelf() Opens the linked document in the same frame as it was clicked (this is default).
+ * @method static targetTop() pens the linked document in the full body of the window.
  */
 class Anchor extends TagAbstract
 {
@@ -27,6 +34,24 @@ class Anchor extends TagAbstract
     protected string $tagName = 'a';
 
     /**
+     * @param string $name
+     * @param array $arguments
+     * @return $this|bool|string|Anchor|TagAbstract|null
+     * @throws Exception
+     */
+    public function __call(string $name, array $arguments)
+    {
+        if (preg_match("/^target([A-Z][a-z]+)$/", $name, $matches)) {
+            $target = strtolower($matches[1]);
+            if (in_array($target, ['blank', 'parent', 'self', 'top'])) {
+                return $this->target('_' . $target);
+            }
+            // Just it go.
+        }
+        return parent::__call($name, $arguments);
+    }
+
+    /**
      * Tag attributes in addition to common attributes. Every child tag object
      * should extend this method to provide a list of supported attributes.
      *
@@ -35,14 +60,5 @@ class Anchor extends TagAbstract
     protected function addAttrs(): array
     {
         return ['href', 'title', 'target'];
-    }
-
-    /**
-     * Set the target attribute to '_blank'.
-     * @return static
-     */
-    public function targetBlank(): static
-    {
-        return $this->target('_blank');
     }
 }
