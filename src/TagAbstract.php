@@ -3,6 +3,7 @@
 namespace Wongyip\HTML;
 
 use Exception;
+use ReflectionClass;
 use Throwable;
 use Wongyip\HTML\Traits\Contents;
 use Wongyip\HTML\Traits\CssClass;
@@ -28,14 +29,19 @@ abstract class TagAbstract
      * @var string
      */
     const DEFAULT_TAG_NAME = 'span';
-
+    /**
+     * List of all static properties, which should be ignored by __call().
+     *
+     * @var array|string[]
+     */
+    protected array $__staticProperties;
     /**
      * Internal storage of attributes listed in $tagAttrs, which have value set
      * already (excluding attributes listed in $complexAttrs).
      *
      * @var array|string[]
      */
-    protected array $attributes = [];
+    protected array $attrsStore = [];
     /**
      * These are attributes present in all tags.
      *
@@ -80,11 +86,11 @@ abstract class TagAbstract
         }
 
         // Normalize
-        $this->tagName = isset($this->tagName) ? strtolower($this->tagName) : 'span';
+        $this->tagName = isset($this->tagName) ? strtolower($this->tagName) : static::DEFAULT_TAG_NAME;
 
         // Patch
         if (in_array($this->tagName, ['script', 'style'])) {
-            $this->tagName('span');
+            $this->tagName(static::DEFAULT_TAG_NAME);
         }
 
         // Compile attributes list.
@@ -98,6 +104,12 @@ abstract class TagAbstract
             ),
             static::$complexAttrs
         );
+
+        /**
+         * List out static properties so the __call() method will ignore them.
+         * @see TagAbstract::__call()
+         */
+        $this->__staticProperties = array_keys((new ReflectionClass($this))->getStaticProperties() ?? []);
     }
 
     /**
@@ -113,16 +125,16 @@ abstract class TagAbstract
          */
         if (in_array($name, $this->tagAttrs)) {
             if (isset($arguments[0])) {
-                $this->attributes[$name] = $arguments[0];
+                $this->attrsStore[$name] = $arguments[0];
                 return $this;
             }
-            return $this->attributes[$name] ?? null;
+            return $this->attrsStore[$name] ?? null;
         }
         /**
          * Get or set property if it exists.
-         * @todo Some properties are not supposed to change may exposed.
+         * @todo Some properties are not supposed to change may be exposed.
          */
-        if (property_exists($this, $name)) {
+        if (property_exists($this, $name) && !in_array($name, $this->__staticProperties)) {
             if (isset($arguments[0])) {
                 $this->$name = $arguments[0];
                 return $this;
@@ -169,7 +181,7 @@ abstract class TagAbstract
             }
             return $this;
         }
-        $attributes = $this->attributes;
+        $attributes = $this->attrsStore;
         foreach (static::$complexAttrs as $getter) {
             if ($val = $this->$getter()) {
                 $attributes[$getter] = $val;
@@ -227,31 +239,39 @@ abstract class TagAbstract
     }
 
     /**
-     * Opening tag.
+     * Opening tag. The $adHocAttrs are merged into tag attributes, overwrite
+     * existing attributes by names, and used to render the tag for once only.
+     * Therefore, tag attributes are NOT updated with $adHocAttrs.
      *
+     * @param array|null $adHocAttrs
      * @return string
      */
-    public function open(): string
+    public function open(array $adHocAttrs = null): string
     {
-        $attrs = [];
-        foreach ($this->attributes() as $attr => $val) {
-            $attrs[] = sprintf('%s="%s"', $attr, htmlspecialchars($val, ENT_COMPAT));
+        $compiled = [];
+        $attributes = array_merge($this->attributes(), $adHocAttrs ?? []);
+        foreach ($attributes as $attr => $val) {
+            $compiled[] = sprintf('%s="%s"', $attr, htmlspecialchars($val, ENT_COMPAT));
         }
-        return empty($attrs)
+        return empty($compiled)
             ? sprintf($this->isSelfClosing() ? '<%s />' : '<%s>', $this->tagName())
-            : sprintf($this->isSelfClosing() ? '<%s %s />' : '<%s %s>', $this->tagName(), implode(' ', $attrs));
+            : sprintf($this->isSelfClosing() ? '<%s %s />' : '<%s %s>', $this->tagName(), implode(' ', $compiled));
     }
 
     /**
-     * The main rendering method if the tag.
+     * The main rendering method if the tag. The $adHocAttrs are merged into tag
+     * attributes, overwrite existing attributes by names, and used to render
+     * the opening tag for once only. Therefore, tag attributes are NOT updated
+     * with $adHocAttrs.
      *
+     * @param array|null $adHocAttrs
      * @return string
      */
-    public function render(): string
+    public function render(array $adHocAttrs = null): string
     {
         return $this->isSelfClosing()
-            ? $this->open()
-            : $this->open() . htmlspecialchars($this->contentsText()) . $this->close();
+            ? $this->open($adHocAttrs)
+            : $this->open($adHocAttrs) . htmlspecialchars($this->contentsText()) . $this->close();
     }
 
     /**
@@ -293,7 +313,7 @@ abstract class TagAbstract
 
             // Ultimate default
             if (!isset($this->tagName)) {
-                $this->tagName = 'span';
+                $this->tagName = static::DEFAULT_TAG_NAME;
             }
             return $this;
         }

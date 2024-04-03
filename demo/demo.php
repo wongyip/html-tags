@@ -4,6 +4,14 @@ use Wongyip\HTML\Demo;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+/**
+ * Throw Exception
+ *
+$tag = \Wongyip\HTML\Tag::make()->commonAttrs(['ho', 'la']);
+print_r($tag);
+exit;
+ */
+
 if ($demo = $argv[1]) {
     if (method_exists(Demo::class, $demo)) {
         Demo::$demo();
