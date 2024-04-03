@@ -8,6 +8,20 @@ use Throwable;
 class Demo
 {
     /**
+     * One-line syntax.
+     *
+     * @return void
+     */
+    public static function anchor(): void
+    {
+        echo sprintf(
+            "Code: %s\nOutput: %s\n",
+            "Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents(Tag::make('span')->contents('Go')->style('color: green;'))->render()",
+            Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents(Tag::make('span')->contents('Go')->style('color: green;'))->render()
+        );
+    }
+
+    /**
      * Set multiple attributes at once.
      *
      * @return void
@@ -52,10 +66,11 @@ class Demo
      */
     public static function comment(): void
     {
-        $tag = Comment::make()->contents('Comment tag ignores the tagName property & all other attributes.')->tagName('div')->class('skipped-class');
+        $tag = Comment::make()->contents('Comment tag ignores the tagName property & all other attributes. ')->tagName('div')->class('skipped-class');
+        $tag->contentsAppend(Tag::make('div')->contents('Nested tag is allowed in comment.'));
         print_r([
-            'code' => "\$tag = Comment::make()->contents('Comment tag ignores the tagName property & all other attributes.')->tagName('div')->class('skipped-class')",
-            '$tag' => $tag,
+            'line 1' => "\$tag = Comment::make()->contents('Comment tag ignores the tagName property & all other attributes. ')->tagName('div')->class('skipped-class')",
+            'line 2' => "\$tag->contentsAppend(Tag::make('div')->contents('Nested tag is allowed in comment.'));",
             '$tag->render()' => $tag->render(),
         ]);
     }
@@ -67,10 +82,11 @@ class Demo
      */
     public static function contents(): void
     {
-        print_r([
-            'code' => "Tag::make()->contents('contents')->contentsAdd('contentsAdd1', 'contentAdd2')->contentsPrepend('contentsPrepend')->render();",
-            'output' => Tag::make()->contents('contents')->contentsAdd('contentsAdd1', 'contentAdd2')->contentsPrepend('contentsPrepend')->render(),
-        ]);
+        echo sprintf(
+            "Code: %s\nOutput: %s\n",
+            "Tag::make('div')->contents('C3 ', Tag::make('p')->contents('C4 '))->contentsAppend(Tag::make('p')->contents('C5 '))->contentsPrepend('C1 ', 'C2 ')->render()",
+            Tag::make('div')->contents('C3 ', Tag::make('p')->contents('C4 '))->contentsAppend(Tag::make('p')->contents('C5 '))->contentsPrepend('C1 ', 'C2 ')->render()
+        );
     }
 
     /**
@@ -192,6 +208,38 @@ class Demo
         $char = $char ?? '=';
         $length = $length ?? 80;
         echo PHP_EOL . $header . PHP_EOL .str_repeat($char, $length) . PHP_EOL;
+    }
+
+    /**
+     * @return void
+     */
+    public static function nested(): void
+    {
+        $code = <<<CODE
+        \$tag = Tag::make('div')->class('parent')->contents(
+            Tag::make('p')->id('child1')->contents('Regular'),
+            Tag::make('p')->id('child2')->contents(
+                Tag::make('span')->contents(
+                    Tag::make('strong')->contents('Bold Face')
+                )
+            )
+        );
+        echo \$tag->render();
+        CODE;
+
+        $tag = Tag::make('div')->class('parent')->contents(
+            Tag::make('p')->id('child1')->contents('Regular'),
+            Tag::make('p')->id('child2')->contents(
+                Tag::make('span')->contents(
+                    Tag::make('strong')->contents('Bold Face')
+                )
+            )
+        );
+        echo sprintf(
+            "Code:\n\n%s\n\nOutput:\n\n%s\n\n",
+            $code,
+            $tag->render()
+        );
     }
 
     /**

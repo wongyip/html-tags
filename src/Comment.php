@@ -2,8 +2,6 @@
 
 namespace Wongyip\HTML;
 
-use Wongyip\HTML\Traits\Default\ContentsText;
-
 /**
  * Special implementation of a comment tag, which ignores the tagName property,
  * as well as other attributes set. Only the text contents will be output as a
@@ -11,8 +9,6 @@ use Wongyip\HTML\Traits\Default\ContentsText;
  */
 class Comment extends TagAbstract
 {
-    use ContentsText;
-
     /**
      * Not used at all.
      *

@@ -2,8 +2,6 @@
 
 namespace Wongyip\HTML;
 
-use Wongyip\HTML\Traits\Default\ContentsText;
-
 /**
  * A minimal implementation of the TagAbstract with the following details:
  *
@@ -14,8 +12,6 @@ use Wongyip\HTML\Traits\Default\ContentsText;
  */
 class Tag extends TagAbstract
 {
-    use ContentsText;
-
     /**
      * HTML Tag Name.
      *

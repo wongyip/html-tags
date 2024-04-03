@@ -29,6 +29,9 @@ Demo::example1();
 echo PHP_EOL . 'Demo::usage2();' . PHP_EOL . str_repeat('-', 80) . PHP_EOL;
 Demo::example2();
 
+echo PHP_EOL . 'Demo::nested();' . PHP_EOL . str_repeat('-', 80) . PHP_EOL;
+Demo::nested();
+
 echo PHP_EOL . 'Demo::selfClosingTag();' . PHP_EOL . str_repeat('-', 80) . PHP_EOL;
 Demo::selfClosingTag();
 

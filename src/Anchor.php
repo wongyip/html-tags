@@ -3,7 +3,6 @@
 namespace Wongyip\HTML;
 
 use Exception;
-use Wongyip\HTML\Traits\Default\ContentsText;
 
 /**
  * A minimal implementation an "\<a>" (anchor) tag with the following details:
@@ -11,7 +10,6 @@ use Wongyip\HTML\Traits\Default\ContentsText;
  *  1. Additional attributes is supported via the addAttrs() method.
  *  2. Add. attributes' get-setters are annotated with @-method for code-hint.
  *  3. Additional helper target[Blank|Parent|Self|Top] methods.
- *  4. Uses default ContentsText method to compose text contents.
  *
  * Attributes Get-setters.
  * @method string|static href(string|null $value = null)
@@ -26,8 +24,6 @@ use Wongyip\HTML\Traits\Default\ContentsText;
  */
 class Anchor extends TagAbstract
 {
-    use ContentsText;
-
     /**
      * @var string
      */

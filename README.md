@@ -1,6 +1,6 @@
 # HTML Tags Renderer
 
-This package is aimed to provide a fast and simple way to render "some" HTML tags for generic purpose.
+An intuitive and simple HTML renderer for generic purpose.
 
 ## Installation
 ```sh
@@ -9,21 +9,33 @@ composer require wongyip/html-tags
 
 ## Usage
 
-### Example 1
+### Basic
 ```php
-use Wongyip\HTML\Tag;
 $div = new Tag('div');
 $div->class('c1 c2')->contents('Example <div> tag with t1 & t2 CSS classes.');
 echo $div->render();
 ```
 Expected output: `<div class="c1 c2">Example &lt;div&gt; tag with t1 &amp; t2 CSS classes.</div>`
 
-### Example 2
+### One-liner
 ```php
-use Wongyip\HTML\Anchor;
-echo Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render(),
+echo Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render();
 ```
 Expected output: `<a href="/path/to/go" target="_blank" class="btn btn-primary">Go</a>`
+
+### Nested
+```php
+$tag = Tag::make('div')->class('parent')->contents(
+    Tag::make('p')->id('child1')->contents('Regular'),
+    Tag::make('p')->id('child2')->contents(
+        Tag::make('span')->contents(
+            Tag::make('strong')->contents('Bold Face')
+        )
+    )
+);
+echo $tag->render();
+```
+Expected output: `<div class="parent"><p id="child1">Regular</p><p id="child2"><span><strong>Bold Face</strong></span></p></div>`
 
 *See [`Demo::class`](src/Demo.php) for more examples.*
 

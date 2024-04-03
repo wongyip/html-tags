@@ -165,7 +165,7 @@ abstract class TagAbstract
      * Notes:
      *  1. Not a direct get-setter.
      *  2. Unrecognized attributes are ignored (not in $tagAttrs, nor $complexAttrs).
-     *  4. Tag "contents" is NOT an attribute.
+     *  3. Tag "contents" is NOT an attribute.
      *
      * @param array|null $attributes
      * @return array|static
@@ -206,13 +206,6 @@ abstract class TagAbstract
     {
         return $this->isSelfClosing() ? '' : sprintf('</%s>', $this->tagName);
     }
-
-    /**
-     * Get composed text contents.
-     *
-     * @return string
-     */
-    abstract public function contentsText(): string;
 
     /**
      * Determine if this is a self-closing tag.
@@ -278,7 +271,7 @@ abstract class TagAbstract
     {
         return $this->isSelfClosing()
             ? $this->open($adHocAttrs)
-            : $this->open($adHocAttrs) . htmlspecialchars($this->contentsText()) . $this->close();
+            : $this->open($adHocAttrs) . $this->contentsRendered() . $this->close();
     }
 
     /**
