@@ -5,20 +5,29 @@ namespace Wongyip\HTML\Demo;
 use Wongyip\HTML\Tag;
 use Wongyip\HTML\TagAbstract;
 
-class Section extends TagAbstract
+class DialogBox extends TagAbstract
 {
-    protected string $tagName = 'section';
+    protected string $tagName = 'div';
 
     public Tag $heading;
-    public Tag $footnote;
+    public Tag $button;
 
     public function __construct(string $tagName = null, array $extraAttrs = null)
     {
         parent::__construct($tagName, $extraAttrs);
 
         // Init named child(s).
-        $this->heading = Tag::make('h1')->contents('Title Line');
-        $this->footnote = Tag::make('div')->contents('Some notes here.');
+        $this->heading = Tag::make('h4');
+        $this->button = Tag::make('button');
+    }
+
+    public static function create(Tag|string $message, string $title, string $buttonCaption): static
+    {
+        $tag = static::make();
+        $tag->contents(Tag::make('p')->contents($message))->class('dialog-box');
+        $tag->heading->contents($title);
+        $tag->button->contents($buttonCaption);
+        return $tag;
     }
 
     public function contentsPrefixed(): array
@@ -30,7 +39,7 @@ class Section extends TagAbstract
     public function contentsSuffixed(): array
     {
         // Suffix named child(s) to contents before render.
-        return [$this->footnote];
+        return [$this->button];
     }
 
     protected function addAttrs(): array

@@ -15,9 +15,12 @@ if ($demo = $argv[1]) {
     exit;
 }
 
+
 $demo = array_column((new ReflectionClass(Demo::class))->getMethods(), 'name');
-Output::header('Available Demonstrations.');
+echo PHP_EOL . 'Usage: php demo.php <demo>';
+echo PHP_EOL . PHP_EOL . 'Available demos:' .PHP_EOL;
 foreach ($demo as $d) {
     echo "  - $d\n";
 }
+echo PHP_EOL;
 exit;

@@ -93,16 +93,16 @@ class Demo
     }
 
     /**
-     * Contents manipulation.
+     * Compound Tag
      *
      * @return void
      */
-    public static function extensions(): void
+    public static function compound(): void
     {
         echo sprintf(
             "Code:\n\n%s\n\nOutput:\n\n%s\n\n",
             "Section::make()->contents(Tag::make('p')->contents('Paragraph 1'), Tag::make('p')->contents('Paragraph 2'))->render()",
-            Section::make()->contents(Tag::make('p')->contents('Paragraph 1'), Tag::make('p')->contents('Paragraph 2'))->render()
+            DialogBox::create('Some message.', 'Notice', 'OK')->render()
         );
     }
 
