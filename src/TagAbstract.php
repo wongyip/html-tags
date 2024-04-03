@@ -126,26 +126,29 @@ abstract class TagAbstract
         }
         /**
          * Get or set property if:
-         *  1. Property name is NOT starting with _ (underscore).
-         *  2. Property exists.
+         *
+         *  1. Property exists.
+         *  2. Property name is NOT starting with _ (underscore).
          *  3. Property is not static.
          *
          * @note Some properties are not supposed to change may be exposed.
          */
-        if (property_exists($this, $name)) {
-            if (!str_starts_with($name, '_')) {
-                if (!$this->isStaticProp($name)) {
-                    if (isset($arguments[0])) {
-                        $this->$name = $arguments[0];
-                        return $this;
-                    }
-                    return $this->$name;
-                }
-                throw new Exception(sprintf('Access to static property (%s) is not allowed.', $name));
-            }
+        if (!property_exists($this, $name)) {
+            throw new Exception(sprintf('Undefined method %s() called.', $name));
+        }
+        if (str_starts_with($name, '_')) {
             throw new Exception(sprintf('Access to property with name started with underscore (%s) is not allowed.', $name));
         }
-        throw new Exception(sprintf('Undefined method %s() called.', $name));
+        if ($this->isStaticProp($name)) {
+            throw new Exception(sprintf('Access to static property (%s) is not allowed.', $name));
+        }
+        // Set property.
+        if (isset($arguments[0])) {
+            $this->$name = $arguments[0];
+            return $this;
+        }
+        // Get property.
+        return $this->$name;
     }
 
     /**

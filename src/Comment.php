@@ -45,9 +45,10 @@ class Comment extends TagAbstract
     /**
      * Override parent, open a comment block, ignores tagName and attributes.
      *
+     * @param array|null $adHocAttrs
      * @inheritdoc
      */
-    public function open(): string
+    public function open(array $adHocAttrs = null): string
     {
         return '<!-- ';
     }
