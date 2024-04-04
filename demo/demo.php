@@ -1,26 +1,37 @@
 <?php
 
 use Wongyip\HTML\Demo\Demo;
-use Wongyip\HTML\Utils\Output;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-if ($demo = $argv[1]) {
-    if (method_exists(Demo::class, $demo)) {
-        Demo::$demo();
+$demos = array_diff(
+    array_column((new ReflectionClass(Demo::class))->getMethods(), 'name'),
+    ['__construct']
+);
+
+if ($run = $argv[1]) {
+    if ($run !== '__construct') {
+        if ($run === '--all') {
+            foreach ($demos as $demo) {
+                echo PHP_EOL . "Demo: $demo" .PHP_EOL . str_repeat('=', 80) . PHP_EOL;
+                Demo::$demo();
+            }
+        }
+        elseif (method_exists(Demo::class, $run)) {
+            Demo::$run();
+        }
+        else {
+            error_log("Undefined Demo::$run() method.");
+        }
+        exit;
     }
-    else {
-        error_log("Undefined Demo::$demo() method.");
-    }
-    exit;
 }
 
 
-$demo = array_column((new ReflectionClass(Demo::class))->getMethods(), 'name');
-echo PHP_EOL . 'Usage: php demo.php <demo>';
+echo PHP_EOL . 'Usage: php demo.php <demo>|--all';
 echo PHP_EOL . PHP_EOL . 'Available demos:' .PHP_EOL;
-foreach ($demo as $d) {
-    echo "  - $d\n";
+foreach ($demos as $demo) {
+    echo "  - $demo\n";
 }
 echo PHP_EOL;
 exit;

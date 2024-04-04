@@ -2,6 +2,7 @@
 
 namespace Wongyip\HTML\Traits;
 
+use Wongyip\HTML\Comment;
 use Wongyip\HTML\TagAbstract;
 
 /**
@@ -32,15 +33,8 @@ trait Contents
             array_push($this->contents, ...$contents);
             return $this;
         }
-        // Grab all render contents.
-        $contents = array_merge($this->contentsPrefixed(), $this->contents, $this->contentsSuffixed());
-        $rendered = '';
-        foreach ($contents as $content) {
-            $rendered .= is_string($content)
-                ? htmlspecialchars($content)
-                : (is_a($content, TagAbstract::class) ? $content->render() : '');
-        }
-        return $rendered;
+        // Get them rendered.
+        return $this->contentsRendered();
     }
 
     /**
@@ -76,5 +70,32 @@ trait Contents
     {
         $this->contents = array_merge($contents, $this->contents);
         return $this;
+    }
+
+    /**
+     * Get all contents combined, which is properly escaped and safe to output
+     * as raw HTML.
+     *
+     * @return string
+     */
+    protected function contentsRendered(): string
+    {
+        // Grab all render contents.
+        $contents = array_merge(
+            $this->contentsPrefixed(),
+            $this->contents,
+            $this->contentsSuffixed()
+        );
+        $rendered = '';
+        foreach ($contents as $content) {
+            // Escape text
+            $rendered .= is_string($content) ? htmlspecialchars($content)
+                // Escape comment's ending brace.
+                : (is_a($content, Comment::class) ? preg_replace("/-->$/", '--&gt;', $content->render())
+                    // Render nested tag.
+                    : (is_a($content, TagAbstract::class) ? $content->render() : '')
+                );
+        }
+        return $rendered;
     }
 }

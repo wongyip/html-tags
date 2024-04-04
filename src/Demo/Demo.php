@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace Wongyip\HTML\Demo;
 
@@ -10,6 +10,11 @@ use Wongyip\HTML\Utils\Output;
 
 class Demo
 {
+    public function __construct(string $code, string $output)
+    {
+        echo sprintf("\nCode: \n\n%s\n\nOutput:\n\n%s\n", $code, $output);
+    }
+
     /**
      * One-line syntax.
      *
@@ -17,8 +22,7 @@ class Demo
      */
     public static function anchor(): void
     {
-        echo sprintf(
-            "Code: %s\nOutput: %s\n",
+        new Demo(
             "Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents(Tag::make('span')->contents('Go')->style('color: green;'))->render()",
             Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents(Tag::make('span')->contents('Go')->style('color: green;'))->render()
         );
@@ -31,6 +35,20 @@ class Demo
      */
     public static function attributes(): void
     {
+        $code = <<<CODE
+        \$setAttributes = [
+            'href' => 'https://www.google.com',
+            'class' => 'c1 c2 c3',
+            'style' => 'color: red; font-weight: bold;',
+            'contents' => 'Contents is not an attribute, this will be ignored.',
+            'whatever-not-recognized' => 'Will be ignored, too.',
+            'id' => 'tag1',
+            'name' => 'anchor1',
+        ];
+        \$tag = Anchor::make()->attributes(\$setAttributes)->contents('Correct Link');
+        echo \$tag->render()
+        CODE;
+
         $setAttributes = [
             'href' => 'https://www.google.com',
             'class' => 'c1 c2 c3',
@@ -41,12 +59,8 @@ class Demo
             'name' => 'anchor1',
         ];
         $tag = Anchor::make()->attributes($setAttributes)->contents('Correct Link');
-        print_r([
-            '$setAttributes' => $setAttributes,
-            'Anchor::make()->attributes($setAttributes)->contents(\'Correct Link\')' => $tag,
-            '$tag->attributes()' => $tag->attributes(),
-            '$tag->render()' => $tag->render(),
-        ]);
+
+        new Demo($code, $tag->render());
     }
 
     /**
@@ -56,10 +70,10 @@ class Demo
      */
     public static function selfClosingTag(): void
     {
-        print_r([
-            'code' => "Tag::make()->tagName('HR')->style('margin-bottom: 1rem;')->render()",
-            'output' => Tag::make()->tagName('HR')->style('margin-bottom: 1rem;')->render(),
-        ]);
+        new Demo(
+            "echo Tag::make()->tagName('HR')->style('margin-bottom: 1rem;')->render();",
+            Tag::make()->tagName('HR')->style('margin-bottom: 1rem;')->render()
+        );
     }
 
     /**
@@ -69,13 +83,18 @@ class Demo
      */
     public static function comment(): void
     {
-        $tag = Comment::make()->contents('Comment tag ignores the tagName property & all other attributes. ')->tagName('div')->class('skipped-class');
-        $tag->contentsAppend(Tag::make('div')->contents('Nested tag is allowed in comment.'));
-        print_r([
-            'line 1' => "\$tag = Comment::make()->contents('Comment tag ignores the tagName property & all other attributes. ')->tagName('div')->class('skipped-class')",
-            'line 2' => "\$tag->contentsAppend(Tag::make('div')->contents('Nested tag is allowed in comment.'));",
-            '$tag->render()' => $tag->render(),
-        ]);
+        $code = <<<CODE
+        \$tag = Comment::make()->contents('Comment ignores attributes set.')->class('ignored');
+        \$tag->contentsAppend(Tag::make('div')->contents('Nested tag is fine.'));
+        \$tag->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'));
+        echo \$tag->render();
+        CODE;
+
+        $tag = Comment::make()->contents('Comment ignores attributes set.')->class('ignored');
+        $tag->contentsAppend(Tag::make('div')->contents('Nested tag is fine.'));
+        $tag->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'));
+
+        new Demo($code, $tag->render());
     }
 
     /**
@@ -85,10 +104,9 @@ class Demo
      */
     public static function contents(): void
     {
-        echo sprintf(
-            "Code: %s\nOutput: %s\n",
-            "Tag::make('div')->contents('C3 ', Tag::make('p')->contents('C4 '))->contentsAppend(Tag::make('p')->contents('C5 '))->contentsPrepend('C1 ', 'C2 ')->render()",
-            Tag::make('div')->contents('C3 ', Tag::make('p')->contents('C4 '))->contentsAppend(Tag::make('p')->contents('C5 '))->contentsPrepend('C1 ', 'C2 ')->render()
+        new Demo(
+            "echo Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->render();",
+            Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->render()
         );
     }
 
@@ -99,9 +117,8 @@ class Demo
      */
     public static function compound(): void
     {
-        echo sprintf(
-            "Code:\n\n%s\n\nOutput:\n\n%s\n\n",
-            "Section::make()->contents(Tag::make('p')->contents('Paragraph 1'), Tag::make('p')->contents('Paragraph 2'))->render()",
+        new Demo(
+            "echo DialogBox::create('Some message.', 'Notice', 'OK')->render();",
             DialogBox::create('Some message.', 'Notice', 'OK')->render()
         );
     }
@@ -150,10 +167,10 @@ class Demo
      */
     public static function tagName(): void
     {
-        print_r([
-            'code' => "Tag::make('p')->tagName('DIV')->tagName('script')->tagName('style')->tagName('wrong tag')->contents('A div tag is rendered finally.')->render();",
-            'output' => Tag::make('p')->tagName('DIV')->tagName('script')->tagName('style')->tagName('wrong tag')->contents('A div tag is rendered finally.')->render(),
-        ]);
+        new Demo(
+            "echo Tag::make('p')->tagName('DIV')->tagName('script')->tagName('style')->tagName('wrong tag')->contents('A div tag is rendered finally.')->render();",
+            Tag::make('p')->tagName('DIV')->tagName('script')->tagName('style')->tagName('wrong tag')->contents('A div tag is rendered finally.')->render()
+        );
     }
 
     /**
@@ -161,16 +178,16 @@ class Demo
      *
      * @return void
      */
-    public static function basic(): void
+    public static function basic1(): void
     {
+        $code = <<<CODE
+        \$div = new Tag('div');
+        \$div->class('c1 c2')->contents('Example <div> tag with t1 & t2 CSS classes.');
+        echo \$div->render();
+        CODE;
         $div = new Tag('div');
         $div->class('c1 c2')->contents('Example <div> tag with t1 & t2 CSS classes.');
-
-        print_r([
-            'code' => '$div = new Tag(\'div\'); $div->class(\'c1, c2\')->style(\'width: 50%\')->contents(\'Example <div> tag with t1 & t2 CSS classes.\')->render();',
-            'output' => $div->render(),
-        ]);
-
+        new Demo($code, $div->render());
     }
 
     /**
@@ -178,40 +195,38 @@ class Demo
      *
      * @return void
      */
-    public static function example2(): void
+    public static function basic2(): void
     {
-        print_r([
-            'code' => "Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render();",
-            'output' => Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render(),
-        ]);
+        new Demo(
+            "echo Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render();",
+            Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render()
+        );
     }
 
     /**
      * @return void
      */
-    public static function cssStyle(): void
+    public static function style(): void
     {
+        $code = <<<CODE
+        \$tag = Tag::make()->contents('Testing');
+        \$tag->style('margin: 10px; font-size: 2em; color: green; --empty-rule: ; wrong rule: ignored;');
+        \$tag->stylePrepend('font-size: 1em; color: red');
+        \$tag->styleAppend('font-size: 3rem;', 'color: blue;');
+        \$tag->styleUnset('margin');
+        echo \$tag->render();
+        CODE;
+
         $tag = Tag::make()->contents('Testing');
         $tag->style('margin: 10px; font-size: 2em; color: green; --empty-rule: ; wrong rule: ignored;');
         $tag->stylePrepend('font-size: 1em; color: red');
         $tag->styleAppend('font-size: 3rem;', 'color: blue;');
         $tag->styleUnset('margin');
 
-        echo "Code:" . PHP_EOL;
-        echo "\$tag = Tag::make()->contents('Testing');" . PHP_EOL;
-        echo "\$tag->style('margin: 10px; font-size: 2em; color: green; --empty-rule: ; wrong rule: ignored;');" . PHP_EOL;
-        echo "\$tag->stylePrepend('font-size: 1em; color: red');" . PHP_EOL;
-        echo "\$tag->styleAppend('font-size: 3rem;', 'color: blue;');" . PHP_EOL;
-        echo "\$tag->styleUnset('margin');" . PHP_EOL;
-        echo "echo \$tag->style();" . PHP_EOL;
-        echo "echo \$tag->render();" . PHP_EOL;
-
-        echo PHP_EOL ;
-
-        echo "Output:" . PHP_EOL;
-        echo $tag->style() . PHP_EOL;
-        echo $tag->render() . PHP_EOL;
-        echo PHP_EOL;
+        new Demo(
+            $code,
+            $tag->render()
+        );
     }
 
     /**
@@ -239,8 +254,8 @@ class Demo
                 )
             )
         );
-        echo sprintf(
-            "Code:\n\n%s\n\nOutput:\n\n%s\n\n",
+
+        new Demo(
             $code,
             $tag->render()
         );

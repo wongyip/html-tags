@@ -30,7 +30,7 @@ abstract class TagAbstract
      */
     const DEFAULT_TAG_NAME = 'span';
     /**
-     * All static properties, which should be ignored by __call().
+     * All static properties, which should be ignored by the __call() method.
      *
      * @var array|string[]
      */
@@ -86,7 +86,7 @@ abstract class TagAbstract
         }
 
         // Normalize
-        $this->tagName = isset($this->tagName) ? strtolower($this->tagName) : static::DEFAULT_TAG_NAME;
+        $this->tagName = strtolower($this->tagName ?? static::DEFAULT_TAG_NAME);
 
         // Patch
         if (in_array($this->tagName, ['script', 'style'])) {
@@ -297,7 +297,6 @@ abstract class TagAbstract
         $tagName = strtolower($tagName);
         // Setter
         if (!empty($tagName)) {
-
             // Allowed
             if (!in_array($tagName, ['script', 'style'])) {
                 if (preg_match("/^[a-z][a-z1-6]*\$/", $tagName)) {

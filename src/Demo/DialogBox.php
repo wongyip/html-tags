@@ -5,10 +5,18 @@ namespace Wongyip\HTML\Demo;
 use Wongyip\HTML\Tag;
 use Wongyip\HTML\TagAbstract;
 
+/**
+ * Example compound tag.
+ */
 class DialogBox extends TagAbstract
 {
     protected string $tagName = 'div';
 
+    /**
+     * Named child tags are not managed by the Contents trait, they're rendered
+     * before or after the attached contents according to contentsPrefixed() and
+     * contentsSuffixed() methods.
+     */
     public Tag $heading;
     public Tag $button;
 
@@ -16,11 +24,19 @@ class DialogBox extends TagAbstract
     {
         parent::__construct($tagName, $extraAttrs);
 
-        // Init named child(s).
+        // Init. child tags.
         $this->heading = Tag::make('h4');
         $this->button = Tag::make('button');
     }
 
+    /**
+     * An example macro to instantiate and set up a compound tag.
+     *
+     * @param Tag|string $message
+     * @param string $title
+     * @param string $buttonCaption
+     * @return static
+     */
     public static function create(Tag|string $message, string $title, string $buttonCaption): static
     {
         $tag = static::make();

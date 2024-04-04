@@ -38,7 +38,7 @@ echo $tag->render();
 ```
 Output: `<div class="parent"><p id="child1">Regular</p><p id="child2"><span><strong>Bold Face</strong></span></p></div>`
 
-### Compound Tags with Using Contents Extension 
+### Compound Tag Using Contents Extensions
 
 ```php
 class DialogBox extends TagAbstract
@@ -77,7 +77,20 @@ class DialogBox extends TagAbstract
 
 echo DialogBox::create('Some message.', 'Notice', 'OK')->render();
 ```
-Expected output: `<div class="dialog-box"><h4>Notice</h4><p>Some message.</p><button>OK</button></div>`
+Output: `<div class="dialog-box"><h4>Notice</h4><p>Some message.</p><button>OK</button></div>`
+
+### HTML Comment
+```php
+$tag = Comment::make()
+    ->contents('Comment tag ignores the tagName property & all other attributes. ')
+    ->tagName('div')
+    ->class('ignored-class')
+    ->contentsAppend(
+        Tag::make('div')->contents('Nested tag is allowed in comment.')
+    );
+echo $tga->render();
+```
+Output: `<!-- Comment tag ignores the tagName property &amp; all other attributes. <div>Nested tag is allowed in comment.</div> -->`
 
 ### More Examples
 - See [`Demo::class`](src/Demo.php) for more examples.
@@ -86,6 +99,5 @@ Expected output: `<div class="dialog-box"><h4>Notice</h4><p>Some message.</p><bu
 ## Limitations
 1. `<script>` tag is not supported, obviously because of the security concerns.
 2. `<style>` tag is neither supported as `htmlspecialchars()` might unintentionally break the styles.
-3. `<!doctype>` tag is not supported also. 
-4. `<!-- comment -->` tag must be rendered with `Comment::class`.
-5. Web content accessibility is not addressed, yet.
+3. `<!doctype>` tag is not supported also.
+4. Web content accessibility is not addressed, yet.
