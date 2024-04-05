@@ -18,39 +18,6 @@ class Demo
     /**
      * @return void
      */
-    public static function anchor(): void
-    {
-        $code = <<<CODE
-        // Spell out everything if you care about who read your code.
-        \$a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
-
-        // When there is structural data (e.g. a data model), input attributes array maybe a good choice.
-        \$a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
-
-        // Code a little less.
-        \$a3 = Anchor::create('/go/3', 'Go 3', '_blank');
-
-        echo implode(PHP_EOL, [\$a1->render(), \$a2->render(), \$a3->render()]);
-        CODE;
-
-        // Spell out everything if you care about who read your code.
-        $a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
-
-        // When there is structural data (e.g. a data model), input attributes array maybe a good choice.
-        $a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
-
-        // To code a little less.
-        $a3 = Anchor::create('/go/3', 'Go 3', '_blank');
-
-        new Demo(
-            $code,
-            implode(PHP_EOL, [$a1->render(), $a2->render(), $a3->render()])
-        );
-    }
-
-    /**
-     * @return void
-     */
     public static function attributes(): void
     {
         $code = <<<CODE
@@ -89,6 +56,39 @@ class Demo
         new Demo(
             "echo Tag::make()->tagName('HR')->style('margin-bottom: 1rem;')->render();",
             Tag::make()->tagName('HR')->style('margin-bottom: 1rem;')->render()
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public static function codingStyles(): void
+    {
+        $code = <<<CODE
+        // Spell out everything if you care about who read your code.
+        \$a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
+
+        // When working with structural data like a data model.
+        \$a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
+
+        // Code a little less with tailor-made creator-function.
+        \$a3 = Anchor::create('/go/3', 'Go 3', '_blank');
+
+        echo implode(PHP_EOL, [\$a1->render(), \$a2->render(), \$a3->render()]);
+        CODE;
+
+        // Spell out everything if you care about who read your code.
+        $a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
+
+        // When there is structural data (e.g. a data model), input attributes array maybe a good choice.
+        $a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
+
+        // To code a little less.
+        $a3 = Anchor::create('/go/3', 'Go 3', '_blank');
+
+        new Demo(
+            $code,
+            implode(PHP_EOL, [$a1->render(), $a2->render(), $a3->render()])
         );
     }
 
@@ -143,6 +143,31 @@ class Demo
     /**
      * @return void
      */
+    public static function innerHTML(): void
+    {
+        new Demo(
+            "echo Tag::make('div')->contents(Anchor::create('/path/to/there', 'Go', 'There', '_blank'))->innerHTML;",
+            Tag::make('div')->contents(Anchor::create('/path/to/there', 'Go', 'There', '_blank'))->innerHTML
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public static function innerText(): void
+    {
+        new Demo(
+            "echo Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->innerHTML;",
+            Tag::make('div')
+                ->contents('C3', Tag::make('p')->contents('C4'))
+                ->contentsAppend(Tag::make('p')->contents('C5'))
+                ->contentsPrepend('C1', 'C2')->innerText
+        );
+    }
+
+    /**
+     * @return void
+     */
     public static function errors(): void
     {
         Output::header('Test Error 1: setting of static prop. via the __call() method.');
@@ -191,15 +216,19 @@ class Demo
      *
      * @return void
      */
-    public static function basic1(): void
+    public static function basic(): void
     {
         $code = <<<CODE
         \$div = new Tag('div');
-        \$div->class('c1 c2')->contents('Example <div> tag with t1 & t2 CSS classes.');
+        \$div->id('some-css-class')
+        \$div->style('font-size: 2em;')
+        \$div->contents('Example <div> tag with class & style attributes.');
         echo \$div->render();
         CODE;
         $div = new Tag('div');
-        $div->class('c1 c2')->contents('Example <div> tag with t1 & t2 CSS classes.');
+        $div->id('some-css-class');
+        $div->style('font-size: 2em;');
+        $div->contents('Example <div> tag with class & style attributes.');
         new Demo($code, $div->render());
     }
 

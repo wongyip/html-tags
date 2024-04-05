@@ -12,17 +12,37 @@ composer require wongyip/html-tags
 ### Basic
 ```php
 $div = new Tag('div');
-$div->class('c1 c2')
-$div->contents('Example <div> tag with t1 & t2 CSS classes.');
+$div->id('some-css-class')
+$div->style('font-size: 2em;')
+$div->contents('Example <div> tag with class & style attributes.');
 echo $div->render();
 ```
-Output: `<div class="c1 c2">Example &lt;div&gt; tag with t1 &amp; t2 CSS classes.</div>`
-
-### One-liner
-```php
-echo Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents('Go')->render();
 ```
-Output: `<a href="/path/to/go" target="_blank" class="btn btn-primary">Go</a>`
+<div id="some-css-class" style="font-size: 2em;">Example &lt;div&gt; tag with class &amp; style attributes.</div>
+```
+*The above output are not syntax highlighted to properly display the contents escaped by the `htmlspecialchars` function.*
+
+### Various Coding Style
+
+Tags may be rendered in different ways to fit into different scenarios.
+
+```php
+// Spell out everything if you care about who read your code.
+$a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
+
+// When working with structural data like a data model.
+$a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
+
+// Code a little less with tailor-made creator-function.
+$a3 = Anchor::create('/go/3', 'Go 3', '_blank');
+
+echo implode(PHP_EOL, [$a1->render(), $a2->render(), $a3->render()]);
+```
+```html
+<a href="/go/1" target="_blank">Go 1</a>
+<a href="/go/2" target="_blank">Go 2</a>
+<a href="/go/3" target="_blank">Go 3</a>
+```
 
 ### Nested
 ```php
@@ -36,7 +56,9 @@ $tag = Tag::make('div')->class('parent')->contents(
 );
 echo $tag->render();
 ```
-Output: `<div class="parent"><p id="child1">Regular</p><p id="child2"><span><strong>Bold Face</strong></span></p></div>`
+```html
+<div class="parent"><p id="child1">Regular</p><p id="child2"><span><strong>Bold Face</strong></span></p></div>
+```
 
 ### Compound Tag Using Contents Extensions
 
@@ -77,9 +99,11 @@ class DialogBox extends TagAbstract
 
 echo DialogBox::create('Some message.', 'Notice', 'OK')->render();
 ```
-Output: `<div class="dialog-box"><h4>Notice</h4><p>Some message.</p><button>OK</button></div>`
+```html
+<div class="dialog-box"><h4>Notice</h4><p>Some message.</p><button>OK</button></div>
+```
 
-### HTML Comment
+### Comment
 ```php
 echo Comment::make()
     ->contents('Comment ignores attributes set.')
@@ -88,35 +112,14 @@ echo Comment::make()
     ->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'))
     ->render();
 ```
-Output: `<!-- Comment ignores attributes set.<div>Nested tag is fine.</div><!-- Nested comment ending brace is escaped. --&gt; -->`
+```
+<!-- Comment ignores attributes set.<div>Nested tag is fine.</div><!-- Nested comment ending brace is escaped. --&gt; -->
+```
+*The above output are not syntax highlighted to properly display the contents escaped by the `htmlspecialchars` function.*
 
 ### More Examples
 - See [`Demo::class`](src/Demo/Demo.php) for more examples.
 - Run `php demo/demo.php` for demonstration in CLI.
-
-## Multiple Code Styles
-
-A tag could be rendering in several ways to fit in different needs. 
-
-```php
-// Spell out everything if you care about who read your code.
-$a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
-
-// When there is structural data (e.g. a data model), input attributes array maybe a good choice.
-$a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
-
-// To code a little less.
-$a3 = Anchor::create('/go/3', 'Go 3', '_blank');
-
-echo implode(PHP_EOL, [$a1->render(), $a2->render(), $a3->render()]);
-```
-Output:
-```html
-<a href="/go/1" target="_blank">Go 1</a>
-<a href="/go/2" target="_blank">Go  to fit in different needs>
-<a href="/go/3" target="_blank">Go 3</a> in
-``fferent needs`
- to fit di
 
 ## Limitations
 1. `<script>` tag is not supported, obviously because of the security concerns.

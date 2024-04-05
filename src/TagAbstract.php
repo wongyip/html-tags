@@ -15,6 +15,10 @@ use Wongyip\HTML\Traits\CssStyle;
  * Attributes Get-setters
  * @method string|static id(string|null $value = null)
  * @method string|static name(string|null $value = null)
+ *
+ * Properties Get-setters
+ * @property string $innerHTML
+ * @property string $innerText
  */
 abstract class TagAbstract
 {
@@ -139,6 +143,22 @@ abstract class TagAbstract
         }
         // Get property.
         return $this->$name;
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     * @throws Exception
+     */
+    public function __get(string $name)
+    {
+        switch ($name) {
+            case 'innerHTML':
+                return $this->contentsRendered();
+            case 'innerText':
+                return strip_tags($this->contentsRendered());
+        }
+        throw new Exception(sprintf('Undefined property %s.', $name));
     }
 
     /**
