@@ -5,7 +5,13 @@ namespace Wongyip\HTML\Demo;
 use Throwable;
 use Wongyip\HTML\Anchor;
 use Wongyip\HTML\Comment;
+use Wongyip\HTML\Table;
 use Wongyip\HTML\Tag;
+use Wongyip\HTML\TBody;
+use Wongyip\HTML\TD;
+use Wongyip\HTML\TH;
+use Wongyip\HTML\THead;
+use Wongyip\HTML\TR;
 use Wongyip\HTML\Utils\Output;
 
 class Demo
@@ -199,6 +205,30 @@ class Demo
 
         echo PHP_EOL;
     }
+
+
+    /**
+     * @return void
+     */
+    public static function table(): void
+    {
+        $code = <<<CODE
+        EDIT...
+        CODE;
+
+        $tag = Table::create(
+            THead::create(TR::create(TH::create('Header 1'), TH::create('Headee 2'))),
+            TBody::create(TR::create(TD::create('Data 1'), TD::create('Data 2'))),
+            'Test Table'
+        );
+
+
+        new Demo(
+            $code,
+            $tag->render()
+        );
+    }
+
 
     /**
      * @return void
