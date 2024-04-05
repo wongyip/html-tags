@@ -54,8 +54,25 @@ class Anchor extends TagAbstract
      *
      * @return array|string[]
      */
-    protected function addAttrs(): array
+    public function addAttrs(): array
     {
-        return ['href', 'title', 'target'];
+        return ['href', 'target', 'title'];
     }
+
+    /**
+     * Create an Anchor tag.
+     *
+     * @param string $href
+     * @param string $caption
+     * @param string|null $target
+     * @param string|null $title
+     * @return Anchor
+     */
+    public static function create(string $href, string $caption, string $target = null, string $title = null): Anchor
+    {
+        return Anchor::make()
+            ->attributes(compact('href', 'target', 'title'))
+            ->contents($caption);
+    }
+
 }

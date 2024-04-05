@@ -16,21 +16,39 @@ class Demo
     }
 
     /**
-     * One-line syntax.
-     *
      * @return void
      */
     public static function anchor(): void
     {
+        $code = <<<CODE
+        // Spell out everything if you care about who read your code.
+        \$a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
+
+        // When there is structural data (e.g. a data model), input attributes array maybe a good choice.
+        \$a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
+
+        // Code a little less.
+        \$a3 = Anchor::create('/go/3', 'Go 3', '_blank');
+
+        echo implode(PHP_EOL, [\$a1->render(), \$a2->render(), \$a3->render()]);
+        CODE;
+
+        // Spell out everything if you care about who read your code.
+        $a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
+
+        // When there is structural data (e.g. a data model), input attributes array maybe a good choice.
+        $a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
+
+        // To code a little less.
+        $a3 = Anchor::create('/go/3', 'Go 3', '_blank');
+
         new Demo(
-            "Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents(Tag::make('span')->contents('Go')->style('color: green;'))->render()",
-            Anchor::make()->href('/path/to/go')->targetBlank()->classAdd('btn', 'btn-primary')->contents(Tag::make('span')->contents('Go')->style('color: green;'))->render()
+            $code,
+            implode(PHP_EOL, [$a1->render(), $a2->render(), $a3->render()])
         );
     }
 
     /**
-     * Set multiple attributes at once.
-     *
      * @return void
      */
     public static function attributes(): void
@@ -64,8 +82,6 @@ class Demo
     }
 
     /**
-     * Render a self-closing tag.
-     *
      * @return void
      */
     public static function selfClosingTag(): void
@@ -77,36 +93,26 @@ class Demo
     }
 
     /**
-     * Contents manipulation.
-     *
      * @return void
      */
     public static function comment(): void
     {
         $code = <<<CODE
-        \$tag = Comment::make()->contents('Comment ignores attributes set.')->class('ignored');
-        \$tag->contentsAppend(Tag::make('div')->contents('Nested tag is fine.'));
-        \$tag->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'));
-        echo \$tag->render();
+        echo Comment::make()
+            ->contents('Comment ignores attributes set.')
+            ->class('ignored')
+            ->contentsAppend(Tag::make('div')->contents('Nested tag is fine.'))
+            ->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'))
+            ->render();
         CODE;
-
-        $tag = Comment::make()->contents('Comment ignores attributes set.')->class('ignored');
-        $tag->contentsAppend(Tag::make('div')->contents('Nested tag is fine.'));
-        $tag->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'));
-
-        new Demo($code, $tag->render());
-    }
-
-    /**
-     * Contents manipulation.
-     *
-     * @return void
-     */
-    public static function contents(): void
-    {
         new Demo(
-            "echo Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->render();",
-            Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->render()
+            $code,
+            Comment::make()
+                ->contents('Comment ignores attributes set.')
+                ->class('ignored')
+                ->contentsAppend(Tag::make('div')->contents('Nested tag is fine.'))
+                ->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'))
+                ->render()
         );
     }
 
@@ -124,8 +130,17 @@ class Demo
     }
 
     /**
-     * Errors
-     *
+     * @return void
+     */
+    public static function contents(): void
+    {
+        new Demo(
+            "echo Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->render();",
+            Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->render()
+        );
+    }
+
+    /**
      * @return void
      */
     public static function errors(): void
@@ -161,8 +176,6 @@ class Demo
     }
 
     /**
-     * Demo about tagName.
-     *
      * @return void
      */
     public static function tagName(): void

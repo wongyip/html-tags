@@ -23,10 +23,13 @@ trait CssClass
      * @param string|array|null $class
      * @return string|static
      */
-    public function class(string|array $class = null): string|static
+    public function class(string|array ...$class): string|static
     {
-        if ($class) {
-            $this->cssClasses = is_array($class) ? $class : explode(' ', $class);
+        if (!empty($class)) {
+            $this->cssClasses = [];
+            foreach ($class as $c) {
+                $this->cssClasses = array_merge($this->cssClasses, is_array($c) ? $c : explode(' ', $c));
+            }
             return $this;
         }
         return implode(' ', $this->classes());

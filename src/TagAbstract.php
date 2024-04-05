@@ -4,7 +4,7 @@ namespace Wongyip\HTML;
 
 use Exception;
 use ReflectionClass;
-use Throwable;
+use Wongyip\HTML\Traits\Attributes;
 use Wongyip\HTML\Traits\Contents;
 use Wongyip\HTML\Traits\CssClass;
 use Wongyip\HTML\Traits\CssStyle;
@@ -15,13 +15,10 @@ use Wongyip\HTML\Traits\CssStyle;
  * Attributes Get-setters
  * @method string|static id(string|null $value = null)
  * @method string|static name(string|null $value = null)
- *
- * Properties Get-setters
- * -- None at the moment.
  */
 abstract class TagAbstract
 {
-    use Contents, CssClass, CssStyle;
+    use Attributes, Contents, CssClass, CssStyle;
 
     /**
      * Ultimate default tagName.
@@ -35,13 +32,6 @@ abstract class TagAbstract
      * @var array|string[]
      */
     protected array $__staticProps;
-    /**
-     * Internal storage of attributes listed in $tagAttrs, which have value set
-     * already (excluding attributes listed in $complexAttrs).
-     *
-     * @var array|string[]
-     */
-    protected array $attrsStore = [];
     /**
      * These are attributes present in all tags.
      *
@@ -157,45 +147,7 @@ abstract class TagAbstract
      *
      * @return array|string[]
      */
-    abstract protected function addAttrs(): array;
-
-    /**
-     * Get or set all tag attributes.
-     *
-     * Notes:
-     *  1. Not a direct get-setter.
-     *  2. Unrecognized attributes are ignored (not in $tagAttrs, nor $complexAttrs).
-     *  3. Tag "contents" is NOT an attribute.
-     *
-     * @param array|null $attributes
-     * @return array|static
-     */
-    public function attributes(array $attributes = null) : array|static
-    {
-        if ($attributes) {
-            foreach ($attributes as $setter => $val) {
-                try {
-                    if (in_array($setter, $this->tagAttrs) || in_array($setter, static::$complexAttrs)){
-                        $this->$setter($val);
-                    }
-                    else {
-                        error_log(sprintf('TagAbstract.attributes() - Unrecognized attribute "%s"', $setter));
-                    }
-                }
-                catch (Throwable $e) {
-                    error_log(sprintf('TagAbstract.attributes() - Error: %s (%d)', $e->getMessage(), $e->getCode()));
-                }
-            }
-            return $this;
-        }
-        $attributes = $this->attrsStore;
-        foreach (static::$complexAttrs as $getter) {
-            if ($val = $this->$getter()) {
-                $attributes[$getter] = $val;
-            }
-        }
-        return $attributes;
-    }
+    abstract public function addAttrs(): array;
 
     /**
      * Closing tag.
@@ -227,7 +179,7 @@ abstract class TagAbstract
      *
      * Notes:
      *  1. Overwrite class-defined tagName if $tagName is provided.
-     *  2. Merge in to commonAttrs and addAttrs if $extraAttrs is provided.
+     *  2. Merge into commonAttrs and addAttrs if $extraAttrs is provided.
      *
      * @param string|null $tagName
      * @param array|null $extraAttrs

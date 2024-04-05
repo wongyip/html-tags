@@ -23,7 +23,7 @@ class Comment extends TagAbstract
      * @return array|string[]
      * @deprecated
      */
-    protected function addAttrs(): array
+    public function addAttrs(): array
     {
         return [];
     }

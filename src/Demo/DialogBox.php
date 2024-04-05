@@ -58,7 +58,7 @@ class DialogBox extends TagAbstract
         return [$this->button];
     }
 
-    protected function addAttrs(): array
+    public function addAttrs(): array
     {
         return [];
     }

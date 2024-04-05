@@ -1,6 +1,6 @@
 # HTML Tags Renderer
 
-An intuitive and simple HTML renderer for generic purpose.
+A simple HTML renderer with fluent interface for generic purpose.
 
 ## Installation
 ```sh
@@ -81,20 +81,42 @@ Output: `<div class="dialog-box"><h4>Notice</h4><p>Some message.</p><button>OK</
 
 ### HTML Comment
 ```php
-$tag = Comment::make()
-    ->contents('Comment tag ignores the tagName property & all other attributes. ')
-    ->tagName('div')
-    ->class('ignored-class')
-    ->contentsAppend(
-        Tag::make('div')->contents('Nested tag is allowed in comment.')
-    );
-echo $tga->render();
+echo Comment::make()
+    ->contents('Comment ignores attributes set.')
+    ->class('ignored')
+    ->contentsAppend(Tag::make('div')->contents('Nested tag is fine.'))
+    ->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'))
+    ->render();
 ```
-Output: `<!-- Comment tag ignores the tagName property &amp; all other attributes. <div>Nested tag is allowed in comment.</div> -->`
+Output: `<!-- Comment ignores attributes set.<div>Nested tag is fine.</div><!-- Nested comment ending brace is escaped. --&gt; -->`
 
 ### More Examples
-- See [`Demo::class`](src/Demo.php) for more examples.
+- See [`Demo::class`](src/Demo/Demo.php) for more examples.
 - Run `php demo/demo.php` for demonstration in CLI.
+
+## Multiple Code Styles
+
+A tag could be rendering in several ways to fit in different needs. 
+
+```php
+// Spell out everything if you care about who read your code.
+$a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
+
+// When there is structural data (e.g. a data model), input attributes array maybe a good choice.
+$a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
+
+// To code a little less.
+$a3 = Anchor::create('/go/3', 'Go 3', '_blank');
+
+echo implode(PHP_EOL, [$a1->render(), $a2->render(), $a3->render()]);
+```
+Output:
+```html
+<a href="/go/1" target="_blank">Go 1</a>
+<a href="/go/2" target="_blank">Go  to fit in different needs>
+<a href="/go/3" target="_blank">Go 3</a> in
+``fferent needs`
+ to fit di
 
 ## Limitations
 1. `<script>` tag is not supported, obviously because of the security concerns.

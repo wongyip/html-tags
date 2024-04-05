@@ -24,7 +24,7 @@ class Tag extends TagAbstract
      *
      * @return array|string[]
      */
-    protected function addAttrs(): array
+    public function addAttrs(): array
     {
         return [];
     }
