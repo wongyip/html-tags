@@ -2,26 +2,28 @@
 
 namespace Wongyip\HTML;
 
-use Wongyip\Laravel\Renderable\Components\TableBody;
-use Wongyip\Laravel\Renderable\Components\TableHead;
-use Wongyip\Laravel\Renderable\Renderable;
-
 /**
- * Table Body
+ * Table (Single set of caption + head + body only.).
  */
 class Table extends TagAbstract
 {
     protected string $tagName = 'table';
 
     /**
+     * Table Body.
+     *
      * @var TBody|TagAbstract
      */
     public TBody|TagAbstract $body;
     /**
+     * Table Caption
+     *
      * @var TagAbstract
      */
     public TagAbstract $caption;
     /**
+     * Table Head
+     *
      * @var THead|TagAbstract
      */
     public THead|TagAbstract $head;

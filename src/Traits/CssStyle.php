@@ -25,7 +25,7 @@ trait CssStyle
      */
     public function style(string $style = null): string|static
     {
-        if ($style) {
+        if (is_string($style)) {
             $this->cssRules = CSS::parseStyleRules($style);
             return $this;
         }

@@ -126,3 +126,8 @@ echo Comment::make()
 2. `<style>` tag is neither supported as `htmlspecialchars()` might unintentionally break the styles.
 3. `<!doctype>` tag is not supported also.
 4. Web content accessibility is not addressed, yet.
+
+## Format or Pretty-print HTML Tags
+The package output everything in a single line, if formatted HTML is needed, you may utilize the
+[HTML Beautify](https://github.com/wongyip/html-beautify") package to format the output of this
+package.

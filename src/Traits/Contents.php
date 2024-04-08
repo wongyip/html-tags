@@ -61,6 +61,20 @@ trait Contents
     }
 
     /**
+     * Remove all attached contents.
+     *
+     * N.B. This method should be extended if
+     *
+     * @return static
+     */
+    public function contentsEmpty(): static
+    {
+        $this->contents = [];
+        $this->contentsEmptyHook();
+        return $this;
+    }
+
+    /**
      * Prepend contents to the $contents array.
      *
      * @param string|TagAbstract ...$contents

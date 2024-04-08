@@ -8,6 +8,17 @@ namespace Wongyip\HTML\Traits;
 trait ContentsExtensions
 {
     /**
+     * Will be called by the contentsEmpty() method. Replace this method to
+     * clear customized contents.
+     *
+     * @return void
+     */
+    protected function contentsEmptyHook(): void
+    {
+        // For child class only.
+    }
+
+    /**
      * Return contents to be rendered before the contents attached to the tag.
      *
      * @return array

@@ -10,6 +10,8 @@ class TR extends TagAbstract
     protected string $tagName = 'tr';
 
     /**
+     * Table cells.
+     *
      * @var array|TD[]|TH|TagAbstract[]
      */
     protected array $cells = [];
@@ -23,6 +25,8 @@ class TR extends TagAbstract
     }
 
     /**
+     * Append table cells (TD/TH).
+     *
      * @param TH|TD|TagAbstract ...$cells
      * @return static
      */
@@ -30,6 +34,28 @@ class TR extends TagAbstract
     {
         $this->cells = array_merge($this->cells, $cells);
         return $this;
+    }
+
+    /**
+     * Get table cell by index (array key).
+     *
+     * @param int|string $key
+     * @return TD|TH|TagAbstract|null
+     */
+    public function cell(int|string $key): TD|TH|TagAbstract|null
+    {
+        if (key_exists($key, $this->cells)) {
+            return $this->cells[$key];
+        }
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function contentsEmptyHook(): void
+    {
+        $this->cells = [];
     }
 
     /**
@@ -41,6 +67,8 @@ class TR extends TagAbstract
     }
 
     /**
+     * Create a table row (TR) with cells (TD/TH).
+     *
      * @param TH|TD|TagAbstract ...$cells
      * @return static
      */

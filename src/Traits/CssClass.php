@@ -20,14 +20,15 @@ trait CssClass
      * Get or set (replace) the class attribute. Setter accepts array or
      * space-seperated class list.
      *
-     * @param string|array|null $class
+     * @param string|array|null $classes
      * @return string|static
      */
-    public function class(string|array ...$class): string|static
+    public function class(string|array ...$classes): string|static
     {
-        if (!empty($class)) {
+        // Set
+        if (!empty($classes)) {
             $this->cssClasses = [];
-            foreach ($class as $c) {
+            foreach ($classes as $c) {
                 $this->cssClasses = array_merge($this->cssClasses, is_array($c) ? $c : explode(' ', $c));
             }
             return $this;
