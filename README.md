@@ -2,6 +2,13 @@
 
 A simple HTML renderer with fluent interface for generic purpose.
 
+## READ THIS
+This package doesn't take care of security at all, if your application generates HTML from dynamic
+data, especially user-contributed contents, be very careful to avoid something like XSS attack.
+You should employ your own favour of HTML filtering tool, e.g. [HTML Purifier](https://github.com/ezyang/htmlpurifier).
+
+**The World is Dangerous, Always Sanitize Generated HTML.**
+
 ## Installation
 ```sh
 composer require wongyip/html-tags
@@ -131,3 +138,6 @@ echo Comment::make()
 The package output everything in a single line, if formatted HTML is needed, you may utilize the
 [HTML Beautify](https://github.com/wongyip/html-beautify") package to format the output of this
 package.
+
+---
+**Always Sanitize Generated HTML.**
