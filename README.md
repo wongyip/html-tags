@@ -136,7 +136,7 @@ echo Comment::make()
 
 ## Format or Pretty-print HTML Tags
 The package output everything in a single line, if formatted HTML is needed, you may utilize the
-[HTML Beautify](https://github.com/wongyip/html-beautify") package to format the output of this
+[HTML Beautify](https://github.com/wongyip/html-beautify) package to format the output of this
 package.
 
 ---
