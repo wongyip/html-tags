@@ -18,9 +18,9 @@ class Table extends TagAbstract
     /**
      * Table Caption
      *
-     * @var TagAbstract
+     * @var Caption|TagAbstract
      */
-    public TagAbstract $caption;
+    public Caption|TagAbstract $caption;
     /**
      * Table Head
      *
@@ -37,16 +37,19 @@ class Table extends TagAbstract
     }
 
     /**
-     * Get $caption tag, or set its content text if $caption not empty.
+     * Get or set caption tag. Setter replace the current if input is a Caption
+     * tag, otherwise a Caption tab will be created with $content as contents.
      *
-     * @param TagAbstract|string|null $caption
-     * @return TagAbstract|null|static
+     * @param Caption|TagAbstract|string|null $contents
+     * @return Caption|null|static
      */
-    public function caption(TagAbstract|string $caption = null): Tag|null|static
+    public function caption(Caption|TagAbstract|string $contents = null, string $captionSide = null): Tag|null|static
     {
         // Setter
-        if (!empty($caption)) {
-            $this->caption = Tag::make('caption')->contents($caption);
+        if (!empty($contents)) {
+            $this->caption = is_a($contents, Caption::class)
+                ? $contents
+                : Caption::create($contents, $captionSide);
             return $this;
         }
         return $this->caption ?? null;
@@ -67,11 +70,7 @@ class Table extends TagAbstract
     public function contentsPrefixed(): array
     {
         // In rendering order.
-        $prefixed = [];
-        if (isset($this->caption)) $prefixed[] = $this->caption;
-        if (isset($this->head)) $prefixed[] = $this->head;
-        if (isset($this->body)) $prefixed[] = $this->body;
-        return $prefixed;
+        return array_filter([$this->caption ?? '', $this->head ?? '', $this->body ?? '',]);
     }
 
     /**

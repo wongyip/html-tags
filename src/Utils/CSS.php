@@ -5,22 +5,22 @@ namespace Wongyip\HTML\Utils;
 class CSS
 {
     /**
-     * Convert CSS style string to array of rules ('property: value;' strings).
+     * Convert array of CSS declarations to CSS style string.
      *
      * e.g. ['width: 100%;', 'foo: bar;'] >>> 'width: 100%; foo: bar;'
      *
      * N.B. No validation and no error reporting.
      *
-     * @param array $rules
+     * @param array $declarations
      * @return string
      */
-    static function parseRulesStyle(array $rules): string
+    public static function parseDeclarationsStyle(array $declarations): string
     {
-        return implode(' ', $rules);
+        return implode(' ', $declarations);
     }
 
     /**
-     * Convert CSS style string to array of rules ('property: value;' strings).
+     * Convert CSS style string to array of CSS declarations.
      *
      * e.g. 'width: 100%; foo: bar;' >>> ['width: 100%;', 'foo: bar;']
      *
@@ -30,7 +30,7 @@ class CSS
      * @param array|null $errors
      * @return array
      */
-    static function parseStyleRules(string $style, array &$errors = null): array
+    public static function parseStyleDeclarations(string $style, array &$errors = null): array
     {
         $rules = [];
         $errors = [];
@@ -56,5 +56,55 @@ class CSS
             }
         }
         return $rules;
+    }
+
+    /**
+     * Dedupe by matching declaration.
+     *
+     * E.g. ['a: 1;', 'b: 2;', 'c: 3;', 'b: 2;']
+     * Get: ['a: 1;', 'c: 3;', 'b: 2;']
+     *
+     * @param array $declarations
+     * @return array
+     */
+    public static function dedupeDeclarations(array $declarations): array
+    {
+        $results = [];
+        foreach (array_reverse($declarations) as $declaration) {
+            if (!in_array($declaration, $results)) {
+                $results[] = $declaration;
+            }
+        }
+        return array_reverse($results);
+    }
+
+    /**
+     * Dedupe by matching property.
+     *
+     * E.g. ['a: 1;', 'b: 2;', 'b: 3;', 'b: 4;']
+     * Get: ['a: 1;', 'b: 4;']
+     *
+     * @param array $declarations
+     * @return array
+     */
+    public static function dedupeProperties(array $declarations): array
+    {
+        $results = [];
+        $properties = [];
+        foreach (array_reverse($declarations) as $declaration) {
+            if (str_contains($declaration, ':')) {
+                list ($property) = explode(':', $declaration);
+                if (!in_array($property, $properties)) {
+                    $results[] = $declaration;
+                    $properties[] = $property;
+                }
+            }
+            else {
+                // @todo Declaration is invalid and preserved now, change needed?
+                $results[] = $declaration;
+                $properties[] = $declaration;
+            }
+        }
+        return array_reverse($results);
     }
 }

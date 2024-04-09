@@ -15,35 +15,40 @@ trait CssStyle
      *
      * @var array
      */
-    protected array $cssRules = [];
+    protected array $cssDeclarations = [];
 
     /**
-     * Get or set (replace) the style attribute.
+     * Get or set (replace) the style attribute. Setter take one or two arguments,
+     * where for example, style('color: brown;') and style('color', 'brown'), are
+     * identical in function.
      *
-     * @param string|null $style
+     * @param string|null $style Or CSS property.
+     * @param string|null $value Effective for setter only.
      * @return string|static
      */
-    public function style(string $style = null): string|static
+    public function style(string $style = null, string $value = null): string|static
     {
-        if (is_string($style)) {
-            $this->cssRules = CSS::parseStyleRules($style);
-            return $this;
+        // Get
+        if (is_null($style)) {
+            // Take declarations processed by stylesHook().
+            return CSS::parseDeclarationsStyle($this->styles());
         }
-        return CSS::parseRulesStyle($this->styles());
+        $this->cssDeclarations = CSS::parseStyleDeclarations($value ? "$style: $value;" : $style);
+        return $this;
     }
 
     /**
-     * Output all CSS style as a rules array.
+     * Output all style as an array of CSS declarations.
      *
      * @return string[]|array
      */
     public function styles(): array
     {
-        return $this->stylesHook($this->cssRules);
+        return $this->stylesHook($this->cssDeclarations);
     }
 
     /**
-     * [Extension] Modify the CSS styles array before output.
+     * [Extension] Modify the CSS declarations array before output.
      *
      * @param string[]|array $rules
      * @return string[]|array
@@ -69,8 +74,8 @@ trait CssStyle
     }
 
     /**
-     * Append rules to current $rules array, input accepts string(s) in
-     * 'rule: style;' format (semicolon is optional).
+     * Append CSS declarations, accepts one or more semicolon separated
+     * declarations string, .e.g 'color: red; width: 10px'.
      *
      * @param string ...$rules
      * @return static
@@ -79,15 +84,15 @@ trait CssStyle
     {
         $appends = [];
         foreach ($rules as $rule) {
-            $appends = array_merge($appends, CSS::parseStyleRules($rule));
+            $appends = array_merge($appends, CSS::parseStyleDeclarations($rule));
         }
-        $this->cssRules = array_merge($this->cssRules, $appends);
+        $this->cssDeclarations = array_merge($this->cssDeclarations, $appends);
         return $this;
     }
 
     /**
-     * Prepend rules to current $rules array, input accepts string(s) in
-     * 'rule: style;' format (semicolon is optional).
+     * Prepend CSS declarations, accepts one or more semicolon separated
+     * declarations string, .e.g 'color: red; width: 10px'.
      *
      * @param string ...$rules
      * @return static
@@ -96,9 +101,9 @@ trait CssStyle
     {
         $prepends = [];
         foreach ($rules as $rule) {
-            $prepends = array_merge($prepends, CSS::parseStyleRules($rule));
+            $prepends = array_merge($prepends, CSS::parseStyleDeclarations($rule));
         }
-        $this->cssRules = array_merge($prepends, $this->cssRules);
+        $this->cssDeclarations = array_merge($prepends, $this->cssDeclarations);
         return $this;
     }
 
@@ -109,7 +114,7 @@ trait CssStyle
      */
     public function styleEmpty(): static
     {
-        $this->cssRules = [];
+        $this->cssDeclarations = [];
         return $this;
     }
 
@@ -123,12 +128,12 @@ trait CssStyle
     public function styleUnset(string $property): static
     {
         $modified = [];
-        foreach ($this->cssRules as $rule) {
+        foreach ($this->cssDeclarations as $rule) {
             if (!str_starts_with($rule, "$property:")) {
                 $modified[] = $rule;
             }
         }
-        $this->cssRules = $modified;
+        $this->cssDeclarations = $modified;
         return $this;
     }
 }
