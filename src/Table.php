@@ -67,7 +67,11 @@ class Table extends TagAbstract
     public function contentsPrefixed(): array
     {
         // In rendering order.
-        return [$this->caption ?? '', $this->head, $this->body];
+        $prefixed = [];
+        if (isset($this->caption)) $prefixed[] = $this->caption;
+        if (isset($this->head)) $prefixed[] = $this->head;
+        if (isset($this->body)) $prefixed[] = $this->body;
+        return $prefixed;
     }
 
     /**
