@@ -7,7 +7,7 @@ class RawHTML extends TagAbstract
     /**
      * @var string
      */
-    private string $rawHTML = '';
+    protected string $rawHTML = '';
 
     /**
      * @inheritdoc
@@ -40,6 +40,30 @@ class RawHTML extends TagAbstract
     {
         $tag = static::make();
         $tag->rawHTML = $html;
+        return $tag;
+    }
+
+    /**
+     * non-breaking space: \&nbsp;
+     *
+     * @return static
+     */
+    public static function NBSP(): static
+    {
+        $tag = static::make();
+        $tag->rawHTML = '&nbsp;';
+        return $tag;
+    }
+
+    /**
+     * zero-width non-joiner: \&zwnj;
+     *
+     * @return static
+     */
+    public static function ZWNJ(): static
+    {
+        $tag = static::make();
+        $tag->rawHTML = '&zwnj;';
         return $tag;
     }
 }
