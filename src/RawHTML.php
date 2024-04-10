@@ -23,9 +23,10 @@ class RawHTML extends TagAbstract
      * CAUTION: beware of XSS attack, always sanitized before output.
      *
      * @param array|null $adHocAttrs
+     * @param array|null $adHocOptions
      * @return string
      */
-    public function render(array $adHocAttrs = null): string
+    public function render(array $adHocAttrs = null, array $adHocOptions = null): string
     {
         return $this->rawHTML;
     }

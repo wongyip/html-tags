@@ -2,8 +2,6 @@
 
 namespace Wongyip\HTML;
 
-use Exception;
-
 /**
  * A table caption.
  */
