@@ -1,8 +1,17 @@
 # HTML Tags Renderer
 
-A simple HTML renderer with fluent interface for generic purpose.
+A simple HTML tags renderer with fluent interface.
+- NOT a rendering engine.
+- Targeted to work with dynamic components that require programmatic customizations.
 
-## READ THIS
+## Use Case
+For example, you may use this to generate an ad hoc notice above the usual content of your website,
+where the notice is not always needed, and something else could also be there for other purposes.
+With this package, there is no need to bloat too much of logic into the template for some most likely
+not rendered components. This keep you template clean and also keep certain components free from the
+template engine. That could be a big help when you're needed to switch your rendering engine.
+
+## Read This First
 This package doesn't take care of security at all, if your application generates HTML from dynamic
 data, especially user-contributed contents, be very careful to avoid something like XSS attack.
 You should employ your own favour of HTML filtering tool, e.g. [HTML Purifier](https://github.com/ezyang/htmlpurifier).
