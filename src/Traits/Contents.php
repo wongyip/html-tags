@@ -104,8 +104,8 @@ trait Contents
         foreach ($contents as $content) {
             // Escape text
             $rendered .= is_string($content) ? htmlspecialchars($content)
-                // Escape comment's ending brace.
-                : (is_a($content, Comment::class) ? preg_replace("/-->$/", '--&gt;', $content->render())
+                // Escape ending brace in case of nested comment.
+                : (is_a($this, Comment::class) && is_a($content, Comment::class) ? preg_replace("/-->$/", '--&gt;', $content->render())
                     // Render nested tag.
                     : (is_a($content, TagAbstract::class) ? $content->render() : '')
                 );
