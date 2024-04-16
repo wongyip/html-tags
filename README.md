@@ -1,20 +1,12 @@
 # HTML Tags Renderer
-
-A simple HTML tags renderer with fluent interface.
-- NOT a rendering engine.
-- Targeted to work with dynamic components that require programmatic customizations.
-
-## Use Case
-For example, you may use this to generate an ad hoc notice above the usual content of your website,
-where the notice is not always needed, and something else could also be there for other purposes.
-With this package, there is no need to bloat too much of logic into the template for some most likely
-not rendered components. This keep you template clean and also keep certain components free from the
-template engine. That could be a big help when you're needed to switch your rendering engine.
+A simple HTML renderer with fluent interface to generate dynamic components. Those generated tags are
+self-rendered, so it is not necessary to build extra logic into templates to handle them, which helps
+to reduce templates' complexity and also make certain components independent of template engines.  
 
 ## Read This First
-This package doesn't take care of security at all, if your application generates HTML from dynamic
-data, especially user-contributed contents, be very careful to avoid something like XSS attack.
-You should employ your own favour of HTML filtering tool, e.g. [HTML Purifier](https://github.com/ezyang/htmlpurifier).
+This package doesn't take cares of security at all, if your application generates HTML from dynamic
+data, especially user-contributed contents, be very careful to avoid something like XSS attack. You
+should always employ your own favour of HTML filtering tool, e.g. [HTML Purifier](https://github.com/ezyang/htmlpurifier).
 
 **The World is Dangerous, Always Sanitize Generated HTML.**
 
@@ -138,11 +130,12 @@ echo Comment::make()
 - Run `php demo/demo.php` for demonstration in CLI.
 
 ## Limitations
-1. `<script>` tag is not supported, obviously because of the security concerns.
-2. `<style>` tag is neither supported as `htmlspecialchars()` might unintentionally break the styles.
-3. `<!doctype>` tag is not supported also.
-4. Web content accessibility is not addressed, yet.
-5. Everything is output in a single line, if formatted HTML is needed, give [HTML Beautify](https://github.com/wongyip/html-beautify) a try.
+1. This is NOT a rendering engine.
+2. `<script>` tag is not supported, obviously because of the security concerns.
+3. `<style>` tag is neither supported as `htmlspecialchars()` might unintentionally break the styles.
+4. `<!doctype>` tag is not supported also.
+5. Web content accessibility is not addressed, yet.
+6. Tags are rendered into a single line, if formatted HTML is needed, give [HTML Beautify](https://github.com/wongyip/html-beautify) a try.
 
 ---
 **Always Sanitize Generated HTML.**
