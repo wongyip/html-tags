@@ -38,6 +38,91 @@ trait CssStyle
     }
 
     /**
+     * Alias to styleAppend().
+     *
+     * @param string ...$declarations
+     * @return static
+     */
+    public function styleAdd(string ...$declarations): static
+    {
+        return $this->styleAppend(...$declarations);
+    }
+
+    /**
+     * Append CSS declaration(s), accepts one or more semicolon separated
+     * declarations string, .e.g 'color: red; width: 10px'.
+     *
+     * @param string ...$declarations
+     * @return static
+     */
+    public function styleAppend(string ...$declarations): static
+    {
+        $appends = [];
+        foreach ($declarations as $declaration) {
+            $appends = array_merge($appends, CSS::parseStyleDeclarations($declaration));
+        }
+        $this->cssDeclarations = array_merge($this->cssDeclarations, $appends);
+        return $this;
+    }
+
+    /**
+     * Alias to stylesEmpty().
+     *
+     * @return static
+     */
+    public function styleEmpty(): static
+    {
+        return $this->stylesEmpty();
+    }
+
+    /**
+     * Prepend CSS declaration(s), accepts one or more semicolon separated
+     * declarations string, .e.g 'color: red; width: 10px'.
+     *
+     * @param string ...$declarations
+     * @return static
+     */
+    public function stylePrepend(string ...$declarations): static
+    {
+        $prepends = [];
+        foreach ($declarations as $declaration) {
+            $prepends = array_merge($prepends, CSS::parseStyleDeclarations($declaration));
+        }
+        $this->cssDeclarations = array_merge($prepends, $this->cssDeclarations);
+        return $this;
+    }
+
+    /**
+     * Get of set the value of particular CSS property. Getter returns the last
+     * value if multiple declarations is found, return null if CSS property has
+     * no declaration. Setter default append declaration, replace existing(s) if
+     * $unsetExisting is TRUE.
+     *
+     * @param string $property
+     * @param string|null $value
+     * @param bool $unsetExisting Unset existing declarations of the property.
+     * @return string|null|static
+     */
+    function styleProperty(string $property, string $value = null, bool $unsetExisting = false): string|null|static
+    {
+        // Get
+        if (is_null($value)) {
+            foreach (array_reverse($this->cssDeclarations) as $declaration) {
+                if (str_starts_with($declaration, "$property:")) {
+                    return trim(preg_replace("/.*:/", '', trim(trim($declaration), ';')));
+                }
+            }
+            return null;
+        }
+        // Set
+        if ($unsetExisting) {
+            $this->styleUnset($property);
+        }
+        $this->styleAppend(sprintf('%s: %s;', $property, $value));
+        return $this;
+    }
+
+    /**
      * Output all style as an array of CSS declarations.
      *
      * @return string[]|array
@@ -48,79 +133,33 @@ trait CssStyle
     }
 
     /**
-     * [Extension] Modify the CSS declarations array before output.
-     *
-     * @param string[]|array $rules
-     * @return string[]|array
-     */
-    protected function stylesHook(array $rules): array
-    {
-        return $rules;
-        /* e.g.
-        $customRules = ['color: brown;', 'width: 100%;'];
-        return array_merge($rules, $customRules);
-        */
-    }
-
-    /**
-     * Alias to styleAppend().
-     *
-     * @param string ...$rules
-     * @return static
-     */
-    public function styleAdd(string ...$rules): static
-    {
-        return $this->styleAppend(...$rules);
-    }
-
-    /**
-     * Append CSS declarations, accepts one or more semicolon separated
-     * declarations string, .e.g 'color: red; width: 10px'.
-     *
-     * @param string ...$rules
-     * @return static
-     */
-    public function styleAppend(string ...$rules): static
-    {
-        $appends = [];
-        foreach ($rules as $rule) {
-            $appends = array_merge($appends, CSS::parseStyleDeclarations($rule));
-        }
-        $this->cssDeclarations = array_merge($this->cssDeclarations, $appends);
-        return $this;
-    }
-
-    /**
-     * Prepend CSS declarations, accepts one or more semicolon separated
-     * declarations string, .e.g 'color: red; width: 10px'.
-     *
-     * @param string ...$rules
-     * @return static
-     */
-    public function stylePrepend(string ...$rules): static
-    {
-        $prepends = [];
-        foreach ($rules as $rule) {
-            $prepends = array_merge($prepends, CSS::parseStyleDeclarations($rule));
-        }
-        $this->cssDeclarations = array_merge($prepends, $this->cssDeclarations);
-        return $this;
-    }
-
-    /**
-     * Remove ALL rules.
+     * Clear all CSS declarations.
      *
      * @return static
      */
-    public function styleEmpty(): static
+    public function stylesEmpty(): static
     {
         $this->cssDeclarations = [];
         return $this;
     }
 
     /**
-     * Unset all rules of the given property. E.g. styleUnset('border') removes
-     * all elements in $cssRules that start with 'border:'.
+     * [Extension] Modify the CSS declarations array before output.
+     *
+     * @param string[]|array $declarations
+     * @return string[]|array
+     */
+    protected function stylesHook(array $declarations): array
+    {
+        return $declarations;
+        /* e.g.
+        $customizations = ['color: brown;', 'width: 100%;'];
+        return array_merge($declarations, $customizations);
+        */
+    }
+
+    /**
+     * Unset all declarations of the CSS property.
      *
      * @param string $property
      * @return static
@@ -128,9 +167,9 @@ trait CssStyle
     public function styleUnset(string $property): static
     {
         $modified = [];
-        foreach ($this->cssDeclarations as $rule) {
-            if (!str_starts_with($rule, "$property:")) {
-                $modified[] = $rule;
+        foreach ($this->cssDeclarations as $declaration) {
+            if (!str_starts_with($declaration, "$property:")) {
+                $modified[] = $declaration;
             }
         }
         $this->cssDeclarations = $modified;

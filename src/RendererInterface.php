@@ -5,11 +5,11 @@ namespace Wongyip\HTML;
 interface RendererInterface
 {
     /**
-     * Compile the object into HTML tag(s) for rendering.
+     * Compile the object into HTML.
      *
-     * Additional attributes or options may be supplied, and they should be used
-     * once only during the rendering process, neither of them should be stored.
-     * Therefore, the object should be keep intact after rendering.
+     * Additional attributes and options may be supplied for use in the rendering
+     * process, but neither of them will be stored. Therefore, the object will
+     * keep intact after rendering.
      *
      * @param array|null $adHocAttrs
      * @param array|null $adHocOptions

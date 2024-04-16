@@ -12,7 +12,6 @@ class Caption extends TagAbstract
      */
     protected string $tagName = 'caption';
 
-
     /**
      * @inheritdoc
      */
