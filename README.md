@@ -1,7 +1,8 @@
 # HTML Tags Renderer
 A simple HTML renderer with fluent interface to generate dynamic components. Those generated tags are
 self-rendered, so it is not necessary to build extra logic into templates to handle them, which helps
-to reduce templates' complexity and also make certain components independent of template engines.  
+to reduce the complexity of templates and also make certain components independent of template
+engines.  
 
 ## Read This First
 This package doesn't take cares of security at all, if your application generates HTML from dynamic
