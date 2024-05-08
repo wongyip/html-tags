@@ -268,14 +268,20 @@ abstract class TagAbstract implements RendererInterface
      */
     public function tagName(string $tagName = null): string|static
     {
-        $tagName = strtolower($tagName);
+        $tagName = trim(strtolower($tagName));
         // Setter
         if (!empty($tagName)) {
             // Allowed
             if (!in_array($tagName, ['script', 'style'])) {
+                // Standard
                 if (preg_match("/^[a-z][a-z1-6]*\$/", $tagName)) {
                     $this->tagName = $tagName;
                 }
+                // Custom
+                elseif (!preg_match("/\s/", $tagName)) {
+                    $this->tagName = $tagName;
+                }
+                // Invalid
                 else {
                     error_log(sprintf('TagAbstract.tagName() - Error: tagName "%s" is invalid.', $tagName));
                 }
