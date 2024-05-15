@@ -103,7 +103,7 @@ abstract class TagAbstract implements RendererInterface
     /**
      * @param string $name
      * @param array $arguments
-     * @return bool|TagAbstract|null
+     * @return bool|static|null
      * @throws Exception
      */
     public function __call(string $name, array $arguments)
@@ -142,7 +142,7 @@ abstract class TagAbstract implements RendererInterface
             return $this;
         }
         // Get property.
-        return $this->$name;
+        return $this->$name ?? null;
     }
 
     /**
