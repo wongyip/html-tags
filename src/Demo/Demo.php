@@ -5,6 +5,7 @@ namespace Wongyip\HTML\Demo;
 use Throwable;
 use Wongyip\HTML\Anchor;
 use Wongyip\HTML\Comment;
+use Wongyip\HTML\Form;
 use Wongyip\HTML\Table;
 use Wongyip\HTML\Tag;
 use Wongyip\HTML\TBody;
@@ -206,6 +207,16 @@ class Demo
         echo PHP_EOL;
     }
 
+    /**
+     * @return void
+     */
+    public static function form(): void
+    {
+        new Demo(
+            "Form::post('upload.php', 'upload_form', 'green-form big-font')->enableUpload()->render();",
+            Form::post('upload.php', 'upload_form', 'green-form big-font')->enableUpload()->render()
+        );
+    }
 
     /**
      * @return void
