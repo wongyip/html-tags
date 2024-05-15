@@ -71,10 +71,11 @@ class Form extends TagAbstract
      * @param string|null $action Default '', which will submit to the current URL.
      * @param string|null $id Tag ID.
      * @param string|null $class Single CSS class or space-separated classes list.
+     * @return static
      */
     public static function get(string $action = null, string $id = null, string $class = null): static
     {
-        return new Form($action, 'GET', $id, $class);
+        return new static($action, 'GET', $id, $class);
     }
 
     /**
@@ -87,7 +88,7 @@ class Form extends TagAbstract
      */
     public static function make(string $tagName = null, array $extraAttrs = null): static
     {
-        return Form::post();
+        return static::post();
     }
 
     /**
@@ -96,9 +97,10 @@ class Form extends TagAbstract
      * @param string|null $action Default '', which will submit to the current URL.
      * @param string|null $id Tag ID.
      * @param string|null $class Single CSS class or space-separated classes list.
+     * @return static
      */
     public static function post(string $action = null, string $id = null, string $class = null): static
     {
-        return new Form($action, 'POST', $id, $class);
+        return new static($action, 'POST', $id, $class);
     }
 }

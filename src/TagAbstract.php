@@ -103,7 +103,7 @@ abstract class TagAbstract implements RendererInterface
     /**
      * @param string $name
      * @param array $arguments
-     * @return bool|static|null
+     * @return bool|static|TagAbstract|null
      * @throws Exception
      */
     public function __call(string $name, array $arguments)
@@ -264,9 +264,9 @@ abstract class TagAbstract implements RendererInterface
      * allowed, while !doctype tag is not supported.
      *
      * @param string|null $tagName
-     * @return string|$this
+     * @return string|TagAbstract|static
      */
-    public function tagName(string $tagName = null): string|static
+    public function tagName(string $tagName = null): string|TagAbstract|static
     {
         $tagName = trim(strtolower($tagName));
         // Setter
