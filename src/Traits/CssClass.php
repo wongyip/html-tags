@@ -134,7 +134,7 @@ trait CssClass
     private function classParse($classes): array
     {
         try {
-            return array_map('trim', explode(' ', implode(' ', is_array($classes) ? $classes : [$classes])));
+            return array_filter(array_map('trim', explode(' ', implode(' ', is_array($classes) ? $classes : [$classes]))));
         }
         catch (Throwable $e) {
             error_log(sprintf('CssClass.classParse() - Error: %s (%d).', $e->getMessage(), $e->getCode()));

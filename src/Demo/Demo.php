@@ -6,6 +6,7 @@ use Throwable;
 use Wongyip\HTML\Anchor;
 use Wongyip\HTML\Comment;
 use Wongyip\HTML\Form;
+use Wongyip\HTML\Input;
 use Wongyip\HTML\Table;
 use Wongyip\HTML\Tag;
 use Wongyip\HTML\TBody;
@@ -169,6 +170,17 @@ class Demo
                 ->contents('C3', Tag::make('p')->contents('C4'))
                 ->contentsAppend(Tag::make('p')->contents('C5'))
                 ->contentsPrepend('C1', 'C2')->innerText
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public static function input(): void
+    {
+        new Demo(
+            "Input::create('year', 'number', null, null, true)->disabled(false)->render();",
+            Input::create('year', 'number', null, null, true)->disabled(false)->render(),
         );
     }
 

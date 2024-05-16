@@ -89,4 +89,24 @@ trait Attributes
     {
         return in_array($attribute, $this->tagAttrs);
     }
+
+    /**
+     * Check if the given attribute  is a Boolean attribute.
+     *
+     * @param string $attribute
+     * @return bool
+     * @see https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML
+     * @see https://meiert.com/en/blog/boolean-attributes-of-html/
+     */
+    protected function isBooleanAttribute(string $attribute): bool
+    {
+        return in_array(
+            strtolower($attribute), [
+                'allowfullscreen', 'async', 'autofocus', 'autoplay', 'checked', 'controls',
+                'default', 'defer', 'disabled', 'formnovalidate', 'inert', 'ismap', 'itemscope',
+                'loop', 'multiple', 'muted', 'nomodule', 'novalidate', 'open', 'playsinline',
+                'readonly', 'required', 'reversed', 'selected',
+            ]
+        );
+    }
 }
