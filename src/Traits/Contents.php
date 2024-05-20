@@ -3,6 +3,7 @@
 namespace Wongyip\HTML\Traits;
 
 use Wongyip\HTML\Comment;
+use Wongyip\HTML\RendererInterface;
 use Wongyip\HTML\TagAbstract;
 
 /**
@@ -15,7 +16,7 @@ trait Contents
     /**
      * Enclosed contents.
      *
-     * @var array|string[]|TagAbstract[]
+     * @var array|string[]|TagAbstract[]|RendererInterface[]
      */
     protected array $contents = [];
 
@@ -23,10 +24,10 @@ trait Contents
      * Get existing contents rendered as string, or set (replace) the existing
      * $contents (string or TabAbstract, or array mixed of both types).
      *
-     * @param string|TagAbstract ...$contents
+     * @param string|TagAbstract|RendererInterface ...$contents
      * @return string|static
      */
-    public function contents(string|TagAbstract ...$contents): string|static
+    public function contents(string|TagAbstract|RendererInterface ...$contents): string|static
     {
         // Setter
         if (!empty($contents)) {
@@ -40,10 +41,10 @@ trait Contents
     /**
      * Alias to contentsAppend().
      *
-     * @param string|TagAbstract ...$contents
+     * @param string|TagAbstract|RendererInterface ...$contents
      * @return static
      */
-    public function contentsAdd(string|TagAbstract ...$contents): static
+    public function contentsAdd(string|TagAbstract|RendererInterface ...$contents): static
     {
         return $this->contentsAppend(...$contents);
     }
@@ -51,10 +52,10 @@ trait Contents
     /**
      * Append contents to the $contents array.
      *
-     * @param string|TagAbstract ...$contents
+     * @param string|TagAbstract|RendererInterface ...$contents
      * @return static
      */
-    public function contentsAppend(string|TagAbstract ...$contents): static
+    public function contentsAppend(string|TagAbstract|RendererInterface ...$contents): static
     {
         $this->contents = array_merge($this->contents, $contents);
         return $this;
@@ -77,10 +78,10 @@ trait Contents
     /**
      * Prepend contents to the $contents array.
      *
-     * @param string|TagAbstract ...$contents
+     * @param string|TagAbstract|RendererInterface ...$contents
      * @return static
      */
-    public function contentsPrepend(string|TagAbstract ...$contents): static
+    public function contentsPrepend(string|TagAbstract|RendererInterface ...$contents): static
     {
         $this->contents = array_merge($contents, $this->contents);
         return $this;
@@ -107,7 +108,7 @@ trait Contents
                 // Escape ending brace in case of nested comment.
                 : (is_a($this, Comment::class) && is_a($content, Comment::class) ? preg_replace("/-->$/", '--&gt;', $content->render())
                     // Render nested tag.
-                    : (is_a($content, TagAbstract::class) ? $content->render() : '')
+                    : (is_a($content, RendererInterface::class) ? $content->render() : '')
                 );
         }
         return $rendered;
