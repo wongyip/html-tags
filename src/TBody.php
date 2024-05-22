@@ -43,6 +43,8 @@ class TBody extends TagAbstract
     /**
      * Append table rows (TR).
      *
+     * @todo rename to rowsAdd()
+     *
      * @param TR|TagAbstract ...$rows
      * @return static
      */

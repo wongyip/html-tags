@@ -7,6 +7,8 @@ use Wongyip\HTML\Anchor;
 use Wongyip\HTML\Comment;
 use Wongyip\HTML\Form;
 use Wongyip\HTML\Input;
+use Wongyip\HTML\Option;
+use Wongyip\HTML\Select;
 use Wongyip\HTML\Table;
 use Wongyip\HTML\Tag;
 use Wongyip\HTML\TBody;
@@ -353,6 +355,29 @@ class Demo
         new Demo(
             $code,
             $tag->render()
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public static function select(): void
+    {
+        $code = <<<CODE
+        Select::create(
+            Option::create('red', 'Red is alternative.'),
+            Option::create('red', 'Green is choosen.', true),
+            Option::create('red', 'Blue is not allowed.', null, true),
+        )->render()
+        CODE;
+
+        new Demo(
+            $code,
+            Select::create(
+                Option::create('R', 'Red is alternative.'),
+                Option::create('G', 'Green is choosen.', true),
+                Option::create('B', 'Blue is not allowed.', null, true),
+            )->render()
         );
     }
 }
