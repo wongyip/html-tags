@@ -2,6 +2,8 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Supports\ContentsCollection;
+
 /**
  * Table Body
  */
@@ -12,7 +14,7 @@ class TBody extends TagAbstract
     /**
      * Table Rows
      *
-     * @var array|TR[]|TagAbstract[]
+     * @var array|TR[]|RendererInterface[]
      */
     protected array $rows = [];
 
@@ -27,17 +29,17 @@ class TBody extends TagAbstract
     /**
      * @inheritdoc
      */
-    protected function contentsEmptyHook(): void
+    protected function contentsBefore(): ContentsCollection
     {
-        $this->rows = [];
+        return new ContentsCollection($this->rows);
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
-    public function contentsPrefixed(): array
+    protected function contentsEmptyHook(): void
     {
-        return $this->rows;
+        $this->rows = [];
     }
 
     /**

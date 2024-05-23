@@ -53,7 +53,7 @@ echo implode(PHP_EOL, [$a1->render(), $a2->render(), $a3->render()]);
 <a href="/go/3" target="_blank">Go 3</a>
 ```
 
-### Nested
+### Nesting
 ```php
 $tag = Tag::make('div')->class('parent')->contents(
     Tag::make('p')->id('child1')->contents('Regular'),
@@ -69,8 +69,68 @@ echo $tag->render();
 <div class="parent"><p id="child1">Regular</p><p id="child2"><span><strong>Bold Face</strong></span></p></div>
 ```
 
-### Compound Tag Using Contents Extensions
 
+### Contents Collections
+
+Tags extending the `TagAbstract` will have a several `ContentsCollection` properties, which are empty on instantiate,
+and accessible in public scope. You may make use of them to manipulate all the contents of a tag.
+
+- `TagAbstract::$siblingsBefore` - sibling tags with the same nesting level of the tag, rendered before the tag. 
+- `TagAbstract::$contentsPrefixed` - inner contents on top of the tag.
+- `TagAbstract::$contents` - inner contents of the tag.
+- `TagAbstract::$contentsSuffixed` - inner contents at the bottom of the tag.
+- `TagAbstract::$siblingsAfter` - sibling tags with the same nesting level of the tag, rendered after the tag.
+
+
+### Extensible Contents
+
+For scenario of tags with conditional inner contents, you may extend the following methods to handle the needs:
+- `TagAbstract::contentsBefore()`, that output a `ContentsCollection` for render right before the tag's contents.
+- `TagAbstract::contentsAfter()` that output a `ContentsCollection` for render right after the tag's contents.
+
+For example, the build-in [`Table`](/src/Table.php) tag extended the `contentsBefore()` method to insert its
+`caption`, `thead` and `tbody` when they're set.
+
+### Contents Anatomy, Concluded
+- Siblings Before the Tag
+  - Prefixed Contents
+  - Extensible Contents (Before)
+  - Contents
+  - Extensible Contents (After)
+  - Suffixed Contents
+- Siblings After the Tag
+
+The following example illustrates the above anatomy excepts of the Extensible Contents (Before and After):
+
+```php
+$tag = Tag::make('div');
+$tag->contents->append(Tag::make('p')->contents('Content 1'), Tag::make('p')->contents('Content N'));
+$tag->contentsPrefixed->append(Tag::make('h1')->contents('Prefixed 1'), Tag::make('h2')->contents('Prefixed N'));
+$tag->contentsSuffixed->append(Tag::make('h3')->contents('Suffixed 1'), Tag::make('h4')->contents('Suffixed N'));
+$tag->siblingsBefore->append(Tag::make('div')->contents('Sibling Before 1'));
+$tag->siblingsBefore->append(Tag::make('div')->contents('Sibling Before N'));
+$tag->siblingsAfter->append(Tag::make('div')->contents('Sibling After 1'));
+$tag->siblingsAfter->append(Tag::make('div')->contents('Sibling After N'));
+echo $tag->render();
+```
+```html
+<div>Sibling Before 1</div>
+<div>Sibling Before N</div>
+<div>
+    <h1>Prefixed 1</h1>
+    <h2>Prefixed N</h2>
+    <p>Content 1</p>
+    <p>Content N</p>
+    <h3>Suffixed 1</h3>
+    <h4>Suffixed N</h4>
+</div>
+<div>Sibling After 1</div>
+<div>Sibling After N</div>
+```
+
+
+### Compound Tag Using Contents Extensions
+**\[UPDATE REQUIRED\]**
 ```php
 class DialogBox extends TagAbstract
 {

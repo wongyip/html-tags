@@ -2,6 +2,7 @@
 
 namespace Wongyip\HTML\Demo;
 
+use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Tag;
 use Wongyip\HTML\TagAbstract;
 
@@ -46,9 +47,13 @@ class DialogBox extends TagAbstract
         return $tag;
     }
 
-    public function contentsPrefixed(): array
+    /**
+     * @inheritdoc
+     */
+    public function contentsBefore(): ContentsCollection
     {
         // Prefix named child(s) to contents before render.
+        return new ContentsCollection($this->heading);
         return [$this->heading];
     }
 

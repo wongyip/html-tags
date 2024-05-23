@@ -7,6 +7,7 @@ use Wongyip\HTML\Anchor;
 use Wongyip\HTML\Comment;
 use Wongyip\HTML\Form;
 use Wongyip\HTML\Input;
+use Wongyip\HTML\Label;
 use Wongyip\HTML\Option;
 use Wongyip\HTML\Select;
 use Wongyip\HTML\Table;
@@ -144,10 +145,27 @@ class Demo
      */
     public static function contents(): void
     {
-        new Demo(
-            "echo Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->render();",
-            Tag::make('div')->contents('C3', Tag::make('p')->contents('C4'))->contentsAppend(Tag::make('p')->contents('C5'))->contentsPrepend('C1', 'C2')->render()
-        );
+
+        $code = <<<CODE
+        \$tag = Tag::make('select')->name('color');
+        \$tag->contentsPrefixed->append(Comment::make()->contents('This is not affected by the contents* method.'));
+        \$tag->contentsSuffixed->append(Comment::make()->contents('This is also not affected.'));
+        \$tag->contents('Empty selection (this content will be removed).')
+            ->contents(Option::create('three', 'Third'))
+            ->contentsAppend(Option::create('four', 'Fourth', true))
+            ->contentsPrepend(Option::create('one', 'First', true), Option::create('two', 'Second', null, true));
+        echo \$tag->render();
+        CODE;
+
+        $tag = Tag::make('select')->name('color');
+        $tag->contentsPrefixed->append(Comment::make()->contents('This is not affected by the contents* method.'));
+        $tag->contentsSuffixed->append(Comment::make()->contents('This is also not affected.'));
+        $tag->contents('Empty selection (this content will be removed).')
+            ->contents(Option::create('three', 'Third'))
+            ->contentsAppend(Option::create('four', 'Fourth', true))
+            ->contentsPrepend(Option::create('one', 'First', true), Option::create('two', 'Second', null, true));
+        $output = $tag->render();
+        new Demo($code, $output);
     }
 
     /**
@@ -356,6 +374,60 @@ class Demo
             $code,
             $tag->render()
         );
+    }
+
+    /**
+     * @return void
+     */
+    public static function siblings(): void
+    {
+        $code = <<<CODE
+        \$tag = Input::create('age', 'number');
+        \$tag->siblingsBefore->append(Label::create('age')->contents('Age:'));
+        \$tag->siblingsAfter->append(
+            Input::create('', 'submit')->value('Submit')
+        );
+        echo \$tag->render();
+        CODE;
+
+        $tag = Input::create('age', 'number');
+        $tag->siblingsBefore->append(Label::create('age')->contents('Age:'));
+        $tag->siblingsAfter->append(
+            Input::create('', 'submit')->value('Submit')
+        );
+        $output = $tag->render();
+        new Demo($code, $output);
+    }
+
+    /**
+     * @return void
+     */
+    public static function anatomy(): void
+    {
+        $code = <<<CODE
+        \$tag = Tag::make('div');
+        \$tag->contents->append(Tag::make('p')->contents('Content 1'), Tag::make('p')->contents('Content N'));
+        \$tag->contentsPrefixed->append(Tag::make('h1')->contents('Prefixed 1'), Tag::make('h2')->contents('Prefixed N'));
+        \$tag->contentsSuffixed->append(Tag::make('h3')->contents('Suffixed 1'), Tag::make('h4')->contents('Suffixed N'));
+        \$tag->siblingsBefore->append(Tag::make('div')->contents('Sibling Before 1'));
+        \$tag->siblingsBefore->append(Tag::make('div')->contents('Sibling Before N'));
+        \$tag->siblingsAfter->append(Tag::make('div')->contents('Sibling After 1'));
+        \$tag->siblingsAfter->append(Tag::make('div')->contents('Sibling After N'));
+        echo \$tag->render();
+        CODE;
+
+
+
+        $tag = Tag::make('div');
+        $tag->contents->append(Tag::make('p')->contents('Content 1'), Tag::make('p')->contents('Content N'));
+        $tag->contentsPrefixed->append(Tag::make('h1')->contents('Prefixed 1'), Tag::make('h2')->contents('Prefixed N'));
+        $tag->contentsSuffixed->append(Tag::make('h3')->contents('Suffixed 1'), Tag::make('h4')->contents('Suffixed N'));
+        $tag->siblingsBefore->append(Tag::make('div')->contents('Sibling Before 1'));
+        $tag->siblingsBefore->append(Tag::make('div')->contents('Sibling Before N'));
+        $tag->siblingsAfter->append(Tag::make('div')->contents('Sibling After 1'));
+        $tag->siblingsAfter->append(Tag::make('div')->contents('Sibling After N'));
+        $output = $tag->render();
+        new Demo($code, $output);
     }
 
     /**

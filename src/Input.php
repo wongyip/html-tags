@@ -3,9 +3,8 @@
 namespace Wongyip\HTML;
 
 /**
- * A basic implementation of an "\<input\>" tag.
+ * A basic implementation of an \<input\> tag.
  *
- * Attributes Get-setters.
  * @method bool|null|static disabled(bool|null $set = null)
  * @method string|null|static placeholder(string|null $set = null)
  * @method bool|null|static readonly(bool|null $set = null)

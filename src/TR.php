@@ -2,6 +2,8 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Supports\ContentsCollection;
+
 /**
  * Table Row
  */
@@ -53,17 +55,17 @@ class TR extends TagAbstract
     /**
      * @inheritdoc
      */
-    protected function contentsEmptyHook(): void
+    protected function contentsBefore(): ContentsCollection
     {
-        $this->cells = [];
+        return new ContentsCollection($this->cells);
     }
 
     /**
      * @inheritdoc
      */
-    protected function contentsPrefixed(): array
+    protected function contentsEmptyHook(): void
     {
-        return $this->cells;
+        $this->cells = [];
     }
 
     /**

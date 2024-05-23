@@ -2,115 +2,166 @@
 
 namespace Wongyip\HTML\Traits;
 
-use Wongyip\HTML\Comment;
+use Exception;
 use Wongyip\HTML\RendererInterface;
-use Wongyip\HTML\TagAbstract;
+use Wongyip\HTML\Supports\ContentsCollection;
 
 /**
  * Contents manipulation trait.
  */
 trait Contents
 {
-    use ContentsExtensions;
-
     /**
-     * Enclosed contents.
+     * Collection of inner contents.
      *
-     * @var array|string[]|TagAbstract[]|RendererInterface[]
+     * @var ContentsCollection;
      */
-    protected array $contents = [];
+    public ContentsCollection $contents;
+    /**
+     * Collection of contents prefixed to the inner contents.
+     *
+     * @var ContentsCollection;
+     */
+    public ContentsCollection $contentsPrefixed;
+    /**
+     * Collection of contents suffixed to the inner contents.
+     *
+     * @var ContentsCollection;
+     */
+    public ContentsCollection $contentsSuffixed;
+    /**
+     * Collection of sibling contents to be rendered after the tag, at the same
+     * nesting level.
+     *
+     * @var ContentsCollection;
+     */
+    public ContentsCollection $siblingsAfter;
+    /**
+     * Collection of sibling contents to be rendered before the tag, at the same
+     * nesting level.
+     *
+     * @var ContentsCollection;
+     */
+    public ContentsCollection $siblingsBefore;
 
     /**
-     * Get existing contents rendered as string, or set (replace) the existing
-     * $contents (string or TabAbstract, or array mixed of both types).
+     * Proxy method, getter return $this->contents->render(), setter replace
+     * all contents in contents collection and returns the current Tag.
      *
-     * @param string|TagAbstract|RendererInterface ...$contents
+     * @param string|RendererInterface ...$contents
      * @return string|static
      */
-    public function contents(string|TagAbstract|RendererInterface ...$contents): string|static
+    public function contents(string|RendererInterface ...$contents): string|static
     {
-        // Setter
-        if (!empty($contents)) {
-            array_push($this->contents, ...$contents);
-            return $this;
+        // Get
+        if (empty($contents)) {
+            return $this->contents->render();
         }
-        // Get them rendered.
-        return $this->contentsRendered();
-    }
-
-    /**
-     * Alias to contentsAppend().
-     *
-     * @param string|TagAbstract|RendererInterface ...$contents
-     * @return static
-     */
-    public function contentsAdd(string|TagAbstract|RendererInterface ...$contents): static
-    {
-        return $this->contentsAppend(...$contents);
-    }
-
-    /**
-     * Append contents to the $contents array.
-     *
-     * @param string|TagAbstract|RendererInterface ...$contents
-     * @return static
-     */
-    public function contentsAppend(string|TagAbstract|RendererInterface ...$contents): static
-    {
-        $this->contents = array_merge($this->contents, $contents);
+        // Set
+        $this->contentsEmpty()->contentsAppend(...$contents);
         return $this;
     }
 
     /**
-     * Remove all attached contents.
+     * Return collection of contents to be rendered inside the tag, right after
+     * the tag's contents.
      *
-     * N.B. This method should be extended if
+     * @return ContentsCollection
+     */
+    protected function contentsAfter(): ContentsCollection
+    {
+        // Empty
+        return new ContentsCollection();
+    }
+
+    /**
+     * Proxy of $this->contents->append(), but returns the current Tag instead
+     * of the ContentCollection object.
+     *
+     * @param string|RendererInterface ...$contents
+     * @return static
+     */
+    public function contentsAppend(string|RendererInterface ...$contents): static
+    {
+        $this->contents->append(...$contents);
+        return $this;
+    }
+
+    /**
+     * Return collection of contents to be rendered inside the tag, right before
+     * the tag's contents.
+     *
+     * @return ContentsCollection
+     */
+    protected function contentsBefore(): ContentsCollection
+    {
+        // Empty
+        return new ContentsCollection();
+    }
+
+    /**
+     * Remove all contents in contents collection.
      *
      * @return static
      */
     public function contentsEmpty(): static
     {
-        $this->contents = [];
+        $this->contents->empty();
         $this->contentsEmptyHook();
         return $this;
     }
 
     /**
-     * Prepend contents to the $contents array.
+     * Will be called by the contentsEmpty() method. Replace this method to
+     * clear customized contents.
      *
-     * @param string|TagAbstract|RendererInterface ...$contents
+     * @return void
+     */
+    protected function contentsEmptyHook(): void
+    {
+        // For child class only.
+    }
+
+    /**
+     * Proxy of $this->contents->prepend(), but returns the current Tag instead
+     * of the ContentCollection object.
+     *
+     * @param string|RendererInterface ...$contents
      * @return static
      */
-    public function contentsPrepend(string|TagAbstract|RendererInterface ...$contents): static
+    public function contentsPrepend(string|RendererInterface ...$contents): static
     {
-        $this->contents = array_merge($contents, $this->contents);
+        $this->contents->prepend(...$contents);
         return $this;
     }
 
     /**
-     * Get all contents combined, which is properly escaped and safe to output
-     * as raw HTML.
+     * Proxy of $this->contents->render()
      *
      * @return string
      */
     protected function contentsRendered(): string
     {
-        // Grab all render contents.
-        $contents = array_merge(
-            $this->contentsPrefixed(),
-            $this->contents,
-            $this->contentsSuffixed()
-        );
-        $rendered = '';
-        foreach ($contents as $content) {
-            // Escape text
-            $rendered .= is_string($content) ? htmlspecialchars($content)
-                // Escape ending brace in case of nested comment.
-                : (is_a($this, Comment::class) && is_a($content, Comment::class) ? preg_replace("/-->$/", '--&gt;', $content->render())
-                    // Render nested tag.
-                    : (is_a($content, RendererInterface::class) ? $content->render() : '')
-                );
-        }
-        return $rendered;
+        return $this->contents->render();
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     * @deprecated
+     */
+    protected function contentsPrefixed(): array
+    {
+        throw new Exception('Deprecated and replaced with contentsBefore() method.');
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     * @deprecated
+     */
+    protected function contentsSuffix(): array
+    {
+        throw new Exception('Deprecated and replaced with contentsAfter() method.');
     }
 }

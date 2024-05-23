@@ -5,18 +5,16 @@ namespace Wongyip\HTML;
 use Exception;
 
 /**
- * A minimal implementation an "\<a>" (anchor) tag with the following details:
+ * A minimal implementation an \<a\> (anchor) tag with the following details:
  *
  *  1. Additional attributes is supported via the addAttrs() method.
  *  2. Add. attributes' get-setters are annotated with @-method for code-hint.
  *  3. Additional helper target[Blank|Parent|Self|Top] methods.
  *
- * Attributes Get-setters.
  * @method string|static href(string|null $value = null)
  * @method string|static title(string|null $value = null)
  * @method string|static target(string|null $value = null)
  *
- * Target attribute setters.
  * @method static targetBlank() Opens the linked document in a new window or tab.
  * @method static targetParent() Opens the linked document in the parent frame.
  * @method static targetSelf() Opens the linked document in the same frame as it was clicked (this is default).

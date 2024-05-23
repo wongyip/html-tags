@@ -2,6 +2,7 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Traits\NoAddAttrs;
 
 /**
@@ -22,17 +23,17 @@ class Select extends TagAbstract
     /**
      * @inheritdoc
      */
-    protected function contentsEmptyHook(): void
+    protected function contentsBefore(): ContentsCollection
     {
-        $this->options = [];
+        return new ContentsCollection($this->options);
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
-    public function contentsPrefixed(): array
+    protected function contentsEmptyHook(): void
     {
-        return $this->options;
+        $this->options = [];
     }
 
     /**

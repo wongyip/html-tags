@@ -4,6 +4,7 @@ namespace Wongyip\HTML;
 
 use Exception;
 use ReflectionClass;
+use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Traits\Attributes;
 use Wongyip\HTML\Traits\Contents;
 use Wongyip\HTML\Traits\CssClass;
@@ -86,6 +87,13 @@ abstract class TagAbstract implements RendererInterface
         if (in_array($this->tagName, ['script', 'style'])) {
             $this->tagName(static::DEFAULT_TAG_NAME);
         }
+
+        // Init. contents collections.
+        $this->contents = new ContentsCollection();
+        $this->contentsPrefixed = new ContentsCollection();
+        $this->contentsSuffixed = new ContentsCollection();
+        $this->siblingsAfter = new ContentsCollection();
+        $this->siblingsBefore = new ContentsCollection();
 
         // Compile attributes list.
         $this->tagAttrs = array_diff(
@@ -250,9 +258,19 @@ abstract class TagAbstract implements RendererInterface
      */
     public function render(array $adHocAttrs = null, array $adHocOptions = null): string
     {
-        return $this->isSelfClosing()
-            ? $this->open($adHocAttrs)
-            : $this->open($adHocAttrs) . $this->contents() . $this->close();
+        $beforeTag = $this->siblingsBefore->render();
+        $afterTag  = $this->siblingsAfter->render();
+        // Render opening tag and siblings only for self-closing tags.
+        if ($this->isSelfClosing()) {
+            return $beforeTag . $this->open($adHocAttrs) . $afterTag;
+        }
+        // Render everything for the rest.
+        $prefixed = $this->contentsPrefixed->render();
+        $before   = $this->contentsBefore()->render();
+        $contents = $this->contents->render();
+        $after    = $this->contentsAfter()->render();
+        $suffixed = $this->contentsSuffixed->render();
+        return $beforeTag. $this->open($adHocAttrs) . $prefixed . $before . $contents . $after . $suffixed . $this->close() . $afterTag;
     }
 
     /**

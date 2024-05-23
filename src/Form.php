@@ -3,7 +3,7 @@
 namespace Wongyip\HTML;
 
 /**
- * Basic HTTP &lt;form&gt; tag.
+ * Basic HTTP \<form\> tag.
  *
  * @method string|static action(string|null $value = null) Path or URL.
  * @method string|static enctype(string|null $value = null) Default empty for 'application/x-www-form-urlencoded', set 'multipart/form-data' for upload form, set 'text/plain' for no encoding (not recommended)..

@@ -2,6 +2,8 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Supports\ContentsCollection;
+
 /**
  * Table (Single set of caption + head + body only.).
  */
@@ -65,12 +67,13 @@ class Table extends TagAbstract
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
-    public function contentsPrefixed(): array
+    protected function contentsBefore(): ContentsCollection
     {
-        // In rendering order.
-        return array_filter([$this->caption ?? '', $this->head ?? '', $this->body ?? '',]);
+        return new ContentsCollection(
+            array_filter([$this->caption ?? '', $this->head ?? '', $this->body ?? '',])
+        );
     }
 
     /**
