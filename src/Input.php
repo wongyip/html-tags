@@ -25,7 +25,11 @@ class Input extends TagAbstract
      */
     public function addAttrs(): array
     {
-        return ['disabled', 'placeholder', 'readonly', 'required', 'type', 'value'];
+        return [
+            'type', 'value',
+            'checked', 'disabled', 'readonly', 'required',
+            'placeholder'
+        ];
     }
 
     /**
@@ -37,13 +41,14 @@ class Input extends TagAbstract
      * @param bool|null $required
      * @param bool|null $disabled
      * @param bool|null $readonly
+     * @param bool|null $checked
      * @param string|null $placeholder
      * @return static
      */
-    public static function create(string $name = null, string $type = null, string $id = null, bool $required = null, bool $disabled = null, bool $readonly = null, string $placeholder = null): static
+    public static function create(string $name = null, string $type = null, string $id = null, bool $required = null, bool $disabled = null, bool $readonly = null, bool $checked = null, string $placeholder = null): static
     {
         return static::make()->attributes(
-            compact('name', 'type', 'id', 'disabled', 'readonly', 'required', 'placeholder')
+            compact('name', 'type', 'id', 'checked', 'disabled', 'readonly', 'required', 'placeholder')
         );
     }
 
