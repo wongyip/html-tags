@@ -88,10 +88,13 @@ abstract class TagAbstract implements RendererInterface
             $this->tagName(static::DEFAULT_TAG_NAME);
         }
 
-        // Init. contents collections.
-        $this->contents = new ContentsCollection();
-        $this->contentsPrefixed = new ContentsCollection();
-        $this->contentsSuffixed = new ContentsCollection();
+        // Init. inner contents collections.
+        $this->contents = new ContentsCollection($this);
+        $this->contentsPrefixed = new ContentsCollection($this);
+        $this->contentsSuffixed = new ContentsCollection($this);
+
+        // Init. sibling contents collections.
+        // @todo Consider inject the parent of this tag.
         $this->siblingsAfter = new ContentsCollection();
         $this->siblingsBefore = new ContentsCollection();
 
@@ -266,10 +269,10 @@ abstract class TagAbstract implements RendererInterface
         }
         // Render everything for the rest.
         $prefixed = $this->contentsPrefixed->render();
-        $before   = $this->contentsBefore()->render();
-        $contents = $this->contents->render();
-        $after    = $this->contentsAfter()->render();
-        $suffixed = $this->contentsSuffixed->render();
+        $before   = $this->contentsBefore()->render(null, ['parent' => static::tagName()]);
+        $contents = $this->contents->render(null, ['parent' => static::tagName()]);
+        $after    = $this->contentsAfter()->render(null, ['parent' => static::tagName()]);
+        $suffixed = $this->contentsSuffixed->render(null, ['parent' => static::tagName()]);
         return $beforeTag. $this->open($adHocAttrs) . $prefixed . $before . $contents . $after . $suffixed . $this->close() . $afterTag;
     }
 

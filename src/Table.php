@@ -72,6 +72,7 @@ class Table extends TagAbstract
     protected function contentsBefore(): ContentsCollection
     {
         return new ContentsCollection(
+            $this,
             array_filter([$this->caption ?? '', $this->head ?? '', $this->body ?? '',])
         );
     }

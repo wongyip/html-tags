@@ -25,7 +25,7 @@ class Select extends TagAbstract
      */
     protected function contentsBefore(): ContentsCollection
     {
-        return new ContentsCollection($this->options);
+        return new ContentsCollection($this, $this->options);
     }
 
     /**

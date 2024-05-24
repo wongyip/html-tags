@@ -8,6 +8,13 @@ use Wongyip\HTML\RendererInterface;
 class ContentsCollection implements RendererInterface
 {
     /**
+     * Parent that initiate this collection, supposed read-only, maybe useful
+     * for rendering contents conditionally.
+     *
+     * @var RendererInterface
+     */
+    protected RendererInterface $parent;
+    /**
      * Enclosed contents.
      *
      * @var array|string[]|RendererInterface[]
@@ -15,10 +22,16 @@ class ContentsCollection implements RendererInterface
     protected array $contents = [];
 
     /**
+     * Renderable Collection of Contents.
+     *
+     * @param RendererInterface|null $parent Optional parent tag.
      * @param string|array|string[]|RendererInterface|RendererInterface[] ...$contents
      */
-    public function __construct(string|RendererInterface|array $contents = null)
+    public function __construct(RendererInterface $parent = null, string|RendererInterface|array $contents = null)
     {
+        if ($parent) {
+            $this->parent = $parent;
+        }
         $input = empty($contents) ? [] : (is_array($contents) ? $contents : [$contents]);
         foreach ($input as $content) {
             $this->append($content);
@@ -54,7 +67,8 @@ class ContentsCollection implements RendererInterface
      * array mixed with both types).
      *
      * Notes
-     *  1. Use the get() method to get the $contents array.
+     *  1. Getter returns rendered contents, use the get() method instead to get
+     *     the current $contents array.
      *  2. Setter REPLACE ALL existing contents.
      *
      * @param string|RendererInterface ...$contents
@@ -121,12 +135,14 @@ class ContentsCollection implements RendererInterface
      */
     public function render(array $adHocAttrs = null, array $adHocOptions = null): string
     {
+        // Conditional Rendering
+        $inComment = isset($this->parent) && is_a($this->parent, Comment::class);
         $rendered = '';
         foreach ($this->contents as $content) {
             // Escape text
             $rendered .= is_string($content) ? htmlspecialchars($content)
                 // Escape ending brace in case of nested comment.
-                : (is_a($this, Comment::class) && is_a($content, Comment::class) ? preg_replace("/-->$/", '--&gt;', $content->render())
+                : ($inComment && is_a($content, Comment::class) ? preg_replace("/-->$/", '--&gt;', $content->render())
                     // Render nested tag.
                     : (is_a($content, RendererInterface::class) ? $content->render() : '')
                 );

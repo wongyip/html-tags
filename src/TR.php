@@ -57,7 +57,7 @@ class TR extends TagAbstract
      */
     protected function contentsBefore(): ContentsCollection
     {
-        return new ContentsCollection($this->cells);
+        return new ContentsCollection($this, $this->cells);
     }
 
     /**

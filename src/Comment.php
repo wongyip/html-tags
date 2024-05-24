@@ -9,6 +9,8 @@ namespace Wongyip\HTML;
  */
 class Comment extends TagAbstract
 {
+    const TAG_NAME = '!--';
+    
     /**
      * Not used at all.
      *

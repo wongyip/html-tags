@@ -31,7 +31,7 @@ class TBody extends TagAbstract
      */
     protected function contentsBefore(): ContentsCollection
     {
-        return new ContentsCollection($this->rows);
+        return new ContentsCollection($this, $this->rows);
     }
 
     /**
