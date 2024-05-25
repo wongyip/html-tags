@@ -2,7 +2,6 @@
 
 namespace Wongyip\HTML\Traits;
 
-use Exception;
 use Wongyip\HTML\RendererInterface;
 use Wongyip\HTML\Supports\ContentsCollection;
 
@@ -45,13 +44,13 @@ trait Contents
     public ContentsCollection $siblingsBefore;
 
     /**
-     * Proxy method, getter return $this->contents->render(), setter replace
-     * all contents in contents collection and returns the current Tag.
+     * [Shortcut] Getter return $this->contents->render(), setter replace all
+     * contents in the contents collection and returns the current Tag.
      *
-     * @param string|RendererInterface ...$contents
+     * @param array|string|RendererInterface ...$contents
      * @return string|static
      */
-    public function contents(string|RendererInterface ...$contents): string|static
+    public function contents(array|string|RendererInterface ...$contents): string|static
     {
         // Get
         if (empty($contents)) {
@@ -63,8 +62,8 @@ trait Contents
     }
 
     /**
-     * Return collection of contents to be rendered inside the tag, right after
-     * the tag's contents.
+     * [Extension] Return collection of contents to be rendered inside the tag,
+     * right after the tag's contents.
      *
      * @return ContentsCollection
      */
@@ -75,21 +74,21 @@ trait Contents
     }
 
     /**
-     * Proxy of $this->contents->append(), but returns the current Tag instead
-     * of the ContentCollection object.
+     * [Shortcut] Like $this->contents->append(), but returns the current Tag
+     * instead of the ContentCollection object.
      *
-     * @param string|RendererInterface ...$contents
+     * @param array|string|RendererInterface ...$contents
      * @return static
      */
-    public function contentsAppend(string|RendererInterface ...$contents): static
+    public function contentsAppend(array|string|RendererInterface ...$contents): static
     {
         $this->contents->append(...$contents);
         return $this;
     }
 
     /**
-     * Return collection of contents to be rendered inside the tag, right before
-     * the tag's contents.
+     * [Extension] Return collection of contents to be rendered inside the tag,
+     * right before the tag's contents.
      *
      * @return ContentsCollection
      */
@@ -100,7 +99,8 @@ trait Contents
     }
 
     /**
-     * Remove all contents in contents collection.
+     * Remove all contents in contents collection, then invoke the emptyHook()
+     * method.
      *
      * @return static
      */
@@ -112,8 +112,8 @@ trait Contents
     }
 
     /**
-     * Will be called by the contentsEmpty() method. Replace this method to
-     * clear customized contents.
+     * [Extension] Will be called by the contentsEmpty() method. Replace this
+     * method to add routine after content emptied, e.g. clear child contents.
      *
      * @return void
      */
@@ -123,20 +123,20 @@ trait Contents
     }
 
     /**
-     * Proxy of $this->contents->prepend(), but returns the current Tag instead
-     * of the ContentCollection object.
+     * [Shortcut] Like $this->contents->prepend(), but returns the current Tag
+     * instead of the ContentCollection object.
      *
-     * @param string|RendererInterface ...$contents
+     * @param array|string|RendererInterface ...$contents
      * @return static
      */
-    public function contentsPrepend(string|RendererInterface ...$contents): static
+    public function contentsPrepend(array|string|RendererInterface ...$contents): static
     {
         $this->contents->prepend(...$contents);
         return $this;
     }
 
     /**
-     * Proxy of $this->contents->render()
+     * [Shortcut] Same as $this->contents->render().
      *
      * @return string
      */
@@ -146,22 +146,34 @@ trait Contents
     }
 
     /**
-     * @return array
-     * @throws Exception
-     * @deprecated
+     * [Mixed Usage] Give no input to get rendered contents of $siblingsAfter.
+     * Otherwise, replaces all contents in $siblingAfter and return current Tag.
+     *
+     * @param array|string|RendererInterface ...$contents
+     * @return string|static
      */
-    protected function contentsPrefixed(): array
+    public function siblingsAfter(array|string|RendererInterface ...$contents): string|static
     {
-        throw new Exception('Deprecated and replaced with contentsBefore() method.');
+        if (empty($contents)) {
+            return $this->siblingsAfter->render();
+        }
+        $this->siblingsAfter->empty()->contents(...$contents);
+        return $this;
     }
 
     /**
-     * @return array
-     * @throws Exception
-     * @deprecated
+     * [Mixed Usage] Give no input to get rendered contents of $siblingsBefore.
+     * Otherwise, replaces all contents in $siblingsBefore and return current Tag.
+     *
+     * @param array|string|RendererInterface ...$contents
+     * @return string|static
      */
-    protected function contentsSuffix(): array
+    public function siblingsBefore(array|string|RendererInterface ...$contents): string|static
     {
-        throw new Exception('Deprecated and replaced with contentsAfter() method.');
+        if (empty($contents)) {
+            return $this->siblingsBefore->render();
+        }
+        $this->siblingsBefore->empty()->contents(...$contents);
+        return $this;
     }
 }

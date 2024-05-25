@@ -8,8 +8,10 @@ use Wongyip\HTML\RendererInterface;
 class ContentsCollection implements RendererInterface
 {
     /**
-     * Parent that initiate this collection, supposed read-only, maybe useful
-     * for rendering contents conditionally.
+     * Parent that initiate this collection, maybe useful for rendering contents
+     * conditionally.
+     *
+     * Note, no setter as this is supposed read-only now.
      *
      * @var RendererInterface
      */
@@ -25,26 +27,25 @@ class ContentsCollection implements RendererInterface
      * Renderable Collection of Contents.
      *
      * @param RendererInterface|null $parent Optional parent tag.
-     * @param string|array|string[]|RendererInterface|RendererInterface[] ...$contents
+     * @param array|string|RendererInterface ...$contents
      */
-    public function __construct(RendererInterface $parent = null, string|RendererInterface|array $contents = null)
+    public function __construct(RendererInterface $parent = null, array|string|RendererInterface ...$contents)
     {
         if ($parent) {
             $this->parent = $parent;
         }
-        $input = empty($contents) ? [] : (is_array($contents) ? $contents : [$contents]);
-        foreach ($input as $content) {
-            $this->append($content);
+        if (!empty($contents)) {
+            $this->append(...$contents);
         }
     }
 
     /**
      * Alias to append().
      *
-     * @param string|RendererInterface ...$contents
+     * @param array|string|RendererInterface ...$contents
      * @return static
      */
-    public function add(string|RendererInterface ...$contents): static
+    public function add(array|string|RendererInterface ...$contents): static
     {
         return $this->append(...$contents);
     }
@@ -52,12 +53,19 @@ class ContentsCollection implements RendererInterface
     /**
      * Append contents to the collection.
      *
-     * @param string|RendererInterface ...$contents
+     * @param array|string|RendererInterface ...$contents
      * @return static
      */
-    public function append(string|RendererInterface ...$contents): static
+    public function append(array|string|RendererInterface ...$contents): static
     {
-        array_push($this->contents, ...$contents);
+        foreach ($contents as $content) {
+            if (is_array($content)) {
+                array_push($this->contents, ...$content);
+            }
+            else {
+                $this->contents[] = $content;
+            }
+        }
         return $this;
     }
 
@@ -71,10 +79,10 @@ class ContentsCollection implements RendererInterface
      *     the current $contents array.
      *  2. Setter REPLACE ALL existing contents.
      *
-     * @param string|RendererInterface ...$contents
-     * @return string[]|RendererInterface[]|static
+     * @param array|string|RendererInterface ...$contents
+     * @return string|static
      */
-    public function contents(string|RendererInterface ...$contents): string|static
+    public function contents(array|string|RendererInterface ...$contents): string|static
     {
         // Get
         if (empty($contents)) {
@@ -118,12 +126,19 @@ class ContentsCollection implements RendererInterface
     /**
      * Prepend contents to the collection.
      *
-     * @param string|RendererInterface ...$contents
+     * @param array|string|RendererInterface ...$contents
      * @return static
      */
-    public function prepend(string|RendererInterface ...$contents): static
+    public function prepend(array|string|RendererInterface ...$contents): static
     {
-        array_unshift($this->contents, ...$contents);
+        foreach ($contents as $content) {
+            if (is_array($content)) {
+                array_unshift($this->contents, ...$content);
+            }
+            else {
+                array_unshift($this->contents, $content);
+            }
+        }
         return $this;
     }
 
@@ -154,13 +169,14 @@ class ContentsCollection implements RendererInterface
      * Replace the contents in the collection, empty input yield same result
      * with the empty() method.
      *
-     * @param string|RendererInterface ...$contents
+     * @param array|string|RendererInterface ...$contents
      * @return static
      */
-    public function replace(string|RendererInterface ...$contents): static
+    public function replace(array|string|RendererInterface ...$contents): static
     {
         return empty($contents)
             ? $this->empty()
-            : $this->contents(...$contents);
+            : $this->empty()->append(...$contents);
+            // Infinite loop alert: DO NOT call the contents() method.
     }
 }
