@@ -14,6 +14,7 @@ use Wongyip\HTML\Table;
 use Wongyip\HTML\Tag;
 use Wongyip\HTML\TBody;
 use Wongyip\HTML\TD;
+use Wongyip\HTML\Textarea;
 use Wongyip\HTML\TH;
 use Wongyip\HTML\THead;
 use Wongyip\HTML\TR;
@@ -450,6 +451,29 @@ class Demo
                 Option::create('G', 'Green is choosen.', true),
                 Option::create('B', 'Blue is not allowed.', null, true),
             )->render()
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public static function textarea(): void
+    {
+        $code = <<<CODE
+        Textarea::create(5)
+            ->name('Address')
+            ->placeholder('Address including postal code.')
+            ->contents('Default input here...')
+            ->render();
+        CODE;
+
+        new Demo(
+            $code,
+            Textarea::create(5)
+                ->name('Address')
+                ->placeholder('Address including postal code.')
+                ->contents('Default input here...')
+                ->render()
         );
     }
 }
