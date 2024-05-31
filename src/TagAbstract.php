@@ -70,7 +70,7 @@ abstract class TagAbstract implements RendererInterface
      *  2. Merge in to commonAttrs and addAttrs if $extraAttrs is provided.
      *
      * @param string|null $tagName
-     * @param array|null $extraAttrs
+     * @param array|null $extraAttrs NAMES of extra attributes.
      */
     public function __construct(string $tagName = null, array $extraAttrs = null)
     {
