@@ -234,13 +234,18 @@ abstract class TagAbstract implements RendererInterface
         $compiled = [];
         $attributes = array_merge($this->attributes(), $adHocAttrs ?? []);
         foreach ($attributes as $attr => $val) {
-            if ($this->isBooleanAttribute($attr)) {
-                if ($val) {
-                    $compiled[] = $attr;
+            try {
+                if ($this->isBooleanAttribute($attr)) {
+                    if ($val) {
+                        $compiled[] = $attr;
+                    }
+                }
+                else {
+                    $compiled[] = sprintf('%s="%s"', $attr, htmlspecialchars($val, ENT_COMPAT));
                 }
             }
-            else {
-                $compiled[] = sprintf('%s="%s"', $attr, htmlspecialchars($val, ENT_COMPAT));
+            catch (\Throwable $e) {
+                dd($e->getMessage(), $attr, $val, $this, $attributes);
             }
         }
         return empty($compiled)

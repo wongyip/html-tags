@@ -8,28 +8,32 @@ use Wongyip\HTML\RendererInterface;
 class ContentsCollection implements RendererInterface
 {
     /**
-     * Parent that initiate this collection, maybe useful for rendering contents
-     * conditionally.
-     *
-     * Note, no setter as this is supposed read-only now.
-     *
-     * @var RendererInterface
-     */
-    protected RendererInterface $parent;
-    /**
      * Enclosed contents.
      *
      * @var array|string[]|RendererInterface[]
      */
     protected array $contents = [];
+    /**
+     * @var array
+     */
+    protected array $errors = [];
+    /**
+     * Parent that initiate this collection, maybe useful for rendering contents
+     * conditionally.
+     *
+     * Note, no setter as this is supposed to be read-only.
+     *
+     * @var RendererInterface
+     */
+    protected RendererInterface $parent;
 
     /**
      * Renderable Collection of Contents.
      *
      * @param RendererInterface|null $parent Optional parent tag.
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      */
-    public function __construct(RendererInterface $parent = null, array|string|RendererInterface ...$contents)
+    public function __construct(RendererInterface $parent = null, array|string|RendererInterface|null ...$contents)
     {
         if ($parent) {
             $this->parent = $parent;
@@ -53,17 +57,22 @@ class ContentsCollection implements RendererInterface
     /**
      * Append contents to the collection.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
-    public function append(array|string|RendererInterface ...$contents): static
+    public function append(array|string|RendererInterface|null ...$contents): static
     {
         foreach ($contents as $content) {
-            if (is_array($content)) {
-                array_push($this->contents, ...$content);
+            if (!empty($content)) {
+                if (is_array($content)) {
+                    // Not doing push directly, for the empty check.
+                    $this->append(...$content);
+                } else {
+                    $this->contents[] = $content;
+                }
             }
             else {
-                $this->contents[] = $content;
+                $this->errors[] = 'Attempted append empty content.';
             }
         }
         return $this;
@@ -79,10 +88,10 @@ class ContentsCollection implements RendererInterface
      *     the current $contents array.
      *  2. Setter REPLACE ALL existing contents.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return string|static
      */
-    public function contents(array|string|RendererInterface ...$contents): string|static
+    public function contents(array|string|RendererInterface|null ...$contents): string|static
     {
         // Get
         if (empty($contents)) {
@@ -126,17 +135,23 @@ class ContentsCollection implements RendererInterface
     /**
      * Prepend contents to the collection.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
-    public function prepend(array|string|RendererInterface ...$contents): static
+    public function prepend(array|string|RendererInterface|null ...$contents): static
     {
         foreach ($contents as $content) {
-            if (is_array($content)) {
-                array_unshift($this->contents, ...$content);
+            if (!empty($content)) {
+                if (is_array($content)) {
+                    // Not doing unshift directly, for the empty check.
+                    $this->prepend(...$content);
+                }
+                else {
+                    array_unshift($this->contents, $content);
+                }
             }
             else {
-                array_unshift($this->contents, $content);
+                $this->errors[] = 'Attempted prepend empty content.';
             }
         }
         return $this;
@@ -169,10 +184,10 @@ class ContentsCollection implements RendererInterface
      * Replace the contents in the collection, empty input yield same result
      * with the empty() method.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
-    public function replace(array|string|RendererInterface ...$contents): static
+    public function replace(array|string|RendererInterface|null ...$contents): static
     {
         return empty($contents)
             ? $this->empty()

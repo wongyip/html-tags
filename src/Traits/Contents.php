@@ -47,10 +47,10 @@ trait Contents
      * [Shortcut] Getter return $this->contents->render(), setter replace all
      * contents in the contents collection and returns the current Tag.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return string|static
      */
-    public function contents(array|string|RendererInterface ...$contents): string|static
+    public function contents(array|string|RendererInterface|null ...$contents): string|static
     {
         // Get
         if (empty($contents)) {
@@ -77,10 +77,10 @@ trait Contents
      * [Shortcut] Like $this->contents->append(), but returns the current Tag
      * instead of the ContentCollection object.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
-    public function contentsAppend(array|string|RendererInterface ...$contents): static
+    public function contentsAppend(array|string|RendererInterface|null ...$contents): static
     {
         $this->contents->append(...$contents);
         return $this;
@@ -126,10 +126,10 @@ trait Contents
      * [Shortcut] Like $this->contents->prepend(), but returns the current Tag
      * instead of the ContentCollection object.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
-    public function contentsPrepend(array|string|RendererInterface ...$contents): static
+    public function contentsPrepend(array|string|RendererInterface|null ...$contents): static
     {
         $this->contents->prepend(...$contents);
         return $this;
@@ -149,10 +149,10 @@ trait Contents
      * [Mixed Usage] Give no input to get rendered contents of $siblingsAfter.
      * Otherwise, replaces all contents in $siblingAfter and return current Tag.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return string|static
      */
-    public function siblingsAfter(array|string|RendererInterface ...$contents): string|static
+    public function siblingsAfter(array|string|RendererInterface|null ...$contents): string|static
     {
         if (empty($contents)) {
             return $this->siblingsAfter->render();
@@ -165,10 +165,10 @@ trait Contents
      * [Mixed Usage] Give no input to get rendered contents of $siblingsBefore.
      * Otherwise, replaces all contents in $siblingsBefore and return current Tag.
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return string|static
      */
-    public function siblingsBefore(array|string|RendererInterface ...$contents): string|static
+    public function siblingsBefore(array|string|RendererInterface|null ...$contents): string|static
     {
         if (empty($contents)) {
             return $this->siblingsBefore->render();

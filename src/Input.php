@@ -4,7 +4,7 @@ namespace Wongyip\HTML;
 
 /**
  * A basic implementation of an \<input\> tag.
- *
+ * @method bool|null|static checked(bool|null $set = null) Only for input with type of 'checkbox' and 'radio'.
  * @method bool|null|static disabled(bool|null $set = null) Disabled input is not editable, and is NOT transmitted when the form is submitted.
  * @method string|null|static placeholder(string|null $set = null)
  * @method bool|null|static readonly(bool|null $set = null) Read-only input is not editable, but it is transmitted when the form is submitted.
