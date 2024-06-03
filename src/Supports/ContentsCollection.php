@@ -28,7 +28,9 @@ class ContentsCollection implements RendererInterface
     protected RendererInterface $parent;
 
     /**
-     * Renderable Collection of Contents.
+     * Renderable Collection of Contents. N.B. The first argument can be an
+     * RendererInterface as the parent of the ContentsCollection object to be
+     * instantiated, insert null as no parent.
      *
      * @param RendererInterface|null $parent Optional parent tag.
      * @param array|string|RendererInterface|null ...$contents
@@ -46,10 +48,10 @@ class ContentsCollection implements RendererInterface
     /**
      * Alias to append().
      *
-     * @param array|string|RendererInterface ...$contents
+     * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
-    public function add(array|string|RendererInterface ...$contents): static
+    public function add(array|string|RendererInterface|null ...$contents): static
     {
         return $this->append(...$contents);
     }
