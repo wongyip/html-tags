@@ -57,30 +57,46 @@ trait CssClass
     }
 
     /**
-     * Add (append) a list of CSS classes to the classes array (space=-separated
-     * classes list is supported).
+     * Alias to append().
+     *
+     * Push a list of CSS classes onto the end of the classes array, if an input
+     * class is already in the classes array, it will be removed and then push
+     * again onto the end of the array.
+     *
+     * E.g. When appending 'c2' and 'c4' to existing classes ['c1', 'c2', 'c3'],
+     * the outcome will be ['c1', 'c3', 'c2', 'c4'].
+     *
+     * Space-separated classes list is supported.
      *
      * @param string ...$classes
      * @return static
      */
     public function classAdd(string ...$classes): static
     {
-        $classes = $this->classParse($classes);
-        // @todo is array_diff() necessary?
-        $this->cssClasses = array_merge($this->cssClasses, $classes);
-        return $this;
+        return $this->classAppend(...$classes);
     }
 
     /**
-     * Add (append) a list of CSS classes to the classes array(space=-separated
-     * classes list is supported).
+     * Push a list of CSS classes onto the end of the classes array, if an input
+     * class is already in the classes array, it will be removed and then push
+     * again onto the end of the array.
+     *
+     * E.g. When appending 'c2' and 'c4' to existing classes ['c1', 'c2', 'c3'],
+     * the outcome will be ['c1', 'c3', 'c2', 'c4'].
+     *
+     * Space-separated classes list is supported.
      *
      * @param string ...$classes
      * @return static
      */
     public function classAppend(string ...$classes): static
     {
-        return $this->classAdd(...$classes);
+        $appended = $this->classParse($classes);
+        if (!empty($appended)) {
+            $this->classRemove(...$appended);
+            array_push($this->cssClasses, ...$appended);
+        }
+        return $this;
     }
 
     /**
@@ -95,8 +111,14 @@ trait CssClass
     }
 
     /**
-     * Prepend a list of CSS classes to the classes array (space=-separated
-     * classes list is supported).
+     * Prepend a list of CSS classes to the CSS classes array, if an input class
+     * is already in the classes array, it will be removed from the array before
+     * the prepend operation.
+     *
+     * E.g. When prepending 'c2' and 'c4' to existing classes ['c1', 'c2', 'c3'],
+     * the outcome will be ['c2', 'c4', 'c1', 'c3'].
+     *
+     * Space-separated classes list is supported.
      *
      * @param string ...$classes
      * @return static
@@ -104,8 +126,11 @@ trait CssClass
      */
     public function classPrepend(string ...$classes): static
     {
-        $classes = $this->classParse($classes);
-        $this->cssClasses = array_merge($classes, array_diff($this->cssClasses, $classes));
+        $prepended = $this->classParse($classes);
+        if (!empty($prepended)) {
+            $this->classRemove(...$prepended);
+            array_unshift($this->cssClasses, ...$prepended);
+        }
         return $this;
     }
 

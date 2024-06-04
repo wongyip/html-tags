@@ -60,9 +60,12 @@ trait Attributes
                     if (in_array($setter, $this->tagAttrs) || in_array($setter, static::$complexAttrs)){
                         $this->$setter($val);
                     }
+                    /*
                     else {
-                        error_log(sprintf('TagAbstract.attributes() - Unrecognized attribute "%s"', $setter));
+                        $name = $this->name() ?? 'unknown';
+                        error_log(sprintf('TagAbstract.attributes() - Unrecognized attribute "%s" (name attribute: %s). ', $setter, $name));
                     }
+                    */
                 }
                 catch (Throwable $e) {
                     error_log(sprintf('TagAbstract.attributes() - Error: %s (%d)', $e->getMessage(), $e->getCode()));

@@ -4,6 +4,7 @@ namespace Wongyip\HTML\Demo;
 
 use Throwable;
 use Wongyip\HTML\Anchor;
+use Wongyip\HTML\Button;
 use Wongyip\HTML\Comment;
 use Wongyip\HTML\Form;
 use Wongyip\HTML\Input;
@@ -58,6 +59,28 @@ class Demo
         $tag = Anchor::make()->attributes($setAttributes)->contents('Correct Link');
 
         new Demo($code, $tag->render());
+    }
+
+    /**
+     * @return void
+     */
+    public static function button(): void
+    {
+        $code = <<<CODE
+        Tag::make('div')->contents(
+            Button::create('OK', 'button1'),
+            Button::submit('Go', 'button2'),
+            Button::reset(Tag::make('span')->contents('Cancel')->styleAdd('color: red;'), 'button3')
+        )->render()
+        CODE;
+        new Demo(
+            $code,
+            Tag::make('div')->contents(
+                Button::create('OK', 'button1'),
+                Button::submit('Go', 'button2'),
+                Button::reset(Tag::make('span')->contents('Cancel')->styleAdd('color: red;'), 'button3')
+            )->render()
+        );
     }
 
     /**

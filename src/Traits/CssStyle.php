@@ -6,6 +6,8 @@ use Wongyip\HTML\Utils\CSS;
 
 /**
  * CSS style attribute manipulation trait.
+ *
+ * @note This is an extremely rough implementation.
  */
 trait CssStyle
 {
