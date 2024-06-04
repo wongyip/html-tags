@@ -11,6 +11,7 @@ use Wongyip\HTML\Input;
 use Wongyip\HTML\Label;
 use Wongyip\HTML\Option;
 use Wongyip\HTML\Select;
+use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Table;
 use Wongyip\HTML\Tag;
 use Wongyip\HTML\TBody;

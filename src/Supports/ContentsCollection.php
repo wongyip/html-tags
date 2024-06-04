@@ -4,6 +4,7 @@ namespace Wongyip\HTML\Supports;
 
 use Wongyip\HTML\Comment;
 use Wongyip\HTML\RendererInterface;
+use Wongyip\HTML\Utils\ArrayUtils;
 
 class ContentsCollection implements RendererInterface
 {
@@ -142,23 +143,14 @@ class ContentsCollection implements RendererInterface
      */
     public function prepend(array|string|RendererInterface|null ...$contents): static
     {
-        foreach ($contents as $content) {
-            if (!empty($content)) {
-                if (is_array($content)) {
-                    // Not doing unshift directly, for the empty check.
-                    $this->prepend(...$content);
-                }
-                else {
-                    array_unshift($this->contents, $content);
-                }
-            }
-            else {
-                $this->errors[] = 'Attempted prepend empty content.';
-            }
-        }
+        /**
+         * As input accepts nested contents array, we shall flatten it before
+         * contents are prepended.
+         */
+        $contents = array_filter(ArrayUtils::flatten($contents));
+        array_unshift($this->contents, ...$contents);
         return $this;
     }
-
     /**
      * Render all contents in the collection, which is properly escaped and safe
      * to output as raw HTML.

@@ -129,7 +129,7 @@ trait CssClass
         $prepended = $this->classParse($classes);
         if (!empty($prepended)) {
             $this->classRemove(...$prepended);
-            array_unshift($this->cssClasses, ...$prepended);
+            array_unshift($this->cssClasses, ...$prepended); // In
         }
         return $this;
     }

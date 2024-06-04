@@ -124,7 +124,12 @@ abstract class TagAbstract implements RendererInterface
          */
         if (in_array($name, $this->tagAttrs)) {
             if (isset($arguments[0])) {
-                $this->attrsStore[$name] = $arguments[0];
+                if (empty($arguments[0])) {
+                    unset($this->attrsStore[$name]);
+                }
+                else {
+                    $this->attrsStore[$name] = $arguments[0];
+                }
                 return $this;
             }
             return $this->attrsStore[$name] ?? null;
