@@ -37,11 +37,62 @@ class Demo
      */
     public static function attribute(): void
     {
+        $code = <<<CODE
+        \$tag = Div::make()->contents('I am a DIV.');
+
+        // Basic
+        \$tag->attribute('id', 'basic');
+
+        // Complex (which is handle with specific setter).
+        \$tag->attribute('class', 'class-added-with-attribute-method');
+
+        // Simply ignored.
+        \$tag->attribute('stranger', 'No recognized attribite are ignore.');
+
+        // Make it custom with force.
+        \$tag->attribute('Custom Attribute', 'Added with force.', true);
+
+        // Force is no longer needed.
+        \$tag->attribute('Custom Attribute', 'May the force be with you.');
+        
+        echo \$tag->render();
+        CODE;
+
         $tag = Div::make()->contents('I am a DIV.');
+
+        // Basic
+        // $tag->attribute('id', 'basic');
+
+        // Complex (which is handle with specific setter).
         $tag->attribute('class', 'class-added-with-attribute-method');
+
+        // Simply ignored.
         $tag->attribute('stranger', 'No recognized attribite are ignore.');
-        $tag->attribute('Custom Attribute', 'May the force be with you!', true);
-        $tag->attribute('badPractice', 'Oh', true);
+
+        // Make it custom with force.
+        $tag->attribute('Custom Attribute', 'Added with force.', true);
+
+        // Force is no longer needed.
+        $tag->attribute('Custom Attribute', 'May the force be with you.');
+
+        new Demo($code, $tag->render());
+    }
+
+    /**
+     * @return void
+     */
+    public static function attribute2(): void
+    {
+        $tag = Div::make()->contents('I am a DIV.');
+
+        $tag->attribute('class', ['added-via', 'attribute-method']);
+        $tag->attribute('style', ['no: no', 'no: way']);
+
+        print_r([
+            '$tag->class()' => $tag->class(),
+            '$tag->attributes()' => $tag->attributes()
+        ]);
+
         new Demo('', $tag->render());
     }
 

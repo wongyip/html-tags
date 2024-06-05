@@ -20,9 +20,24 @@ trait CssStyle
     protected array $cssDeclarations = [];
 
     /**
-     * Get or set (replace) the style attribute. Setter take one or two arguments,
-     * where for example, style('color: brown;') and style('color', 'brown'), are
-     * identical in function.
+     * [Internal] Used by the attribute() method.
+     *
+     * @param mixed|null $set
+     * @return string|static
+     * @see Attributes::attribute()
+     */
+    protected function _style(mixed $set = null): string|static
+    {
+        if (is_null($set)) {
+            return $this->style();
+        }
+        return is_string($set) ? $this->style($set) : $this;
+    }
+
+    /**
+     * Get or set (replace) the CSS style. Setter take one or two arguments,
+     * e.g. style('color: brown') and style('color', 'brown') yield identical
+     * result.
      *
      * @param string|null $style Or CSS property.
      * @param string|null $value Effective for setter only.

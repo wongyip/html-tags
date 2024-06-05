@@ -12,16 +12,27 @@ use Throwable;
 trait Attributes
 {
     /**
-     * Internal storage of attributes listed in $tagAttrs, which have value set
+     * Internal storage of recognized and force-added attributes with value set
      * already (excluding attributes listed in $complexAttrs).
      *
      * @var array|string[]
      */
-    protected array $__attrs = [];
+    protected array $_attributes = [];
+    /**
+     * These attributes are get or set as in the $attributes array.
+     *
+     * @var array
+     */
+    protected array $_attrsNames = [];
 
     /**
      * Get or set a single tag attribute. Getter return null when attribute is
      * not set. Setter ignore unrecognized attribute, unless $forced is true.
+     * Setter unset the attribute if the input $value is an empty string.
+     *
+     * Avoid using this method to read/write any complex attributes like class
+     * and style, as they have more complex structure that this method is not
+     * capable to handle.
      *
      * @param string $attribute
      * @param mixed|null $value
@@ -30,39 +41,58 @@ trait Attributes
      */
     public function attribute(string $attribute, mixed $value = null, bool $forced = null): mixed
     {
+        /**
+         * Proxy to the complex attribute get/setter.
+         * @see CssClass::_class()
+         * @see CssStyle::_style()
+         */
+        if ($this->isComplexAttribute($attribute)) {
+            $method = '__' . $attribute;
+            return $this->$method($value);
+        }
+
+        // [Pinned] Complex attributes are handled before this line.
+
         // Get
         if (is_null($value)) {
-            if ($this->hasAttribute($attribute)) {
-                return key_exists($attribute, $this->__attrs)
-                    ? $this->__attrs[$attribute] // Plain, including custom attributes.
-                    : $this->$attribute();       // Complex attributes.
-            }
-            return null;
+            return $this->_attributes[$attribute] ?? null;
         }
+
         // Set
         if ($this->hasAttribute($attribute, $isCustom)) {
             // Previously added with force.
             if ($isCustom) {
-                $this->__attrs[$attribute] = $value;
+                $this->_attributes[$attribute] = $value;
             }
             else {
-                $this->$attribute($value);
+                // Empty string to unset
+                if (is_string($value) && empty($value)) {
+                    unset($this->_attributes[$attribute]);
+                }
+                else {
+                    $this->_attributes[$attribute] = $value;
+                }
             }
         }
         elseif ($forced) {
-            $this->__attrs[$attribute] = $value;
+            $this->_attributes[$attribute] = $value;
         }
         return $this;
     }
 
     /**
-     * Get or set the entire tag attributes array.
+     * Get or set multiple tag attributes.
      *
-     * Notes:
-     *  1. Not a direct get-setter.
-     *  2. Unrecognized attributes are ignored (not in $tagAttrs, nor $complexAttrs).
-     *  3. Tag "contents" is NOT an attribute.
-     *  4. If $withDataAttrs is TRUE, the data attributes (dataset) is included (getter only).
+     * Getter:
+     *  - Only set attributes are returned.
+     *  - Include data attributes if $withDataAttrs is true.
+     *
+     * Setter:
+     *  - Setting of unrecognized attributes are ignored, use the attribute()
+     *    method with $force:true instead.
+     *  - Ignores $withDataAttrs argument.
+     *
+     * Extra note: tag "contents" is NOT an attribute.
      *
      * @param array|null $attributes
      * @param bool|null $withDataAttrs
@@ -73,10 +103,10 @@ trait Attributes
         // Get
         if (is_null($attributes)) {
 
-            // Base
-            $attributes = $this->__attrs;
+            // Generic and custom attributes.
+            $attributes = $this->_attributes;
 
-            // Complex or dynamic attribute with its own getter.
+            // Complex attributes with their own getter.
             foreach (static::$complexAttrs as $getter) {
                 if ($value = $this->$getter()) {
                     $attributes[$getter] = $value;
@@ -90,16 +120,8 @@ trait Attributes
         }
 
         // Set
-        foreach ($attributes as $setter => $value) {
-            try {
-                // Only recognized.
-                if ($this->hasAttribute($setter)) {
-                    $this->$setter($value);
-                }
-            }
-            catch (Throwable $e) {
-                error_log(sprintf('TagAbstract.attributes() - Error: %s (%d)', $e->getMessage(), $e->getCode()));
-            }
+        foreach ($attributes as $name => $value) {
+            $this->attribute($name, $value);
         }
         return $this;
     }
@@ -115,10 +137,10 @@ trait Attributes
     public function hasAttribute(string $name, bool &$isCustom = null): bool
     {
         $isCustom = false;
-        if (in_array($name, $this->tagAttrs) || in_array($name, static::$complexAttrs)) {
+        if (in_array($name, $this->_attrsNames) || in_array($name, static::$complexAttrs)) {
             return true;
         }
-        elseif (key_exists($name, $this->__attrs)) {
+        elseif (key_exists($name, $this->_attributes)) {
             $isCustom = true;
             return true;
         }
@@ -143,5 +165,17 @@ trait Attributes
                 'readonly', 'required', 'reversed', 'selected',
             ]
         );
+    }
+
+    /**
+     * Whether the given attribute is a complex attribute (having tailor-made
+     * get/setter).
+     *
+     * @param string $attribute
+     * @return bool
+     */
+    protected function isComplexAttribute(string $attribute): bool
+    {
+        return in_array($attribute, static::$complexAttrs);
     }
 }

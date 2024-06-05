@@ -71,6 +71,11 @@ trait DataAttributes
      * @param array|null $dataset
      * @param int|null $namingScheme
      * @return array|static
+     * @uses TagAbstract::DATASET_DEFAULT
+     * @uses TagAbstract::DATASET_CAMEL
+     * @uses TagAbstract::DATASET_KEBAB
+     * @uses TagAbstract::DATASET_ATTRS
+     * @uses TagAbstract::DATASET_JSON
      */
     public function dataset(array $dataset = null, int $namingScheme = null) : array|static
     {

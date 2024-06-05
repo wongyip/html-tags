@@ -2,8 +2,6 @@
 
 namespace Wongyip\HTML;
 
-use Exception;
-use ReflectionClass;
 use Throwable;
 use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Traits\Attributes;
@@ -11,28 +9,32 @@ use Wongyip\HTML\Traits\Contents;
 use Wongyip\HTML\Traits\CssClass;
 use Wongyip\HTML\Traits\CssStyle;
 use Wongyip\HTML\Traits\DataAttributes;
+use Wongyip\HTML\Traits\Overloading;
 use Wongyip\HTML\Utils\Convert;
 
 /**
  * Abstract class with most methods implements.
  *
- * Attributes Get-setters
+ * IMPORTANT NOTE: Private or protected properties are exposed to read/write via
+ * the __call() method.
+ *
  * @method string|static id(string|null $value = null)
  * @method string|static name(string|null $value = null)
- *
- * Properties Get-setters
  * @property string $innerHTML
  * @property string $innerText
  */
 abstract class TagAbstract implements RendererInterface
 {
+    use Attributes, Contents, CssClass, CssStyle, DataAttributes, Overloading;
+
+    /**
+     * @see DataAttributes::dataset()
+     */
     const DATASET_DEFAULT = 0;
     const DATASET_CAMEL   = 0;
     const DATASET_KEBAB   = 1;
     const DATASET_ATTRS   = 2;
     const DATASET_JSON    = 3;
-
-    use Attributes, Contents, CssClass, CssStyle, DataAttributes;
 
     /**
      * Ultimate default tagName.
@@ -45,7 +47,7 @@ abstract class TagAbstract implements RendererInterface
      *
      * @var array|string[]
      */
-    protected array $__staticProps;
+    protected array $_staticProps;
     /**
      * These are attributes present in all tags.
      *
@@ -58,12 +60,6 @@ abstract class TagAbstract implements RendererInterface
      * @var array
      */
     protected static array $complexAttrs = ['class', 'style'];
-    /**
-     * These attributes are get or set as in the $attributes array.
-     *
-     * @var array
-     */
-    protected array $tagAttrs;
     /**
      * HTML Tag Name in lower-case.
      *
@@ -108,7 +104,7 @@ abstract class TagAbstract implements RendererInterface
         $this->siblingsBefore = new ContentsCollection();
 
         // Compile attributes list.
-        $this->tagAttrs = array_diff(
+        $this->_attrsNames = array_diff(
             array_unique(
                 array_merge(
                     static::$commonAttrs,
@@ -118,72 +114,6 @@ abstract class TagAbstract implements RendererInterface
             ),
             static::$complexAttrs
         );
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @return bool|static|TagAbstract|null
-     * @throws Exception
-     */
-    public function __call(string $name, array $arguments)
-    {
-        /**
-         * Get or set attribute if it is present in $tagAttrs.
-         */
-        if (in_array($name, $this->tagAttrs)) {
-            if (isset($arguments[0])) {
-                if (empty($arguments[0])) {
-                    unset($this->__attrs[$name]);
-                }
-                else {
-                    $this->__attrs[$name] = $arguments[0];
-                }
-                return $this;
-            }
-            return $this->__attrs[$name] ?? null;
-        }
-        /**
-         * Get or set property if:
-         *
-         *  1. Property exists.
-         *  2. Property name is NOT starting with _ (underscore).
-         *  3. Property is not static.
-         *
-         * @note Some properties are not supposed to change may be exposed.
-         */
-        if (!property_exists($this, $name)) {
-            throw new Exception(sprintf('Undefined method %s() called.', $name));
-        }
-        if (str_starts_with($name, '_')) {
-            throw new Exception(sprintf('Access to property with name started with underscore (%s) is not allowed.', $name));
-        }
-        if ($this->isStaticProp($name)) {
-            throw new Exception(sprintf('Access to static property (%s) is not allowed.', $name));
-        }
-        // Set property.
-        if (isset($arguments[0])) {
-            $this->$name = $arguments[0];
-            return $this;
-        }
-        // Get property.
-        return $this->$name ?? null;
-    }
-
-    /**
-     * @param string $name
-     * @return string
-     * @throws Exception
-     */
-    public function __get(string $name)
-    {
-        switch ($name) {
-            case 'innerHTML':
-                return $this->contentsRendered();
-            case 'innerText':
-                return strip_tags($this->contentsRendered());
-        }
-        throw new Exception(sprintf('Undefined property %s.', $name));
     }
 
     /**
@@ -303,11 +233,12 @@ abstract class TagAbstract implements RendererInterface
      * Get all available attributes (except complex attributes). There is no
      * setter as change of available attributes is not sensible.
      *
+     * @todo Change might needed.
      * @return array
      */
     public function tagAttrs(): array
     {
-        return $this->tagAttrs;
+        return $this->_attrsNames;
     }
 
     /**
@@ -349,19 +280,5 @@ abstract class TagAbstract implements RendererInterface
         }
         // Getter
         return $this->tagName;
-    }
-
-    /**
-     * Check if the given property is static.
-     *
-     * @param string $property
-     * @return bool
-     */
-    protected function isStaticProp(string $property): bool
-    {
-        if (!isset($this->__staticProps)) {
-            $this->__staticProps = array_keys((new ReflectionClass($this))->getStaticProperties() ?? []);
-        }
-        return in_array($property, $this->__staticProps);
     }
 }

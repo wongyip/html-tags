@@ -17,6 +17,22 @@ trait CssClass
     protected array $cssClasses = [];
 
     /**
+     * [Internal] Used by the attribute() method.
+     *
+     * @param mixed|null $set
+     * @return string|static
+     * @see Attributes::attribute()
+     */
+    protected function _class(mixed $set = null): string|static
+    {
+        if (is_null($set)) {
+            return $this->class();
+        }
+        $classes = is_array($set) ? $set : (is_scalar($set) ? [$set] : []);
+        return $this->class(...$classes);
+    }
+
+    /**
      * Get or set (replace) the class attribute. Setter accepts array or
      * space-seperated class list.
      *
