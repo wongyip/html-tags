@@ -4,7 +4,7 @@ namespace Wongyip\HTML\Supports;
 
 use Wongyip\HTML\Comment;
 use Wongyip\HTML\RendererInterface;
-use Wongyip\HTML\Utils\ArrayUtils;
+use Wongyip\HTML\Utils\Convert;
 
 class ContentsCollection implements RendererInterface
 {
@@ -147,7 +147,7 @@ class ContentsCollection implements RendererInterface
          * As input accepts nested contents array, we shall flatten it before
          * contents are prepended.
          */
-        $contents = array_filter(ArrayUtils::flatten($contents));
+        $contents = array_filter(Convert::flatten($contents));
         array_unshift($this->contents, ...$contents);
         return $this;
     }

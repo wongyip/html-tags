@@ -6,6 +6,7 @@ use Throwable;
 use Wongyip\HTML\Anchor;
 use Wongyip\HTML\Button;
 use Wongyip\HTML\Comment;
+use Wongyip\HTML\Div;
 use Wongyip\HTML\Form;
 use Wongyip\HTML\Input;
 use Wongyip\HTML\Label;
@@ -14,12 +15,14 @@ use Wongyip\HTML\Select;
 use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Table;
 use Wongyip\HTML\Tag;
+use Wongyip\HTML\TagAbstract;
 use Wongyip\HTML\TBody;
 use Wongyip\HTML\TD;
 use Wongyip\HTML\Textarea;
 use Wongyip\HTML\TH;
 use Wongyip\HTML\THead;
 use Wongyip\HTML\TR;
+use Wongyip\HTML\Utils\Convert;
 use Wongyip\HTML\Utils\Output;
 
 class Demo
@@ -27,6 +30,19 @@ class Demo
     public function __construct(string $code, string $output)
     {
         echo sprintf("\nCode: \n\n%s\n\nOutput:\n\n%s\n", $code, $output);
+    }
+
+    /**
+     * @return void
+     */
+    public static function attribute(): void
+    {
+        $tag = Div::make()->contents('I am a DIV.');
+        $tag->attribute('class', 'class-added-with-attribute-method');
+        $tag->attribute('stranger', 'No recognized attribite are ignore.');
+        $tag->attribute('Custom Attribute', 'May the force be with you!', true);
+        $tag->attribute('badPractice', 'Oh', true);
+        new Demo('', $tag->render());
     }
 
     /**
@@ -45,6 +61,7 @@ class Demo
             'name' => 'anchor1',
         ];
         \$tag = Anchor::make()->attributes(\$setAttributes)->contents('Correct Link');
+        \$tag->attribute('custom attribute name', )
         echo \$tag->render()
         CODE;
 
@@ -93,6 +110,21 @@ class Demo
             "echo Tag::make()->tagName('HR')->style('margin-bottom: 1rem;')->render();",
             Tag::make()->tagName('HR')->style('margin-bottom: 1rem;')->render()
         );
+    }
+
+    /**
+     * @return void
+     */
+    public static function case(): void
+    {
+        $input = 'String case coversion';
+        print_r([
+            'input' => $input,
+            'camel' => Convert::camel($input),
+            'kebab' => Convert::kebab($input),
+            'snake' => Convert::snake($input),
+            'studly' => Convert::studly($input),
+        ]);
     }
 
     /**
@@ -191,6 +223,43 @@ class Demo
             ->contentsPrepend(Option::create('one', 'First', true), Option::create('two', 'Second', null, true));
         $output = $tag->render();
         new Demo($code, $output);
+    }
+
+    /**
+     * @return void
+     */
+    public static function data(): void
+    {
+        $code = <<<CODE
+        \$data = [
+            'Foo'         => 'bar',
+            'someOption'  => 'Some Value',
+            'some-places' => 'Here & there.',
+            'truth'       => 'true'
+        ];
+        
+        echo Div::make()->data(\$data)->render();
+        CODE;
+
+        $data = [
+            'Foo'         => 'bar',
+            'someOption'  => 'Some Value',
+            'some-places' => 'Here & there.',
+            'truth'       => 'true'
+        ];
+        $tag = Div::make()->contents('I got data.')->dataset($data);
+
+        print_r([
+            'original' => $data,
+            'stored' => $tag->dataset(),
+            'attributes' => $tag->dataAttributes(),
+            'json' => $tag->datasetJSON(),
+        ]);
+
+        new Demo(
+            $code,
+            $tag->render()
+        );
     }
 
     /**

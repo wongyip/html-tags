@@ -4,11 +4,14 @@ namespace Wongyip\HTML;
 
 use Exception;
 use ReflectionClass;
+use Throwable;
 use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Traits\Attributes;
 use Wongyip\HTML\Traits\Contents;
 use Wongyip\HTML\Traits\CssClass;
 use Wongyip\HTML\Traits\CssStyle;
+use Wongyip\HTML\Traits\DataAttributes;
+use Wongyip\HTML\Utils\Convert;
 
 /**
  * Abstract class with most methods implements.
@@ -23,7 +26,13 @@ use Wongyip\HTML\Traits\CssStyle;
  */
 abstract class TagAbstract implements RendererInterface
 {
-    use Attributes, Contents, CssClass, CssStyle;
+    const DATASET_DEFAULT = 0;
+    const DATASET_CAMEL   = 0;
+    const DATASET_KEBAB   = 1;
+    const DATASET_ATTRS   = 2;
+    const DATASET_JSON    = 3;
+
+    use Attributes, Contents, CssClass, CssStyle, DataAttributes;
 
     /**
      * Ultimate default tagName.
@@ -125,14 +134,14 @@ abstract class TagAbstract implements RendererInterface
         if (in_array($name, $this->tagAttrs)) {
             if (isset($arguments[0])) {
                 if (empty($arguments[0])) {
-                    unset($this->attrsStore[$name]);
+                    unset($this->__attrs[$name]);
                 }
                 else {
-                    $this->attrsStore[$name] = $arguments[0];
+                    $this->__attrs[$name] = $arguments[0];
                 }
                 return $this;
             }
-            return $this->attrsStore[$name] ?? null;
+            return $this->__attrs[$name] ?? null;
         }
         /**
          * Get or set property if:
@@ -227,30 +236,34 @@ abstract class TagAbstract implements RendererInterface
     }
 
     /**
-     * Opening tag. The $adHocAttrs are merged into tag attributes, overwrite
-     * existing attributes by names, and used to render the tag for once only.
-     * Therefore, tag attributes are NOT updated with $adHocAttrs.
+     * Opening tag. The $adHocAttrs are merged into tag attributes (after the
+     * data attributes), overwrite existing attributes by names, and used to
+     * render the tag for once only. Therefore, tag attributes are NOT updated
+     * with $adHocAttrs.
      *
      * @param array|null $adHocAttrs
      * @return string
      */
     public function open(array $adHocAttrs = null): string
     {
+        // Everything: attributes << data attributes << ad hoc attributes
+        $attributes = array_merge($this->attributes(null, true), $adHocAttrs ?? []);
         $compiled = [];
-        $attributes = array_merge($this->attributes(), $adHocAttrs ?? []);
         foreach ($attributes as $attr => $val) {
             try {
                 if ($this->isBooleanAttribute($attr)) {
+                    // No value, print its name if true, skip it for false.
                     if ($val) {
                         $compiled[] = $attr;
                     }
                 }
                 else {
-                    $compiled[] = sprintf('%s="%s"', $attr, htmlspecialchars($val, ENT_COMPAT));
+                    // Name in kebab case, and value with proper escape of special chars.
+                    $compiled[] = sprintf('%s="%s"', Convert::kebab($attr), htmlspecialchars($val, ENT_COMPAT));
                 }
             }
-            catch (\Throwable $e) {
-                dd($e->getMessage(), $attr, $val, $this, $attributes);
+            catch (Throwable $e) {
+                error_log($e->getMessage()); // $attr, $val, $this, $attributes
             }
         }
         return empty($compiled)
