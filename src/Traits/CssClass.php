@@ -27,9 +27,11 @@ trait CssClass
      */
     protected function _class(mixed $set = null): string|static
     {
+        //Get
         if (is_null($set)) {
             return $this->class();
         }
+        // Set
         $classes = is_array($set) ? $set : (is_scalar($set) ? [$set] : []);
         return $this->class(...$classes);
     }
@@ -47,6 +49,7 @@ trait CssClass
         if (empty($classes)) {
             return implode(' ', $this->classes());
         }
+        // Set
         $this->cssClasses = Convert::flatten(...$classes);
         return $this;
     }

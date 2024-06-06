@@ -16,13 +16,13 @@ class Convert
     }
 
     /**
-     * @param mixed ...$contents
+     * @param mixed ...$elements
      * @return array
      */
-    public static function flatten(mixed...$contents): array
+    public static function flatten(mixed ...$elements): array
     {
         $flattened = [];
-        array_walk_recursive($contents, function($a) use (&$flattened) { $flattened[] = $a; });
+        array_walk_recursive($elements, function($a) use (&$flattened) { $flattened[] = $a; });
         return $flattened;
     }
 

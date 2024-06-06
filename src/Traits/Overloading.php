@@ -38,19 +38,12 @@ trait Overloading
             $error = 'static property';
         }
 
-        try {
-            if ($error) {
-                throw new Exception(sprintf('Undefined method %s() called (note: %s).', $name, $error));
-            }
+        $class = preg_replace("/.*\\\\/", '', get_class($this));
+        if ($error) {
+            throw new Exception(sprintf('Undefined method %s.%s() called (note: %s).', $class, $name, $error));
         }
-        catch (\Exception $e) {
-            print_r($e->getTrace());
-            exit;
-        }
-
 
         if (!in_array($name, $this->overloading())) {
-            $class = preg_replace("/.*\\\\/", '', get_class($this));
             error_log("*** DEPRECATED *** Get or set $class.$name without explicitly stated overloading!");
         }
 

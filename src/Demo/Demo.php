@@ -597,20 +597,32 @@ class Demo
     public static function select(): void
     {
         $code = <<<CODE
-        Select::create(
-            Option::create('red', 'Red is alternative.'),
-            Option::create('red', 'Green is choosen.', true),
-            Option::create('red', 'Blue is not allowed.', null, true),
-        )->render()
+        \$options = [
+            Option::create('R', 'Red is alternative.'),
+            array(
+                Option::create('G', 'Green is choosen.', true),
+                Option::create('B', 'Blue is not allowed.', null, true),
+            ),
+            'This is not an options.',
+            Option::create('Y', 'Yellow is the last option.'),
+        ];
+        \$select = Select::create(\$options)->render();
         CODE;
+
+        $options = [
+            Option::create('R', 'Red is alternative.'),
+            array(
+                Option::create('G', 'Green is choosen.', true),
+                Option::create('B', 'Blue is not allowed.', null, true),
+            ),
+            'This is not an options.',
+            Option::create('Y', 'Yellow is the last option.'),
+        ];
+        $select = Select::create($options);
 
         new Demo(
             $code,
-            Select::create(
-                Option::create('R', 'Red is alternative.'),
-                Option::create('G', 'Green is choosen.', true),
-                Option::create('B', 'Blue is not allowed.', null, true),
-            )->render()
+            $select->render()
         );
     }
 

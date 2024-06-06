@@ -104,6 +104,6 @@ trait DataAttributes
      */
     public function hasData(string $name): bool
     {
-        return in_array(Convert::camel($name), $this->dataset);
+        return key_exists(Convert::camel($name), $this->dataset);
     }
 }
