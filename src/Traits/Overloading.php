@@ -38,9 +38,16 @@ trait Overloading
             $error = 'static property';
         }
 
-        if ($error) {
-            throw new Exception(sprintf('Undefined method %s() called (note: %s).', $name, $error));
+        try {
+            if ($error) {
+                throw new Exception(sprintf('Undefined method %s() called (note: %s).', $name, $error));
+            }
         }
+        catch (\Exception $e) {
+            print_r($e->getTrace());
+            exit;
+        }
+
 
         if (!in_array($name, $this->overloading())) {
             $class = preg_replace("/.*\\\\/", '', get_class($this));

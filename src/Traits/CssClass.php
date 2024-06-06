@@ -3,9 +3,11 @@
 namespace Wongyip\HTML\Traits;
 
 use Throwable;
+use Wongyip\HTML\Utils\Convert;
+use Wongyip\HTML\Utils\CSS;
 
 /**
- * CSS class attribute manipulation trait.
+ * CSS class (complex attribute) manipulation trait.
  */
 trait CssClass
 {
@@ -41,15 +43,12 @@ trait CssClass
      */
     public function class(string|array ...$classes): string|static
     {
-        // Set
-        if (!empty($classes)) {
-            $this->cssClasses = [];
-            foreach ($classes as $c) {
-                $this->cssClasses = array_merge($this->cssClasses, is_array($c) ? $c : explode(' ', $c));
-            }
-            return $this;
+        // Get
+        if (empty($classes)) {
+            return implode(' ', $this->classes());
         }
-        return implode(' ', $this->classes());
+        $this->cssClasses = Convert::flatten(...$classes);
+        return $this;
     }
 
     /**
@@ -107,10 +106,10 @@ trait CssClass
      */
     public function classAppend(string ...$classes): static
     {
-        $appended = $this->classParse($classes);
-        if (!empty($appended)) {
-            $this->classRemove(...$appended);
-            array_push($this->cssClasses, ...$appended);
+        $appends = CSS::classArray(...$classes);
+        if (!empty($appends)) {
+            $this->classRemove(...$appends);
+            array_push($this->cssClasses, ...$appends);
         }
         return $this;
     }
@@ -142,10 +141,10 @@ trait CssClass
      */
     public function classPrepend(string ...$classes): static
     {
-        $prepended = $this->classParse($classes);
-        if (!empty($prepended)) {
-            $this->classRemove(...$prepended);
-            array_unshift($this->cssClasses, ...$prepended); // In
+        $prepends = CSS::classArray(...$classes);
+        if (!empty($prepends)) {
+            $this->classRemove(...$prepends);
+            array_unshift($this->cssClasses, ...$prepends); // In
         }
         return $this;
     }
@@ -159,16 +158,19 @@ trait CssClass
      */
     public function classRemove(string ...$classes): static
     {
-        $classes = $this->classParse($classes);
-        if (!empty($classes)) {
-            $this->cssClasses = array_diff($this->cssClasses, $classes);
+        $removes = CSS::classArray(...$classes);
+        if (!empty($removes)) {
+            $this->cssClasses = array_diff($this->cssClasses, $removes);
         }
         return $this;
     }
 
     /**
+     * [To be removed].
+     *
      * Parse input into array of CSS classes.
      *
+     * @deprecated
      * @param $classes
      * @return array
      */

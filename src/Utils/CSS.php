@@ -5,6 +5,18 @@ namespace Wongyip\HTML\Utils;
 class CSS
 {
     /**
+     * Convert a mixed set of CSS class string / array to plain array.
+     *
+     * @param array|string $classes
+     * @return array
+     */
+    public static function classArray(array|string ...$classes): array
+    {
+        $classes = Convert::flatten(...$classes);
+        return array_filter(array_map('trim', explode(' ', implode(' ', $classes))));
+    }
+
+    /**
      * Convert array of CSS declarations to CSS style string.
      *
      * e.g. ['width: 100%;', 'foo: bar;'] >>> 'width: 100%; foo: bar;'

@@ -279,6 +279,22 @@ class Demo
     /**
      * @return void
      */
+    public static function css(): void
+    {
+
+        $code = <<<CODE
+        \$tag = Tag::make('select')->name('color');
+        CODE;
+
+        $tag = Tag::make('div')->contents('CSS Class');
+        $tag->class('c1', 'c2 c3', 'c4', ['c5', ['c6', 'c7']]);
+        $output = $tag->render();
+        new Demo($code, $output);
+    }
+
+    /**
+     * @return void
+     */
     public static function data(): void
     {
         $code = <<<CODE

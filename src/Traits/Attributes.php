@@ -47,7 +47,7 @@ trait Attributes
          * @see CssStyle::_style()
          */
         if ($this->isComplexAttribute($attribute)) {
-            $method = '__' . $attribute;
+            $method = '_' . $attribute;
             return $this->$method($value);
         }
 
