@@ -68,9 +68,7 @@ class Caption extends TagAbstract
             ? (in_array($side, static::$sides) ? $side : static::DEFAULT_SIDE)
             : static::DEFAULT_SIDE;
 
-        return static::make()
-            ->contents($contents)
-            ->styleProperty('caption-side', $side);
+        return static::tag($contents)->styleProperty('caption-side', $side);
     }
 
 }

@@ -46,7 +46,7 @@ class Input extends TagAbstract
      */
     public static function create(string $name = null, string $type = null, string $id = null, bool $required = null, bool $disabled = null, bool $readonly = null, bool $checked = null, string $placeholder = null): static
     {
-        return static::make()->attributes(
+        return static::tag()->attributes(
             compact('name', 'type', 'id', 'checked', 'disabled', 'readonly', 'required', 'placeholder')
         );
     }

@@ -11,6 +11,7 @@ use Wongyip\HTML\Form;
 use Wongyip\HTML\Input;
 use Wongyip\HTML\Label;
 use Wongyip\HTML\Option;
+use Wongyip\HTML\RawHTML;
 use Wongyip\HTML\Select;
 use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Table;
@@ -38,7 +39,7 @@ class Demo
     public static function attribute(): void
     {
         $code = <<<CODE
-        \$tag = Div::make()->contents('I am a DIV.');
+        \$tag = Tag::make('div')->contents('I am a DIV.');
 
         // Basic
         \$tag->attribute('id', 'basic');
@@ -58,7 +59,7 @@ class Demo
         echo \$tag->render();
         CODE;
 
-        $tag = Div::make()->contents('I am a DIV.');
+        $tag = Tag::make('div')->contents('I am a DIV.');
 
         // Basic
         // $tag->attribute('id', 'basic');
@@ -83,17 +84,21 @@ class Demo
      */
     public static function attribute2(): void
     {
-        $tag = Div::make()->contents('I am a DIV.');
+        $code = <<<CODE
+        \$tag = Tag::make('div')->contents('I am a DIV.');
+        \$tag->attribute('class', ['added-via', 'attribute-method']);
+        \$tag->attribute('style', ['no: no', 'no: way']);
+        echo \$tag-=>render();
+        CODE;
 
+        $tag = Tag::make('div')->contents('I am a DIV.');
         $tag->attribute('class', ['added-via', 'attribute-method']);
         $tag->attribute('style', ['no: no', 'no: way']);
-
-        print_r([
-            '$tag->class()' => $tag->class(),
-            '$tag->attributes()' => $tag->attributes()
-        ]);
-
-        new Demo('', $tag->render());
+        new Demo($code, $tag->render());
+        new Demo(
+            '// DUMP',
+            print_r(['$tag->class()' => $tag->class(), '$tag->attributes()' => $tag->attributes() ], true)
+        );
     }
 
     /**
@@ -111,7 +116,7 @@ class Demo
             'id' => 'tag1',
             'name' => 'anchor1',
         ];
-        \$tag = Anchor::make()->attributes(\$setAttributes)->contents('Correct Link');
+        \$tag = Anchor::tag('Correct Link')->attributes(\$setAttributes);
         \$tag->attribute('custom attribute name', )
         echo \$tag->render()
         CODE;
@@ -125,7 +130,7 @@ class Demo
             'id' => 'tag1',
             'name' => 'anchor1',
         ];
-        $tag = Anchor::make()->attributes($setAttributes)->contents('Correct Link');
+        $tag = Anchor::tag('Correct Link')->attributes($setAttributes);
 
         new Demo($code, $tag->render());
     }
@@ -136,18 +141,25 @@ class Demo
     public static function button(): void
     {
         $code = <<<CODE
-        Tag::make('div')->contents(
-            Button::create('OK', 'button1'),
-            Button::submit('Go', 'button2'),
-            Button::reset(Tag::make('span')->contents('Cancel')->styleAdd('color: red;'), 'button3')
-        )->render()
+        echo
+            Div::tag(
+                Button::create('OK', 'button1'),
+                Button::submit('Go', 'button2'),
+                Button::reset(
+                    Tag::make('span')->contents('Cancel')->styleAdd('color: red;'),
+                    'button3'
+                )
+            )->render()
         CODE;
         new Demo(
             $code,
-            Tag::make('div')->contents(
+            Div::tag(
                 Button::create('OK', 'button1'),
                 Button::submit('Go', 'button2'),
-                Button::reset(Tag::make('span')->contents('Cancel')->styleAdd('color: red;'), 'button3')
+                Button::reset(
+                    Tag::make('span')->contents('Cancel')->styleAdd('color: red;'),
+                    'button3'
+                )
             )->render()
         );
     }
@@ -197,10 +209,10 @@ class Demo
         CODE;
 
         // Spell out everything if you care about who read your code.
-        $a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
+        $a1 = Anchor::tag()->href('/go/1')->target('_blank')->contents('Go 1');
 
         // When there is structural data (e.g. a data model), input attributes array maybe a good choice.
-        $a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
+        $a2 = Anchor::tag()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
 
         // To code a little less.
         $a3 = Anchor::create('/go/3', 'Go 3', '_blank');
@@ -226,11 +238,10 @@ class Demo
         CODE;
         new Demo(
             $code,
-            Comment::make()
-                ->contents('Comment ignores attributes set.')
+            Comment::tag('Comment ignores attributes set.')
                 ->class('ignored')
                 ->contentsAppend(Tag::make('div')->contents('Nested tag is fine.'))
-                ->contentsAppend(Comment::make()->contents('Nested comment ending brace is escaped.'))
+                ->contentsAppend(Comment::tag('Nested comment ending brace is escaped.'))
                 ->render()
         );
     }
@@ -251,9 +262,8 @@ class Demo
     /**
      * @return void
      */
-    public static function contents(): void
+    public static function contentsOverride(): void
     {
-
         $code = <<<CODE
         \$tag = Tag::make('select')->name('color');
         \$tag->contentsPrefixed->append(Comment::make()->contents('This is not affected by the contents* method.'));
@@ -265,13 +275,20 @@ class Demo
         echo \$tag->render();
         CODE;
 
-        $tag = Tag::make('select')->name('color');
-        $tag->contentsPrefixed->append(Comment::make()->contents('This is not affected by the contents* method.'));
-        $tag->contentsSuffixed->append(Comment::make()->contents('This is also not affected.'));
-        $tag->contents('Empty selection (this content will be removed).')
-            ->contents(Option::create('three', 'Third'))
-            ->contentsAppend(Option::create('four', 'Fourth', true))
-            ->contentsPrepend(Option::create('one', 'First', true), Option::create('two', 'Second', null, true));
+        $tag = Select::tag()
+            ->name('rank')
+            // Since contentsOverride() is taking the priority.
+            ->contents('Main contents of the \<select\> tag is ignored')
+            // Set option(s)
+            ->options(Option::create('this', 'will be repalced by the next call'))
+            // Replace all options
+            ->options(Option::create('3', 'Third'), Option::create('4', 'Fourth', true))
+            // Append ad prepend
+            ->optionsAppend([Option::create('5', 'Fifth', true), Option::create('6', 'Sixth', null, true), 'Only option tags will be added.'])
+            ->optionsPrepend(Option::create('1', 'First', true), Option::create('2', 'Second', null, true));
+        $tag->contentsPrefixed->append(Comment::tag('Before the option tags.'));
+        $tag->contentsSuffixed->append(Comment::tag('After the options tags.'));
+
         $output = $tag->render();
         new Demo($code, $output);
     }
@@ -314,7 +331,7 @@ class Demo
             'some-places' => 'Here & there.',
             'truth'       => 'true'
         ];
-        $tag = Div::make()->contents('I got data.')->dataset($data);
+        $tag = Tag::make('div')->contents('I got data.')->dataset($data);
 
         print_r([
             'original' => $data,
@@ -361,7 +378,7 @@ class Demo
     {
         new Demo(
             "Input::create('year', 'number', null, null, true)->disabled(false)->render();",
-            Input::create('year', 'number', null, null, true)->disabled(false)->render(),
+            Input::create('year', 'number', null, null, true)->disabled(true)->render(),
         );
     }
 
@@ -540,6 +557,18 @@ class Demo
     /**
      * @return void
      */
+    public static function raw(): void
+    {
+        $tag = Tag::make('i')->contents(RawHTML::ZWNJ())->class('fas', 'fa-info-circle');
+        new Demo(
+            '',
+            $tag->render()
+        );
+    }
+
+    /**
+     * @return void
+     */
     public static function siblings(): void
     {
         $code = <<<CODE
@@ -576,8 +605,6 @@ class Demo
         \$tag->siblingsAfter->append(Tag::make('div')->contents('Sibling After N'));
         echo \$tag->render();
         CODE;
-
-
 
         $tag = Tag::make('div');
         $tag->contents->append(Tag::make('p')->contents('Content 1'), Tag::make('p')->contents('Content N'));

@@ -3,7 +3,7 @@
 namespace Wongyip\HTML\Supports;
 
 use Wongyip\HTML\Comment;
-use Wongyip\HTML\RendererInterface;
+use Wongyip\HTML\Interfaces\RendererInterface;
 use Wongyip\HTML\Utils\Convert;
 
 class ContentsCollection implements RendererInterface
@@ -14,10 +14,6 @@ class ContentsCollection implements RendererInterface
      * @var array|string[]|RendererInterface[]
      */
     protected array $contents = [];
-    /**
-     * @var array
-     */
-    protected array $errors = [];
     /**
      * Parent that initiate this collection, maybe useful for rendering contents
      * conditionally.
@@ -65,19 +61,8 @@ class ContentsCollection implements RendererInterface
      */
     public function append(array|string|RendererInterface|null ...$contents): static
     {
-        foreach ($contents as $content) {
-            if (!empty($content)) {
-                if (is_array($content)) {
-                    // Not doing push directly, for the empty check.
-                    $this->append(...$content);
-                } else {
-                    $this->contents[] = $content;
-                }
-            }
-            else {
-                $this->errors[] = 'Attempted append empty content.';
-            }
-        }
+        $appends = array_filter(Convert::flatten($contents));
+        array_push($this->contents, ...$appends);
         return $this;
     }
 

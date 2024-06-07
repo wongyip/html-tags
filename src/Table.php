@@ -2,12 +2,13 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Interfaces\ContentsOverride;
 use Wongyip\HTML\Supports\ContentsCollection;
 
 /**
  * Table (Single set of caption + head + body only.).
  */
-class Table extends TagAbstract
+class Table extends TagAbstract implements ContentsOverride
 {
     protected string $tagName = 'table';
 
@@ -69,11 +70,14 @@ class Table extends TagAbstract
     /**
      * @inheritdoc
      */
-    protected function contentsBefore(): ContentsCollection
+    public function contentsOverride(): ContentsCollection
     {
+        // TODO: Implement contentsOverride() method.
         return new ContentsCollection(
             $this,
-            array_filter([$this->caption ?? '', $this->head ?? '', $this->body ?? '',])
+            $this->caption ?? '',
+            $this->head ?? '',
+            $this->body ?? ''
         );
     }
 
@@ -85,7 +89,7 @@ class Table extends TagAbstract
      */
     public static function create(THead|TagAbstract $thead = null, TBody|TagAbstract $tbody = null, TagAbstract|String $caption = null): static
     {
-        $table = static::make();
+        $table = new Table();
         if ($thead) {
             $table->body = $tbody;
         }

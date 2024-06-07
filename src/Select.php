@@ -2,14 +2,15 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Interfaces\ContentsOverride;
 use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Utils\Convert;
 
 /**
  * A basic implementation of a "\<select>" tag, where \<optgroup> is not
- * supported, yet.
+ * supported, yet. Note that this tag implements contentsOverride
  */
-class Select extends TagAbstract
+class Select extends TagAbstract implements ContentsOverride
 {
     protected string $tagName = 'select';
 
@@ -29,17 +30,17 @@ class Select extends TagAbstract
     /**
      * @inheritdoc
      */
-    protected function contentsBefore(): ContentsCollection
+    protected function contentsEmptyHook(): void
     {
-        return new ContentsCollection($this, $this->options);
+        $this->optionsEmpty();
     }
 
     /**
      * @inheritdoc
      */
-    protected function contentsEmptyHook(): void
+    public function contentsOverride(): ContentsCollection
     {
-        $this->options = [];
+        return new ContentsCollection($this, $this->options);
     }
 
     /**
@@ -50,7 +51,7 @@ class Select extends TagAbstract
      */
     public static function create(array|Option ...$options): static
     {
-        return static::make()->optionsAppend(...$options);
+        return static::tag()->optionsAppend(...$options);
     }
 
     /**
@@ -70,12 +71,13 @@ class Select extends TagAbstract
     /**
      * Get or set (replace) all options.
      *
-     * @param array|Option[] $options
+     * @param array|Option[]|Option $options
      * @return array|Option[]|static
      */
-    public function options(array $options = null): array|static
+    public function options(array|Option ...$options): array|static
     {
-        if (is_null($options)) {
+        // Get
+        if (empty($options)) {
             return $this->options;
         }
         // Set
@@ -87,7 +89,7 @@ class Select extends TagAbstract
     /**
      * Alias to append().
      *
-     * @param array|Option ...$options
+     * @param array|Option[]|Option $options
      * @return static
      */
     public function optionsAdd(array|Option ...$options): static
@@ -98,7 +100,7 @@ class Select extends TagAbstract
     /**
      * Append option(s).
      *
-     * @param array|Option ...$options
+     * @param array|Option[]|Option $options
      * @return static
      */
     public function optionsAppend(array|Option ...$options): static
@@ -106,6 +108,20 @@ class Select extends TagAbstract
         $flattened = Convert::flatten(...$options);
         $appends = array_filter($flattened, fn($option) => $option instanceof Option);
         array_push($this->options, ...$appends);
+        return $this;
+    }
+
+    /**
+     * Append option(s).
+     *
+     * @param array|Option[]|Option $options
+     * @return static
+     */
+    public function optionsPrepend(array|Option ...$options): static
+    {
+        $flattened = Convert::flatten(...$options);
+        $appends = array_filter($flattened, fn($option) => $option instanceof Option);
+        array_unshift($this->options, ...$appends);
         return $this;
     }
 

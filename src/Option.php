@@ -31,7 +31,7 @@ class Option extends TagAbstract
      */
     public static function create(string $value, string $text = null, bool $selected = null, bool $disabled = null): static
     {
-        return static::make()
+        return static::tag()
             ->attributes(compact('value', 'selected', 'disabled'))
             ->contents($text ?? $value);
     }

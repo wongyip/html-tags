@@ -30,7 +30,7 @@ class Label extends TagAbstract
      */
     public static function create(string $for): static
     {
-        return static::make()->attributes(compact('for'));
+        return static::tag()->attributes(compact('for'));
     }
 
 }

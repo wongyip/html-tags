@@ -49,6 +49,6 @@ class Textarea extends TagAbstract
      */
     public static function create(int $rows = null, int $cols = null): static
     {
-        return static::make()->attributes(compact('cols', 'rows'));
+        return static::tag()->attributes(compact('cols', 'rows'));
     }
 }

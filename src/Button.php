@@ -2,6 +2,8 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Interfaces\RendererInterface;
+
 /**
  * A basic implementation of an \<button\> tag.
  *
@@ -53,7 +55,7 @@ class Button extends TagAbstract
     public static function create(string|RendererInterface $contents = null, string $id = null, string $name = null, string $type = null): static
     {
         $type = $type ?? 'button';
-        $button = static::make()->attributes(compact('id', 'name', 'type'));
+        $button = static::tag()->attributes(compact('id', 'name', 'type'));
         return $contents ? $button->contents($contents) : $button;
     }
 
@@ -82,5 +84,4 @@ class Button extends TagAbstract
     {
         return static::create($contents, $id, $name, 'submit');
     }
-
 }

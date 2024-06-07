@@ -3,6 +3,9 @@
 namespace Wongyip\HTML;
 
 use Throwable;
+use Wongyip\HTML\Interfaces\ContentsOverride;
+use Wongyip\HTML\Interfaces\DynamicTagName;
+use Wongyip\HTML\Interfaces\RendererInterface;
 use Wongyip\HTML\Supports\ContentsCollection;
 use Wongyip\HTML\Traits\Attributes;
 use Wongyip\HTML\Traits\Contents;
@@ -68,29 +71,16 @@ abstract class TagAbstract implements RendererInterface
     protected string $tagName;
 
     /**
-     * Instantiate a new Tag.
+     * Instantiate a new Tag. If $extraAttrs is provided, it will be merge in to
+     * commonAttrs and addAttrs.
      *
-     * Notes:
-     *  1. Overwrite class-defined tagName if $tagName is provided.
-     *  2. Merge in to commonAttrs and addAttrs if $extraAttrs is provided.
-     *
-     * @param string|null $tagName
      * @param array|null $extraAttrs NAMES of extra attributes.
      */
-    public function __construct(string $tagName = null, array $extraAttrs = null)
+    public function __construct(array $extraAttrs = null)
     {
-        // Override
-        if ($tagName) {
-            // Might not success if not accepted.
-            $this->tagName($tagName);
-        }
-
-        // Normalize
-        $this->tagName = strtolower($this->tagName ?? static::DEFAULT_TAG_NAME);
-
-        // Patch
-        if (in_array($this->tagName, ['script', 'style'])) {
-            $this->tagName(static::DEFAULT_TAG_NAME);
+        // Default
+        if (!isset($this->tagName)) {
+            $this->tagName = static::DEFAULT_TAG_NAME;
         }
 
         // Init. inner contents collections.
@@ -150,22 +140,6 @@ abstract class TagAbstract implements RendererInterface
     }
 
     /**
-     * Shorthand instantiate.
-     *
-     * Notes:
-     *  1. Overwrite class-defined tagName if $tagName is provided.
-     *  2. Merge into commonAttrs and addAttrs if $extraAttrs is provided.
-     *
-     * @param string|null $tagName
-     * @param array|null $extraAttrs
-     * @return static
-     */
-    public static function make(string $tagName = null, array $extraAttrs = null): static
-    {
-        return new static($tagName, $extraAttrs);
-    }
-
-    /**
      * Opening tag. The $adHocAttrs are merged into tag attributes (after the
      * data attributes), overwrite existing attributes by names, and used to
      * render the tag for once only. Therefore, tag attributes are NOT updated
@@ -220,13 +194,29 @@ abstract class TagAbstract implements RendererInterface
         if ($this->isSelfClosing()) {
             return $beforeTag . $this->open($adHocAttrs) . $afterTag;
         }
+
+        // Main contents override.
+        $main = $this instanceof ContentsOverride ? $this->contentsOverride() : $this->contents;
+
         // Render everything for the rest.
         $prefixed = $this->contentsPrefixed->render();
         $before   = $this->contentsBefore()->render(null, ['parent' => static::tagName()]);
-        $contents = $this->contents->render(null, ['parent' => static::tagName()]);
+        $contents = $main->render(null, ['parent' => static::tagName()]);
         $after    = $this->contentsAfter()->render(null, ['parent' => static::tagName()]);
         $suffixed = $this->contentsSuffixed->render(null, ['parent' => static::tagName()]);
         return $beforeTag. $this->open($adHocAttrs) . $prefixed . $before . $contents . $after . $suffixed . $this->close() . $afterTag;
+    }
+
+    /**
+     * Instantiate a new Tag with the provided contents.
+     *
+     * @param array|string|RendererInterface|null ...$contents
+     * @return static
+     */
+    public static function tag(array|null|string|RendererInterface ...$contents): static
+    {
+        $tag = new static();
+        return empty($contents) ? $tag : $tag->contents(...$contents);
     }
 
     /**
@@ -251,34 +241,34 @@ abstract class TagAbstract implements RendererInterface
     public function tagName(string $tagName = null): string|TagAbstract|static
     {
         $tagName = trim(strtolower($tagName));
-        // Setter
-        if (!empty($tagName)) {
-            // Allowed
-            if (!in_array($tagName, ['script', 'style'])) {
-                // Standard
-                if (preg_match("/^[a-z][a-z1-6]*\$/", $tagName)) {
-                    $this->tagName = $tagName;
-                }
-                // Custom
-                elseif (!preg_match("/\s/", $tagName)) {
-                    $this->tagName = $tagName;
-                }
-                // Invalid
-                else {
-                    error_log(sprintf('TagAbstract.tagName() - Error: tagName "%s" is invalid.', $tagName));
-                }
-            }
-            else {
-                error_log(sprintf('TagAbstract.tagName() - Error: <%s> tag is not support.', $tagName));
-            }
-
-            // Ultimate default
-            if (!isset($this->tagName)) {
-                $this->tagName = static::DEFAULT_TAG_NAME;
-            }
-            return $this;
+        // Get
+        if (empty($tagName)) {
+            return $this->tagName;
         }
-        // Getter
-        return $this->tagName;
+
+        // Set
+        // Allowed
+        $class = preg_replace("/.*\\\\/", '', get_class($this));
+        if (!($this instanceof DynamicTagName)) {
+            error_log(sprintf('%s.tagName() - Tag does not implement DynamicTagName interface.', $class));
+        }
+        elseif (in_array($tagName, ['script', 'style'])) {
+            error_log(sprintf('%s.tagName() - Error: tagName "%s" is invalid.', $class, $tagName));
+        }
+        else{
+            // Standard
+            if (preg_match("/^[a-z][a-z1-6]*\$/", $tagName)) {
+                $this->tagName = $tagName;
+            }
+            // Custom
+            elseif (!preg_match("/\s/", $tagName)) {
+                $this->tagName = $tagName;
+            }
+            // Invalid
+            else {
+                error_log(sprintf('TagAbstract.tagName() - Error: tagName "%s" is invalid.', $tagName));
+            }
+        }
+        return $this;
     }
 }

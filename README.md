@@ -37,10 +37,10 @@ Tags may be rendered in different ways to fit into different scenarios.
 
 ```php
 // Spell out everything if you care about who read your code.
-$a1 = Anchor::make()->href('/go/1')->target('_blank')->contents('Go 1');
+$a1 = Anchor::tag()->href('/go/1')->target('_blank')->contents('Go 1');
 
 // When working with structural data like a data model.
-$a2 = Anchor::make()->attributes(['href' => '/go/2', 'target' => '_blank'])->contents('Go 2');
+$a2 = Anchor::tag('Go 2')->attributes(['href' => '/go/2', 'target' => '_blank']);
 
 // Code a little less with tailor-made creator-function.
 $a3 = Anchor::create('/go/3', 'Go 3', '_blank');

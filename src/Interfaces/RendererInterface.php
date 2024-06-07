@@ -1,6 +1,6 @@
 <?php
 
-namespace Wongyip\HTML;
+namespace Wongyip\HTML\Interfaces;
 
 interface RendererInterface
 {

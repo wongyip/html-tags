@@ -2,19 +2,21 @@
 
 namespace Wongyip\HTML;
 
-class RawHTML extends TagAbstract
+use Wongyip\HTML\Interfaces\RendererInterface;
+
+class RawHTML implements RendererInterface
 {
     /**
      * @var string
      */
-    protected string $rawHTML = '';
+    protected string $html = '';
 
     /**
-     * @inheritdoc
+     * @param string $html
      */
-    public function addAttrs(): array
+    public function __construct(string $html)
     {
-        return [];
+        $this->html = $html;
     }
 
     /**
@@ -28,7 +30,7 @@ class RawHTML extends TagAbstract
      */
     public function render(array $adHocAttrs = null, array $adHocOptions = null): string
     {
-        return $this->rawHTML;
+        return $this->html;
     }
 
     /**
@@ -39,9 +41,7 @@ class RawHTML extends TagAbstract
      */
     public static function create(string $html): static
     {
-        $tag = static::make();
-        $tag->rawHTML = $html;
-        return $tag;
+        return new static($html);
     }
 
     /**
@@ -51,9 +51,7 @@ class RawHTML extends TagAbstract
      */
     public static function NBSP(): static
     {
-        $tag = static::make();
-        $tag->rawHTML = '&nbsp;';
-        return $tag;
+        return new static('&nbsp;');
     }
 
     /**
@@ -63,8 +61,6 @@ class RawHTML extends TagAbstract
      */
     public static function ZWNJ(): static
     {
-        $tag = static::make();
-        $tag->rawHTML = '&zwnj;';
-        return $tag;
+        return new static('&zwnj;');
     }
 }

@@ -68,7 +68,7 @@ class Anchor extends TagAbstract
      */
     public static function create(string $href, string $caption, string $target = null, string $title = null): Anchor
     {
-        return static::make()
+        return static::tag()
             ->attributes(compact('href', 'target', 'title'))
             ->contents($caption);
     }

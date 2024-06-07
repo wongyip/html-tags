@@ -2,7 +2,8 @@
 
 namespace Wongyip\HTML\Traits;
 
-use Wongyip\HTML\RendererInterface;
+use Wongyip\HTML\Interfaces\ContentsOverride;
+use Wongyip\HTML\Interfaces\RendererInterface;
 use Wongyip\HTML\Supports\ContentsCollection;
 
 /**
@@ -11,7 +12,8 @@ use Wongyip\HTML\Supports\ContentsCollection;
 trait Contents
 {
     /**
-     * Collection of inner contents.
+     * Collection of main inner contents N.B. If contentsOverride() returns a
+     * ContentsCollection (even empty), this will NOT be rendered.
      *
      * @var ContentsCollection;
      */
@@ -44,8 +46,12 @@ trait Contents
     public ContentsCollection $siblingsBefore;
 
     /**
-     * [Shortcut] Getter return $this->contents->render(), setter replace all
-     * contents in the contents collection and returns the current Tag.
+     * Getter return rendered contents, if this implements the ContentsOverride
+     * interface, $contents will be superseded by the contentsOverride() method.
+     *
+     * Setter replaces all contents in the $contents ContentsCollection (or do
+     * nothing in case of this is a ContentsOverride interface) and returns the
+     * current Tag.
      *
      * @param array|string|RendererInterface|null ...$contents
      * @return string|static
@@ -54,9 +60,15 @@ trait Contents
     {
         // Get
         if (empty($contents)) {
+            if ($this instanceof ContentsOverride) {
+                return $this->contentsOverride()->render();
+            }
             return $this->contents->render();
         }
         // Set
+        if ($this instanceof ContentsOverride) {
+            return $this;
+        }
         $this->contentsEmpty()->contentsAppend(...$contents);
         return $this;
     }
@@ -75,13 +87,17 @@ trait Contents
 
     /**
      * [Shortcut] Like $this->contents->append(), but returns the current Tag
-     * instead of the ContentCollection object.
+     * instead of the ContentCollection object. Do nothing when this is a
+     * ContentsOverride interface.
      *
      * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
     public function contentsAppend(array|string|RendererInterface|null ...$contents): static
     {
+        if ($this instanceof ContentsOverride) {
+            return $this;
+        }
         $this->contents->append(...$contents);
         return $this;
     }
@@ -99,14 +115,16 @@ trait Contents
     }
 
     /**
-     * Remove all contents in contents collection, then invoke the emptyHook()
-     * method.
+     * Remove all contents in contents collection (or do nothing when this is a
+     * ContentsOverride interface), then invoke the emptyHook() method.
      *
      * @return static
      */
     public function contentsEmpty(): static
     {
-        $this->contents->empty();
+        if (!($this instanceof ContentsOverride)) {
+            $this->contents->empty();
+        }
         $this->contentsEmptyHook();
         return $this;
     }
@@ -124,25 +142,30 @@ trait Contents
 
     /**
      * [Shortcut] Like $this->contents->prepend(), but returns the current Tag
-     * instead of the ContentCollection object.
+     * instead of the ContentCollection object. Do nothing when this is a
+     * ContentsOverride interface.
      *
      * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
     public function contentsPrepend(array|string|RendererInterface|null ...$contents): static
     {
+        if ($this instanceof ContentsOverride) {
+            return $this;
+        }
         $this->contents->prepend(...$contents);
         return $this;
     }
 
     /**
-     * [Shortcut] Same as $this->contents->render().
+     * Proxy to $this->contents() (without any arguments). Therefore, returns
+     * the rendered string of $contents or contentsOverride().
      *
      * @return string
      */
     protected function contentsRendered(): string
     {
-        return $this->contents->render();
+        return $this->contents();
     }
 
     /**

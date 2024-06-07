@@ -79,19 +79,6 @@ class Form extends TagAbstract
     }
 
     /**
-     * **IMPORTANT**: All arguments are ignored, an empty POST form is returned.
-     * It is suggested to use the Form::get() or Form::post() methods.
-     *
-     * @param string|null $tagName
-     * @param array|null $extraAttrs
-     * @return static
-     */
-    public static function make(string $tagName = null, array $extraAttrs = null): static
-    {
-        return static::post();
-    }
-
-    /**
      * Make a POST form.
      *
      * @param string|null $action Default '', which will submit to the current URL.

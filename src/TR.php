@@ -2,19 +2,21 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Interfaces\ContentsOverride;
+use Wongyip\HTML\Interfaces\RendererInterface;
 use Wongyip\HTML\Supports\ContentsCollection;
 
 /**
  * Table Row
  */
-class TR extends TagAbstract
+class TR extends TagAbstract implements ContentsOverride
 {
     protected string $tagName = 'tr';
 
     /**
      * Table cells.
      *
-     * @var array|TD[]|TH|TagAbstract[]
+     * @var array|TD[]|TH[]
      */
     protected array $cells = [];
 
@@ -29,10 +31,10 @@ class TR extends TagAbstract
     /**
      * Append table cells (TD/TH).
      *
-     * @param TH|TD|TagAbstract ...$cells
+     * @param TH|TD|RendererInterface ...$cells
      * @return static
      */
-    public function addCells(TH|TD|TagAbstract ...$cells): static
+    public function addCells(TH|TD|RendererInterface ...$cells): static
     {
         $this->cells = array_merge($this->cells, $cells);
         return $this;
@@ -42,9 +44,9 @@ class TR extends TagAbstract
      * Get table cell by index (array key).
      *
      * @param int|string $key
-     * @return TD|TH|TagAbstract|null
+     * @return TD|TH|RendererInterface|null
      */
-    public function cell(int|string $key): TD|TH|TagAbstract|null
+    public function cell(int|string $key): TD|TH|RendererInterface|null
     {
         if (key_exists($key, $this->cells)) {
             return $this->cells[$key];
@@ -55,9 +57,9 @@ class TR extends TagAbstract
     /**
      * @inheritdoc
      */
-    protected function contentsBefore(): ContentsCollection
+    public function contentsOverride(): ContentsCollection
     {
-        return new ContentsCollection($this, $this->cells);
+        return new ContentsCollection($this, ...$this->cells);
     }
 
     /**
@@ -71,11 +73,11 @@ class TR extends TagAbstract
     /**
      * Create a table row (TR) with cells (TD/TH).
      *
-     * @param TH|TD|TagAbstract ...$cells
+     * @param TD|TH|RendererInterface ...$cells
      * @return static
      */
-    public static function create(TD|TH|TagAbstract ...$cells): static
+    public static function create(TD|TH|RendererInterface ...$cells): static
     {
-        return static::make()->addCells(...$cells);
+        return static::tag()->addCells(...$cells);
     }
 }

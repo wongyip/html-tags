@@ -2,19 +2,20 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Interfaces\ContentsOverride;
 use Wongyip\HTML\Supports\ContentsCollection;
 
 /**
  * Table Body
  */
-class TBody extends TagAbstract
+class TBody extends TagAbstract implements ContentsOverride
 {
     protected string $tagName = 'tbody';
 
     /**
      * Table Rows
      *
-     * @var array|TR[]|RendererInterface[]
+     * @var array|TR[]
      */
     protected array $rows = [];
 
@@ -29,7 +30,7 @@ class TBody extends TagAbstract
     /**
      * @inheritdoc
      */
-    protected function contentsBefore(): ContentsCollection
+    public function contentsOverride(): ContentsCollection
     {
         return new ContentsCollection($this, $this->rows);
     }
@@ -47,10 +48,10 @@ class TBody extends TagAbstract
      *
      * @todo rename to rowsAdd()
      *
-     * @param TR|TagAbstract ...$rows
+     * @param TR ...$rows
      * @return static
      */
-    public function addRows(TR|TagAbstract ...$rows): static
+    public function addRows(TR ...$rows): static
     {
         $this->rows = array_merge($this->rows, $rows);
         return $this;
@@ -59,21 +60,21 @@ class TBody extends TagAbstract
     /**
      * Create table body (or head) with rows (TR).
      *
-     * @param TR|TagAbstract ...$rows
+     * @param TR ...$rows
      * @return static
      */
-    public static function create(TR|TagAbstract ...$rows): static
+    public static function create(TR ...$rows): static
     {
-        return static::make()->addRows(...$rows);
+        return static::tag()->addRows(...$rows);
     }
 
     /**
      * Get table row (TR) by index (array key).
      *
      * @param int|string $key
-     * @return TR|TagAbstract|null
+     * @return TR|null
      */
-    public function row(int|string $key): TR|TagAbstract|null
+    public function row(int|string $key): TR|null
     {
         if (key_exists($key, $this->rows)) {
             return $this->rows[$key];

@@ -2,6 +2,8 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Interfaces\RendererInterface;
+
 /**
  * Table Data Cell
  */
@@ -18,11 +20,11 @@ class TD extends TagAbstract
     }
 
     /**
-     * @param TagAbstract|string ...$contents
+     * @param RendererInterface|string|null ...$contents
      * @return static
      */
-    public static function create(TagAbstract|string ...$contents): static
+    public static function create(RendererInterface|string|null ...$contents): static
     {
-        return static::make()->contents(...$contents);
+        return static::tag(...$contents);
     }
 }

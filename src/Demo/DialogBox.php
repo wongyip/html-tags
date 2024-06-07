@@ -23,7 +23,7 @@ class DialogBox extends TagAbstract
 
     public function __construct(string $tagName = null, array $extraAttrs = null)
     {
-        parent::__construct($tagName, $extraAttrs);
+        parent::__construct($extraAttrs);
 
         // Init. child tags.
         $this->heading = Tag::make('h4');
@@ -40,7 +40,7 @@ class DialogBox extends TagAbstract
      */
     public static function create(Tag|string $message, string $title, string $buttonCaption): static
     {
-        $tag = static::make();
+        $tag = new static();
         $tag->contents(Tag::make('p')->contents($message))->class('dialog-box');
         $tag->heading->contents($title);
         $tag->button->contents($buttonCaption);
@@ -54,7 +54,6 @@ class DialogBox extends TagAbstract
     {
         // Prefix named child(s) to contents before render.
         return new ContentsCollection($this->heading);
-        return [$this->heading];
     }
 
     public function contentsSuffixed(): array
