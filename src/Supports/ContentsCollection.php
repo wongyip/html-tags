@@ -121,6 +121,34 @@ class ContentsCollection implements RendererInterface
     }
 
     /**
+     * Instantiate with parent.
+     *
+     * @param RendererInterface $parent
+     * @return static
+     */
+    public static function of(RendererInterface $parent): static
+    {
+        return (new static)->parent($parent);
+    }
+
+    /**
+     * Get or set parent tag/renderer.
+     *
+     * @param RendererInterface|null $parent
+     * @return RendererInterface|$this|null
+     */
+    public function parent(RendererInterface $parent = null): RendererInterface|null|static
+    {
+        // Get
+        if (is_null($parent)) {
+            return $this->parent ?? null;
+        }
+        // Set
+        $this->parent = $parent;
+        return $this;
+    }
+
+    /**
      * Prepend contents to the collection.
      *
      * @param array|string|RendererInterface|null ...$contents
@@ -136,6 +164,7 @@ class ContentsCollection implements RendererInterface
         array_unshift($this->contents, ...$contents);
         return $this;
     }
+
     /**
      * Render all contents in the collection, which is properly escaped and safe
      * to output as raw HTML.
@@ -171,6 +200,17 @@ class ContentsCollection implements RendererInterface
         return empty($contents)
             ? $this->empty()
             : $this->empty()->append(...$contents);
-            // Infinite loop alert: DO NOT call the contents() method.
+        // Infinite loop alert: DO NOT call the contents() method.
+    }
+
+    /**
+     * Instantiate with contents.
+     *
+     * @param array|string|RendererInterface|null ...$contents
+     * @return static
+     */
+    public static function with(array|string|RendererInterface|null ...$contents): static
+    {
+        return (new static)->append(...$contents);
     }
 }

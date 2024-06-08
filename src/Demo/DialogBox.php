@@ -53,7 +53,7 @@ class DialogBox extends TagAbstract
     public function contentsBefore(): ContentsCollection
     {
         // Prefix named child(s) to contents before render.
-        return new ContentsCollection($this->heading);
+        return ContentsCollection::of($this)->contents($this->heading);
     }
 
     public function contentsSuffixed(): array

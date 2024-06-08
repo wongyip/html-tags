@@ -84,9 +84,9 @@ abstract class TagAbstract implements RendererInterface
         }
 
         // Init. inner contents collections.
-        $this->contents = new ContentsCollection($this);
-        $this->contentsPrefixed = new ContentsCollection($this);
-        $this->contentsSuffixed = new ContentsCollection($this);
+        $this->contents = ContentsCollection::of($this);
+        $this->contentsPrefixed = ContentsCollection::of($this);
+        $this->contentsSuffixed = ContentsCollection::of($this);
 
         // Init. sibling contents collections.
         // @todo Consider inject the parent of this tag.

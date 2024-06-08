@@ -40,7 +40,7 @@ class Select extends TagAbstract implements ContentsOverride
      */
     public function contentsOverride(): ContentsCollection
     {
-        return new ContentsCollection($this, $this->options);
+        return ContentsCollection::of($this)->contents($this->options);
     }
 
     /**

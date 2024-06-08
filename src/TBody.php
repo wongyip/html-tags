@@ -32,7 +32,7 @@ class TBody extends TagAbstract implements ContentsOverride
      */
     public function contentsOverride(): ContentsCollection
     {
-        return new ContentsCollection($this, $this->rows);
+        return ContentsCollection::of($this)->contents($this->rows);
     }
 
     /**

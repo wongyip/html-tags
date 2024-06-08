@@ -72,13 +72,13 @@ class Table extends TagAbstract implements ContentsOverride
      */
     public function contentsOverride(): ContentsCollection
     {
-        // TODO: Implement contentsOverride() method.
-        return new ContentsCollection(
-            $this,
-            $this->caption ?? '',
-            $this->head ?? '',
-            $this->body ?? ''
-        );
+        return
+            ContentsCollection::of($this)
+            ->contents(
+                $this->caption ?? '',
+                $this->head ?? '',
+                $this->body ?? ''
+            );
     }
 
     /**
