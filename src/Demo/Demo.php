@@ -423,8 +423,8 @@ class Demo
     public static function form(): void
     {
         new Demo(
-            "Form::post('upload.php', 'upload_form', 'green-form big-font')->enableUpload()->render();",
-            Form::post('upload.php', 'upload_form', 'green-form big-font')->enableUpload()->render()
+            "Form::post('upload.php', 'upload_form', 'green-form big-font')->enableUpload()->inert(true)->render();",
+            Form::post('upload.php', 'upload_form', 'green-form big-font')->enableUpload()->inert(true)->render()
         );
     }
 

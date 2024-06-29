@@ -3,6 +3,7 @@
 namespace Wongyip\HTML;
 
 use Exception;
+use Wongyip\HTML\Traits\NoAddAttrs;
 
 /**
  * A table caption.
@@ -15,6 +16,8 @@ use Exception;
  */
 class Caption extends TagAbstract
 {
+    use NoAddAttrs;
+
     const DEFAULT_SIDE = 'top';
 
     /**
@@ -43,14 +46,6 @@ class Caption extends TagAbstract
             // Let it go.
         }
         return parent::__call($name, $arguments);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function addAttrs(): array
-    {
-        return [];
     }
 
     /**

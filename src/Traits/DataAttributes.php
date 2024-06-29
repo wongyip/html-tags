@@ -9,7 +9,12 @@ use Wongyip\HTML\Utils\Convert;
  * Data-attributes manipulation trait.
  *
  * @note Experimental feature.
- * @see TagAbstract::open()
+ *
+ * @uses TagAbstract::DATASET_DEFAULT
+ * @uses TagAbstract::DATASET_CAMEL
+ * @uses TagAbstract::DATASET_KEBAB
+ * @uses TagAbstract::DATASET_ATTRS
+ * @uses TagAbstract::DATASET_JSON
  */
 trait DataAttributes
 {
@@ -23,11 +28,19 @@ trait DataAttributes
     /**
      * Get or set a single element in the dataset.
      *
+     * Notes:
+     *  - N.B. array value maybe added, but it will be JSON-encoded on output,
+     *    it is required to parse the JSON value when accessing at client-side.
+     *  - Bool will be output as string 'true' and 'false' in data-attribute of
+     *    the tag.
+     *
      * @param string $name
-     * @param float|int|string|null $value
-     * @return float|int|string|DataAttributes|null
+     * @param array|bool|float|int|string|null $value
+     * @return array|bool|float|int|string|null|static
+     * @see TagAbstract::open()
+     *
      */
-    public function data(string $name, float|int|string $value = null): float|int|string|null|static
+    public function data(string $name, array|bool|float|int|string $value = null): array|bool|float|int|string|null|static
     {
         // Normalize
         $name = Convert::camel($name);
@@ -66,16 +79,18 @@ trait DataAttributes
     /**
      * Get or replace the entire dataset.
      *
-     *  - Default $namingScheme is camel case.
+     *  Notes:
+     *   - N.B. array value maybe added, but it will be JSON-encoded on output,
+     *     it is required to parse the JSON value when accessing at client-side.
+     *   - Bool will be output as string 'true' and 'false' in data-attribute of
+     *     the tag.
+     *   - Default $namingScheme is camel case.
+     *
      *
      * @param array|null $dataset
      * @param int|null $namingScheme
      * @return array|static
-     * @uses TagAbstract::DATASET_DEFAULT
-     * @uses TagAbstract::DATASET_CAMEL
-     * @uses TagAbstract::DATASET_KEBAB
-     * @uses TagAbstract::DATASET_ATTRS
-     * @uses TagAbstract::DATASET_JSON
+     * @see  TagAbstract::open()
      */
     public function dataset(array $dataset = null, int $namingScheme = null) : array|static
     {

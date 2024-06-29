@@ -26,7 +26,7 @@ class Button extends TagAbstract
         return [
             'autofocus', 'disabled',
             'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget',
-            'popovertarget', 'popovertargetaction', 'name', 'type', 'value',
+            'popovertarget', 'popovertargetaction', 'ype', 'value',
         ];
     }
 

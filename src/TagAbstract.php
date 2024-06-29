@@ -22,7 +22,9 @@ use Wongyip\HTML\Utils\Convert;
  * the __call() method.
  *
  * @method string|static id(string|null $value = null)
+ * @method bool|static inert(bool|null $value = null)
  * @method string|static name(string|null $value = null)
+ * @method string|static title(string|null $value = null)
  * @property string $innerHTML
  * @property string $innerText
  */
@@ -52,11 +54,12 @@ abstract class TagAbstract implements RendererInterface
      */
     protected array $_staticProps;
     /**
-     * These are attributes present in all tags.
+     * Global HTML attributes present in all tags. N.B. This is far less than a
+     * full list of all global attributes, only the most used are picked.
      *
      * @var array|string[]
      */
-    protected static array $commonAttrs = ['id', 'name'];
+    protected static array $globalAttrs = ['id', 'inert', 'name', 'title'];
     /**
      * These are stored out of the $attributes array.
      *
@@ -97,7 +100,7 @@ abstract class TagAbstract implements RendererInterface
         $this->_attrsNames = array_diff(
             array_unique(
                 array_merge(
-                    static::$commonAttrs,
+                    static::$globalAttrs,
                     $this->addAttrs(),
                     $extraAttrs ?? []
                 )
@@ -163,6 +166,31 @@ abstract class TagAbstract implements RendererInterface
                 }
                 else {
                     // Name in kebab case, and value with proper escape of special chars.
+                    if (!is_scalar($val)) {
+                        /**
+                         * Make it string/JSON in case of data attribute.
+                         * @todo More documentation needed.
+                         */
+                        if (str_starts_with($attr, 'data-')) {
+                            if (is_bool($val)) {
+                                $val = $val ? 'true' : 'false';
+                            }
+                            else {
+                                try {
+                                    $val = json_encode($val);
+                                }
+                                catch (Throwable $e) {
+                                    error_log('TagAbstract.open - invalid value of data attribute: ' . $attr);
+                                    error_log('TagAbstract.open - [Exception] ' . $e->getMessage());
+                                    $val = '';
+                                }
+                            }
+                        }
+                        else {
+                            error_log('TagAbstract.open - non-scalar attribute value is not allowed for non-data attribute, output empty value for safety.');
+                            $val = '';
+                        }
+                    }
                     $compiled[] = sprintf('%s="%s"', Convert::kebab($attr), htmlspecialchars($val, ENT_COMPAT));
                 }
             }
@@ -170,6 +198,7 @@ abstract class TagAbstract implements RendererInterface
                 error_log($e->getMessage()); // $attr, $val, $this, $attributes
             }
         }
+
         return empty($compiled)
             ? sprintf($this->isSelfClosing() ? '<%s />' : '<%s>', $this->tagName())
             : sprintf($this->isSelfClosing() ? '<%s %s />' : '<%s %s>', $this->tagName(), implode(' ', $compiled));

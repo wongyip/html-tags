@@ -25,9 +25,13 @@ class ContentsCollection implements RendererInterface
     protected RendererInterface $parent;
 
     /**
+     *
      * Renderable Collection of Contents. N.B. The first argument can be an
      * RendererInterface as the parent of the ContentsCollection object to be
      * instantiated, insert null as no parent.
+     *
+     * @note Use the static of() and with() constructors are recommended for
+     * @note less confusing.
      *
      * @param RendererInterface|null $parent Optional parent tag.
      * @param array|string|RendererInterface|null ...$contents

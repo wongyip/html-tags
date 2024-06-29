@@ -4,12 +4,15 @@ namespace Wongyip\HTML;
 
 use Wongyip\HTML\Interfaces\ContentsOverride;
 use Wongyip\HTML\Supports\ContentsCollection;
+use Wongyip\HTML\Traits\NoAddAttrs;
 
 /**
  * Table (Single set of caption + head + body only.).
  */
 class Table extends TagAbstract implements ContentsOverride
 {
+    use NoAddAttrs;
+
     protected string $tagName = 'table';
 
     /**
@@ -30,14 +33,6 @@ class Table extends TagAbstract implements ContentsOverride
      * @var THead|TagAbstract
      */
     public THead|TagAbstract $head;
-
-    /**
-     * @inheritdoc
-     */
-    public function addAttrs(): array
-    {
-        return [];
-    }
 
     /**
      * Get or set caption tag. Setter replace the current if input is a Caption

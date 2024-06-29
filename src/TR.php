@@ -5,12 +5,15 @@ namespace Wongyip\HTML;
 use Wongyip\HTML\Interfaces\ContentsOverride;
 use Wongyip\HTML\Interfaces\RendererInterface;
 use Wongyip\HTML\Supports\ContentsCollection;
+use Wongyip\HTML\Traits\NoAddAttrs;
 
 /**
  * Table Row
  */
 class TR extends TagAbstract implements ContentsOverride
 {
+    use NoAddAttrs;
+
     protected string $tagName = 'tr';
 
     /**
@@ -19,14 +22,6 @@ class TR extends TagAbstract implements ContentsOverride
      * @var array|TD[]|TH[]
      */
     protected array $cells = [];
-
-    /**
-     * @inheritdoc
-     */
-    public function addAttrs(): array
-    {
-        return [];
-    }
 
     /**
      * Append table cells (TD/TH).

@@ -12,7 +12,6 @@ use Exception;
  *  3. Additional helper target[Blank|Parent|Self|Top] methods.
  *
  * @method string|static href(string|null $value = null)
- * @method string|static title(string|null $value = null)
  * @method string|static target(string|null $value = null)
  *
  * @method static targetBlank() Opens the linked document in a new window or tab.
@@ -54,7 +53,7 @@ class Anchor extends TagAbstract
      */
     public function addAttrs(): array
     {
-        return ['href', 'target', 'title'];
+        return ['href', 'target'];
     }
 
     /**
