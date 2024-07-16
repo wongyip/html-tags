@@ -11,6 +11,8 @@ use Throwable;
  */
 trait Attributes
 {
+    use EnumeratedAttributes;
+
     /**
      * Internal storage of recognized and force-added attributes with value set
      * already (excluding attributes listed in $complexAttrs).
@@ -49,6 +51,14 @@ trait Attributes
         if ($this->isComplexAttribute($attribute)) {
             $method = '_' . $attribute;
             return $this->$method($value);
+        }
+
+        /**
+         * Let the corresponding get/setter handle it.
+         * @see EnumeratedAttributes
+         */
+        if ($this->isEnumeratedAttribute($attribute)) {
+            return $this->$attribute($value);
         }
 
         // [Pinned] Complex attributes are handled before this line.

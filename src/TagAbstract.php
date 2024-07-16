@@ -22,8 +22,12 @@ use Wongyip\HTML\Utils\Convert;
  * the __call() method.
  *
  * @method string|static id(string|null $value = null)
+ * @method bool|static hidden(bool|null $value = null)
  * @method bool|static inert(bool|null $value = null)
+ * @method string|static lang(string|null $value = null)
  * @method string|static name(string|null $value = null)
+ * @method string|static role(string|null $value = null)
+ * @method string|static tabindex(string|null $value = null)
  * @method string|static title(string|null $value = null)
  * @property string $innerHTML
  * @property string $innerText
@@ -59,7 +63,7 @@ abstract class TagAbstract implements RendererInterface
      *
      * @var array|string[]
      */
-    protected static array $globalAttrs = ['id', 'inert', 'name', 'title'];
+    protected static array $globalAttrs = ['hidden', 'id', 'inert', 'lang', 'name', 'role', 'tabindex', 'title'];
     /**
      * These are stored out of the $attributes array.
      *

@@ -129,6 +129,25 @@ trait CssClass
     }
 
     /**
+     * Append the input $class if $condition is TRUE, or remove it if $condition
+     * is FALSE.
+     *
+     * @param string $class
+     * @param bool $condition
+     * @return $this
+     */
+    public function classIf(string $class, bool $condition): static
+    {
+        if ($condition) {
+            $this->classAppend($class);
+        }
+        else {
+            $this->classRemove($class);
+        }
+        return $this;
+    }
+
+    /**
      * Prepend a list of CSS classes to the CSS classes array, if an input class
      * is already in the classes array, it will be removed from the array before
      * the prepend operation.

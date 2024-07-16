@@ -23,10 +23,11 @@ class Button extends TagAbstract
      */
     public function addAttrs(): array
     {
+        // Global attributes (incomplete list).
         return [
             'autofocus', 'disabled',
             'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget',
-            'popovertarget', 'popovertargetaction', 'ype', 'value',
+            'popovertarget', 'popovertargetaction', 'type', 'value',
         ];
     }
 
