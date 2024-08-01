@@ -86,10 +86,10 @@ class Table extends TagAbstract implements ContentsOverride
     {
         $table = new Table();
         if ($thead) {
-            $table->body = $tbody;
+            $table->head = $thead;
         }
         if ($tbody) {
-            $table->head = $thead;
+            $table->body = $tbody;
         }
         if ($caption) {
             $table->caption($caption);
