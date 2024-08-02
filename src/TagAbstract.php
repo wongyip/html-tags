@@ -170,24 +170,27 @@ abstract class TagAbstract implements RendererInterface
                 }
                 else {
                     // Name in kebab case, and value with proper escape of special chars.
-                    if (!is_scalar($val)) {
+                    if (is_bool($val)) {
+                        if (str_starts_with($attr, 'data-')) {
+                            $val = $val ? 'true' : 'false';
+                        }
+                        else {
+                            error_log(sprintf('TagAbstract.open - type conversion notice: attribute %s has boolean value.', $attr));
+                        }
+                    }
+                    elseif (!is_scalar($val)) {
                         /**
                          * Make it string/JSON in case of data attribute.
                          * @todo More documentation needed.
                          */
                         if (str_starts_with($attr, 'data-')) {
-                            if (is_bool($val)) {
-                                $val = $val ? 'true' : 'false';
+                            try {
+                                $val = json_encode($val);
                             }
-                            else {
-                                try {
-                                    $val = json_encode($val);
-                                }
-                                catch (Throwable $e) {
-                                    error_log('TagAbstract.open - invalid value of data attribute: ' . $attr);
-                                    error_log('TagAbstract.open - [Exception] ' . $e->getMessage());
-                                    $val = '';
-                                }
+                            catch (Throwable $e) {
+                                error_log('TagAbstract.open - invalid value of data attribute: ' . $attr);
+                                error_log('TagAbstract.open - [Exception] ' . $e->getMessage());
+                                $val = '';
                             }
                         }
                         else {
