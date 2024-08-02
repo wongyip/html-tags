@@ -84,7 +84,7 @@ class Table extends TagAbstract implements ContentsOverride
      */
     public static function create(THead|TagAbstract $thead = null, TBody|TagAbstract $tbody = null, TagAbstract|String $caption = null): static
     {
-        $table = new Table();
+        $table = new static();
         if ($thead) {
             $table->head = $thead;
         }
