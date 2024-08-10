@@ -2,8 +2,6 @@
 
 namespace Wongyip\HTML\Traits;
 
-use Throwable;
-
 /**
  * Attributes manipulation trait.
  *
@@ -26,6 +24,13 @@ trait Attributes
      * @var array
      */
     protected array $_attrsNames = [];
+    /**
+     * Blank attribute value (empty string) is not store and not render unless
+     * specified here.
+     *
+     * @var array
+     */
+    protected array $emptyValueAttributes = [];
 
     /**
      * Get or set a single tag attribute. Getter return null when attribute is
@@ -35,6 +40,9 @@ trait Attributes
      * Avoid using this method to read/write any complex attributes like class
      * and style, as they have more complex structure that this method is not
      * capable to handle.
+     *
+     * Input empty value to unset the attribute, unless the attribute is in the
+     * $emptyValueAttributes array,
      *
      * @param string $attribute
      * @param mixed|null $value
@@ -75,8 +83,8 @@ trait Attributes
                 $this->_attributes[$attribute] = $value;
             }
             else {
-                // Empty string to unset
-                if (is_string($value) && empty($value)) {
+                // Empty string to unset, unless attribute allows empty value.
+                if (is_string($value) && empty($value) && !in_array($attribute, $this->emptyValueAttributes)) {
                     unset($this->_attributes[$attribute]);
                 }
                 else {

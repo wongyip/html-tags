@@ -21,6 +21,11 @@ class Option extends TagAbstract
     }
 
     /**
+     * @inheritdoc
+     */
+    protected array $emptyValueAttributes = ['value'];
+
+    /**
      * Create an Option tag.
      *
      * @param string $value Required, empty string is accepted.
