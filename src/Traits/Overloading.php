@@ -63,13 +63,12 @@ trait Overloading
      */
     public function __get(string $name)
     {
-        switch ($name) {
-            case 'innerHTML':
-                return $this->contentsRendered();
-            case 'innerText':
-                return strip_tags($this->contentsRendered());
-        }
-        throw new Exception(sprintf('Undefined property %s.', $name));
+        return match ($name) {
+            'innerHTML' => $this->contentsRendered(),
+            'innerText' => strip_tags($this->contentsRendered()),
+            default => null,
+        };
+        // throw new Exception(sprintf('Undefined property %s.', $name));
     }
 
     /**
