@@ -125,6 +125,26 @@ class ContentsCollection implements RendererInterface
     }
 
     /**
+     * Indicates that there are contents in the collection.
+     *
+     * @return bool
+     */
+    public function hasContents(): bool
+    {
+        return !empty($this->contents);
+    }
+
+    /**
+     * Indicates that there is no contents in the collection.
+     *
+     * @return bool
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this->contents);
+    }
+
+    /**
      * Instantiate with parent.
      *
      * @param RendererInterface $parent
