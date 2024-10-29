@@ -84,7 +84,7 @@ trait Attributes
             }
             else {
                 // Empty string to unset, unless attribute allows empty value.
-                if (is_string($value) && empty($value) && !in_array($attribute, $this->emptyValueAttributes)) {
+                if (is_string($value) && (strlen($value) === 0) && !in_array($attribute, $this->emptyValueAttributes)) {
                     unset($this->_attributes[$attribute]);
                 }
                 else {
