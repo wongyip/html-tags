@@ -675,5 +675,52 @@ class Demo
                 ->render()
         );
     }
+
+    public static function zen(): void
+    {
+        $code = <<<CODE
+        \$zens = [
+            'div#foo.c1',
+            'div#foo.c1.c2',
+            'div#foo.c1.c2#bar',
+            'div#foo.c1.c2#bar.c3',
+            '#foo.c1',
+            '#foo.c1.c2',
+            '#foo.c1.c2#bar',
+            '#foo.c1.c2#bar.c3',
+            '.c1#foo',
+            '.c1.c2#foo',
+            '.c1.c2#foo#bar',
+            '.c1.c2#foo.c3#bar',
+        ];
+        
+        array_walk(
+            \$zens,
+            function (\$zen) {
+                echo Tag::make(\$zen)->render() . PHP_EOL;
+            }
+        );
+        CODE;
+
+        $zens = [
+            'div#foo.c1', 'div#foo.c1.c2', 'div#foo.c1.c2#bar', 'div#foo.c1.c2#bar.c3',
+            '#foo.c1', '#foo.c1.c2', '#foo.c1.c2#bar', '#foo.c1.c2#bar.c3',
+            '.c1#foo', '.c1.c2#foo', '.c1.c2#foo#bar', '.c1.c2#foo.c3#bar',
+        ];
+
+        $results = '';
+        array_walk(
+            $zens,
+            function ($zen) use (&$results) {
+                $results .= Tag::make($zen)->render() . PHP_EOL;
+            }
+        );
+
+        new Demo(
+            $code,
+            $results
+        );
+
+    }
 }
 

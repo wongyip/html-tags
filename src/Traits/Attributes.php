@@ -2,6 +2,9 @@
 
 namespace Wongyip\HTML\Traits;
 
+use Wongyip\HTML\TagAbstract;
+use Wongyip\HTML\Utils\Convert;
+
 /**
  * Attributes manipulation trait.
  *
@@ -19,9 +22,11 @@ trait Attributes
      */
     protected array $_attributes = [];
     /**
-     * These attributes are get or set as in the $attributes array.
+     * Supported attributes list. These attributes are get or set as in the
+     * $attributes array.
      *
      * @var array
+     * @see Overloading::__call()
      */
     protected array $_attrsNames = [];
     /**
@@ -31,6 +36,22 @@ trait Attributes
      * @var array
      */
     protected array $emptyValueAttributes = [];
+
+    /**
+     * Add one or more attributes to the supported attributes list.
+     *
+     * @param string|array ...$names
+     * @return $this
+     */
+    public function addAttributes(string|array ...$names): static
+    {
+        foreach (Convert::flatten($names) as $name) {
+            if (!$this->hasAttribute($name) && !in_array($name, static::$complexAttrs)) {
+                $this->_attrsNames[] = $name;
+            }
+        }
+        return $this;
+    }
 
     /**
      * Get or set a single tag attribute. Getter return null when attribute is
