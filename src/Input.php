@@ -4,6 +4,7 @@ namespace Wongyip\HTML;
 
 /**
  * A basic implementation of an \<input\> tag.
+ * @method string|null|static autocomplete(string|null $set = null) Get or set the autocomplete attribute  Set 'off' to disable or set 'new-password' in case of requesting new password (whether to comply or not is up to the browser).
  * @method bool|null|static checked(bool|null $set = null) Only for input with type of 'checkbox' and 'radio'.
  * @method bool|null|static disabled(bool|null $set = null) Disabled input is not editable, and is NOT transmitted when the form is submitted.
  * @method string|null|static placeholder(string|null $set = null)
@@ -11,6 +12,10 @@ namespace Wongyip\HTML;
  * @method bool|null|static required(bool|null $set = null)
  * @method string|null|static type(string|null $set = null)
  * @method number|string|bool|null|static value(number|string|bool|null $set = null)
+ *
+ * @see https://www.w3schools.com/tags/tag_input.asp
+ * @see https://www.w3schools.com/tags/att_input_autocomplete.asp
+ * @see https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Turning_off_form_autocompletion
  */
 class Input extends TagAbstract
 {
@@ -27,7 +32,7 @@ class Input extends TagAbstract
         return [
             'type', 'value',
             'checked', 'disabled', 'readonly', 'required',
-            'placeholder'
+            'placeholder', 'autocomplete',
         ];
     }
 

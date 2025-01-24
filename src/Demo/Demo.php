@@ -385,6 +385,24 @@ class Demo
     /**
      * @return void
      */
+    public static function inputAutoComplete(): void
+    {
+        $code = <<<CODE
+        Input::create('username')->autocomplete('off')->render(),
+        Input::create('password')->type('password')->autocomplete('new-password')->render(),
+        CODE;
+        new Demo(
+            $code,
+            implode(PHP_EOL, [
+                $tag = Input::create('username')->autocomplete('off')->render(),
+                $tag = Input::create('password')->type('password')->autocomplete('new-password')->render(),
+            ])
+        );
+    }
+
+    /**
+     * @return void
+     */
     public static function errors(): void
     {
         Output::header('Test Error 1: setting of static prop. via the __call() method.');

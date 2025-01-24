@@ -6,6 +6,7 @@ namespace Wongyip\HTML;
  * Basic HTTP \<form\> tag.
  *
  * @method string|static action(string|null $value = null) Path or URL.
+ * @method string|static autocomplete(string|null $value = null) Get or set the autocomplete attribute. Set 'off' to disable to auto-complete all fields (whether to comply or not is up to the browser).
  * @method string|static enctype(string|null $value = null) Default empty for 'application/x-www-form-urlencoded', set 'multipart/form-data' for upload form, set 'text/plain' for no encoding (not recommended)..
  * @method string|static method(string|null $value = null) Either 'GET' or 'POST'.
  */
@@ -48,7 +49,7 @@ class Form extends TagAbstract
     public function addAttrs(): array
     {
         // @todo Incomplete
-        return ['action', 'enctype', 'method'];
+        return ['action', 'autocomplete', 'enctype', 'method'];
     }
 
     /**
