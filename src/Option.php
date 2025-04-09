@@ -5,6 +5,8 @@ namespace Wongyip\HTML;
 /**
  * A generic option tag inside the select tag.
  *
+ * @method bool|null|static selected(bool|null $set = null) Set the selected attribute (boolean).
+ *
  * @todo Since only text content is allowed in an option tag, the contents() or render() method might need to update to prevent adding of HTML content.
  * @todo Additional 'label' attribute is supported by a datalist option tag, which render an alternative description of the option's value.
  */
