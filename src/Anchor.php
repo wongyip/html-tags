@@ -3,6 +3,7 @@
 namespace Wongyip\HTML;
 
 use Exception;
+use Wongyip\HTML\Interfaces\RendererInterface;
 
 /**
  * A minimal implementation an \<a\> (anchor) tag with the following details:
@@ -60,12 +61,12 @@ class Anchor extends TagAbstract
      * Create an Anchor tag.
      *
      * @param string $href
-     * @param string $caption
+     * @param string|RendererInterface $caption
      * @param string|null $target
      * @param string|null $title
      * @return Anchor
      */
-    public static function create(string $href, string $caption, string $target = null, string $title = null): Anchor
+    public static function create(string $href, string|RendererInterface $caption, string $target = null, string $title = null): Anchor
     {
         return static::tag()
             ->attributes(compact('href', 'target', 'title'))
