@@ -4,11 +4,13 @@ namespace Wongyip\HTML;
 
 /**
  * A basic implementation of an \<input\> tag.
+ *
  * @method string|null|static autocomplete(string|null $set = null) Get or set the autocomplete attribute  Set 'off' to disable or set 'new-password' in case of requesting new password (whether to comply or not is up to the browser).
  * @method bool|null|static checked(bool|null $set = null) Only for input with type of 'checkbox' and 'radio'.
  * @method bool|null|static disabled(bool|null $set = null) Disabled input is not editable, and is NOT transmitted when the form is submitted.
- * @method string|null|static placeholder(string|null $set = null)
- * @method bool|null|static readonly(bool|null $set = null) Read-only input is not editable, but it is transmitted when the form is submitted.
+ * @method string|null|static pattern(string|null $set = null) A regular expression that an <input> element's value is checked against.
+ * @method string|null|static placeholder(string|null $set = null) A short hint that describes the expected value of an <input> element
+ * @method bool|null|static readonly(bool|null $set = null) [N.B.] Read-only input is not editable, but it is transmitted when the form is submitted.
  * @method bool|null|static required(bool|null $set = null)
  * @method string|null|static type(string|null $set = null)
  * @method number|string|bool|null|static value(number|string|bool|null $set = null)
@@ -32,7 +34,7 @@ class Input extends TagAbstract
         return [
             'type', 'value',
             'checked', 'disabled', 'readonly', 'required',
-            'placeholder', 'autocomplete',
+            'pattern', 'placeholder', 'autocomplete',
         ];
     }
 
@@ -47,12 +49,13 @@ class Input extends TagAbstract
      * @param bool|null $readonly
      * @param bool|null $checked
      * @param string|null $placeholder
+     * @param string|null $pattern
      * @return static
      */
-    public static function create(string $name = null, string $type = null, string $id = null, bool $required = null, bool $disabled = null, bool $readonly = null, bool $checked = null, string $placeholder = null): static
+    public static function create(string $name = null, string $type = null, string $id = null, bool $required = null, bool $disabled = null, bool $readonly = null, bool $checked = null, string $placeholder = null, string $pattern): static
     {
         return static::tag()->attributes(
-            compact('name', 'type', 'id', 'checked', 'disabled', 'readonly', 'required', 'placeholder')
+            compact('name', 'type', 'id', 'checked', 'disabled', 'readonly', 'required', 'placeholder', 'pattern')
         );
     }
 
