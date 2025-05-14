@@ -12,10 +12,13 @@ use Wongyip\HTML\Supports\ContentsCollection;
 trait Contents
 {
     /**
-     * Collection of main inner contents N.B. If contentsOverride() returns a
-     * ContentsCollection (even empty), this will NOT be rendered.
+     * Collection of main inner contents.
+     *
+     * Note: if this class implements ContentsOverride, whether to render or how
+     * to render thees contents is depending on the contentsOverride() method.
      *
      * @var ContentsCollection;
+     * @see ContentsOverride::contentsOverride()
      */
     public ContentsCollection $contents;
     /**
@@ -46,12 +49,13 @@ trait Contents
     public ContentsCollection $siblingsBefore;
 
     /**
-     * Getter return rendered contents, if this implements the ContentsOverride
-     * interface, $contents will be superseded by the contentsOverride() method.
+     * Getter return the RENDERED main contents, or contents returned by the
+     * contentsOverride() method if this class implements ContentsOverride.
      *
-     * Setter replaces all contents in the $contents ContentsCollection (or do
-     * nothing in case of this is a ContentsOverride interface) and returns the
-     * current Tag.
+     * Setter REPLACE the current main contents with inputs.
+     *
+     * Note: if this class implements ContentsOverride, whether to render or how
+     * to render thees contents is depending on the contentsOverride() method.
      *
      * @param array|string|RendererInterface|null ...$contents
      * @return string|static
@@ -66,9 +70,6 @@ trait Contents
             return $this->contents->render();
         }
         // Set
-        if ($this instanceof ContentsOverride) {
-            return $this;
-        }
         $this->contentsEmpty()->contentsAppend(...$contents);
         return $this;
     }
@@ -86,18 +87,17 @@ trait Contents
     }
 
     /**
-     * [Shortcut] Like $this->contents->append(), but returns the current Tag
-     * instead of the ContentCollection object. Do nothing when this is a
-     * ContentsOverride interface.
+     * [Shortcut] Same $this->contents->append(), but this method return the
+     * current Tag instead of the ContentCollection object.
+     *
+     * Note: if this class implements ContentsOverride, whether to render or how
+     * to render thees contents is depending on the contentsOverride() method.
      *
      * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
     public function contentsAppend(array|string|RendererInterface|null ...$contents): static
     {
-        if ($this instanceof ContentsOverride) {
-            return $this;
-        }
         $this->contents->append(...$contents);
         return $this;
     }
@@ -115,16 +115,14 @@ trait Contents
     }
 
     /**
-     * Remove all contents in contents collection (or do nothing when this is a
-     * ContentsOverride interface), then invoke the emptyHook() method.
+     * Remove all contents in contents collection, then invoke the emptyHook()
+     * method.
      *
      * @return static
      */
     public function contentsEmpty(): static
     {
-        if (!($this instanceof ContentsOverride)) {
-            $this->contents->empty();
-        }
+        $this->contents->empty();
         $this->contentsEmptyHook();
         return $this;
     }
@@ -141,18 +139,17 @@ trait Contents
     }
 
     /**
-     * [Shortcut] Like $this->contents->prepend(), but returns the current Tag
-     * instead of the ContentCollection object. Do nothing when this is a
-     * ContentsOverride interface.
+     * [Shortcut] Same $this->contents->prepend(), but this method return the
+     * current Tag instead of the ContentCollection object.
+     *
+     * Note: if this class implements ContentsOverride, whether to render or how
+     * to render thees contents is depending on the contentsOverride() method.
      *
      * @param array|string|RendererInterface|null ...$contents
      * @return static
      */
     public function contentsPrepend(array|string|RendererInterface|null ...$contents): static
     {
-        if ($this instanceof ContentsOverride) {
-            return $this;
-        }
         $this->contents->prepend(...$contents);
         return $this;
     }
