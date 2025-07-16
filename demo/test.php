@@ -1,10 +1,10 @@
 <?php
 
-use Wongyip\HTML\Supports\ContentsCollection;
+use Wongyip\PHPHelpers\Format;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-print_r(ContentsCollection::flatten(
+print_r(Format::flatten(
     1,
     [2, 3],
     [4, [5, 6]],

@@ -4,7 +4,7 @@ namespace Wongyip\HTML\Supports;
 
 use Wongyip\HTML\Comment;
 use Wongyip\HTML\Interfaces\RendererInterface;
-use Wongyip\HTML\Utils\Convert;
+use Wongyip\PHPHelpers\Format;
 
 class ContentsCollection implements RendererInterface
 {
@@ -65,7 +65,7 @@ class ContentsCollection implements RendererInterface
      */
     public function append(array|string|RendererInterface|null ...$contents): static
     {
-        $appends = array_filter(Convert::flatten($contents));
+        $appends = array_filter(Format::flatten($contents));
         array_push($this->contents, ...$appends);
         return $this;
     }
@@ -184,7 +184,7 @@ class ContentsCollection implements RendererInterface
          * As input accepts nested contents array, we shall flatten it before
          * contents are prepended.
          */
-        $contents = array_filter(Convert::flatten($contents));
+        $contents = array_filter(Format::flatten($contents));
         array_unshift($this->contents, ...$contents);
         return $this;
     }

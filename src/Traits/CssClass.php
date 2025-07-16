@@ -3,7 +3,7 @@
 namespace Wongyip\HTML\Traits;
 
 use Throwable;
-use Wongyip\HTML\Utils\Convert;
+use Wongyip\PHPHelpers\Format;
 use Wongyip\HTML\Utils\CSS;
 
 /**
@@ -50,7 +50,7 @@ trait CssClass
             return implode(' ', $this->classes());
         }
         // Set
-        $this->cssClasses = Convert::flatten(...$classes);
+        $this->cssClasses = Format::flatten(...$classes);
         return $this;
     }
 

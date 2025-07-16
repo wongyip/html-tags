@@ -13,7 +13,7 @@ use Wongyip\HTML\Traits\CssClass;
 use Wongyip\HTML\Traits\CssStyle;
 use Wongyip\HTML\Traits\DataAttributes;
 use Wongyip\HTML\Traits\Overloading;
-use Wongyip\HTML\Utils\Convert;
+use Wongyip\PHPHelpers\Format;
 
 /**
  * Abstract class with most methods implements.
@@ -198,7 +198,7 @@ abstract class TagAbstract implements RendererInterface
                             $val = '';
                         }
                     }
-                    $compiled[] = sprintf('%s="%s"', Convert::kebab($attr), htmlspecialchars($val, ENT_COMPAT));
+                    $compiled[] = sprintf('%s="%s"', Format::kebab($attr), htmlspecialchars($val, ENT_COMPAT));
                 }
             }
             catch (Throwable $e) {

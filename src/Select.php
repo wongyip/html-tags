@@ -4,7 +4,7 @@ namespace Wongyip\HTML;
 
 use Wongyip\HTML\Interfaces\ContentsOverride;
 use Wongyip\HTML\Supports\ContentsCollection;
-use Wongyip\HTML\Utils\Convert;
+use Wongyip\PHPHelpers\Format;
 
 /**
  * A basic implementation of a "\<select>" tag, where \<optgroup> is not
@@ -105,7 +105,7 @@ class Select extends TagAbstract implements ContentsOverride
      */
     public function optionsAppend(array|Option ...$options): static
     {
-        $flattened = Convert::flatten(...$options);
+        $flattened = Format::flatten(...$options);
         $appends = array_filter($flattened, fn($option) => $option instanceof Option);
         array_push($this->options, ...$appends);
         return $this;
@@ -119,7 +119,7 @@ class Select extends TagAbstract implements ContentsOverride
      */
     public function optionsPrepend(array|Option ...$options): static
     {
-        $flattened = Convert::flatten(...$options);
+        $flattened = Format::flatten(...$options);
         $appends = array_filter($flattened, fn($option) => $option instanceof Option);
         array_unshift($this->options, ...$appends);
         return $this;

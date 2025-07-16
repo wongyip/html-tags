@@ -3,7 +3,7 @@
 namespace Wongyip\HTML\Traits;
 
 use Wongyip\HTML\TagAbstract;
-use Wongyip\HTML\Utils\Convert;
+use Wongyip\PHPHelpers\Format;
 
 /**
  * Data-attributes manipulation trait.
@@ -43,7 +43,7 @@ trait DataAttributes
     public function data(string $name, array|bool|float|int|string $value = null): array|bool|float|int|string|null|static
     {
         // Normalize
-        $name = Convert::camel($name);
+        $name = Format::camel($name);
         //Get
         if (is_null($value)) {
             return $this->dataset[$name] ?? null;
@@ -97,9 +97,9 @@ trait DataAttributes
         // Get all
         if (is_null($dataset)) {
             return match ($namingScheme) {
-                static::DATASET_ATTRS => Convert::keysCase($this->dataset, 'kebab', 'data-'),
-                static::DATASET_KEBAB => Convert::keysCase($this->dataset, 'kebab'),
-                default               => Convert::keysCase($this->dataset, 'camel'),
+                static::DATASET_ATTRS => Format::keysCase($this->dataset, 'kebab', 'data-'),
+                static::DATASET_KEBAB => Format::keysCase($this->dataset, 'kebab'),
+                default               => Format::keysCase($this->dataset, 'camel'),
             };
         }
         // Set all (replace)
@@ -107,7 +107,7 @@ trait DataAttributes
             error_log('Setting of dataset with $namingScheme provided, which is ignore.');
         }
         // Store with normalized names.
-        $this->dataset = Convert::keysCase($dataset, 'camel');
+        $this->dataset = Format::keysCase($dataset, 'camel');
         return $this;
     }
 
@@ -119,6 +119,6 @@ trait DataAttributes
      */
     public function hasData(string $name): bool
     {
-        return key_exists(Convert::camel($name), $this->dataset);
+        return key_exists(Format::camel($name), $this->dataset);
     }
 }

@@ -2,6 +2,10 @@
 
 namespace Wongyip\HTML\Utils;
 
+/**
+ * @deprecated Moved to wongyip/phphelpers, the Format::class.
+ * @note Leave it here for B/W compatibility.
+ */
 class Convert
 {
     /**

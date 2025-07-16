@@ -2,6 +2,8 @@
 
 namespace Wongyip\HTML\Utils;
 
+use Wongyip\PHPHelpers\Format;
+
 class CSS
 {
     /**
@@ -12,7 +14,7 @@ class CSS
      */
     public static function classArray(array|string ...$classes): array
     {
-        $classes = Convert::flatten(...$classes);
+        $classes = Format::flatten(...$classes);
         return array_filter(array_map('trim', explode(' ', implode(' ', $classes))));
     }
 

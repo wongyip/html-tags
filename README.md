@@ -20,14 +20,13 @@ composer require wongyip/html-tags
 
 ### Basic
 ```php
-$div = new Tag('div');
-$div->id('some-css-class')
-$div->style('font-size: 2em;')
+$div = Tag::make('#div1.some-css-class');
+$div->style('font-size: 2em;');
 $div->contents('Example <div> tag with class & style attributes.');
 echo $div->render();
 ```
 ```
-<div id="some-css-class" style="font-size: 2em;">Example &lt;div&gt; tag with class &amp; style attributes.</div>
+<div id="div1" class="some-css-class" style="font-size: 2em;">Example &lt;div&gt; tag with class &amp; style attributes.</div>
 ```
 *The above output are not syntax highlighted to properly display the contents escaped by the `htmlspecialchars` function.*
 

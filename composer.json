@@ -11,9 +11,8 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
-        "ext-ctype": "*",
-        "ext-mbstring": "*"
+        "php": "^8.2",
+        "wongyip/phphelpers": "*"
     },
     "autoload": {
         "psr-4": {

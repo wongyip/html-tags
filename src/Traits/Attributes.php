@@ -2,8 +2,7 @@
 
 namespace Wongyip\HTML\Traits;
 
-use Wongyip\HTML\TagAbstract;
-use Wongyip\HTML\Utils\Convert;
+use Wongyip\PHPHelpers\Format;
 
 /**
  * Attributes manipulation trait.
@@ -45,7 +44,7 @@ trait Attributes
      */
     public function addAttributes(string|array ...$names): static
     {
-        foreach (Convert::flatten($names) as $name) {
+        foreach (Format::flatten($names) as $name) {
             if (!$this->hasAttribute($name) && !in_array($name, static::$complexAttrs)) {
                 $this->_attrsNames[] = $name;
             }

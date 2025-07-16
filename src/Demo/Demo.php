@@ -23,7 +23,7 @@ use Wongyip\HTML\Textarea;
 use Wongyip\HTML\TH;
 use Wongyip\HTML\THead;
 use Wongyip\HTML\TR;
-use Wongyip\HTML\Utils\Convert;
+use Wongyip\PHPHelpers\Format;
 use Wongyip\HTML\Utils\Output;
 
 class Demo
@@ -175,20 +175,20 @@ class Demo
         );
     }
 
-    /**
-     * @return void
-     */
-    public static function case(): void
-    {
-        $input = 'String case coversion';
-        print_r([
-            'input' => $input,
-            'camel' => Convert::camel($input),
-            'kebab' => Convert::kebab($input),
-            'snake' => Convert::snake($input),
-            'studly' => Convert::studly($input),
-        ]);
-    }
+//    /**
+//     * @return void
+//     */
+//    public static function case(): void
+//    {
+//        $input = 'String case coversion (OUT OF )';
+//        print_r([
+//            'input' => $input,
+//            'camel' => Format::camel($input),
+//            'kebab' => Format::kebab($input),
+//            'snake' => Format::snake($input),
+//            'studly' => Format::studly($input),
+//        ]);
+//    }
 
     /**
      * @return void
@@ -488,14 +488,12 @@ class Demo
     public static function basic(): void
     {
         $code = <<<CODE
-        \$div = new Tag('div');
-        \$div->id('some-css-class')
-        \$div->style('font-size: 2em;')
+        \$div = Tag::make('#div1.some-css-class');
+        \$div->style('font-size: 2em;');
         \$div->contents('Example <div> tag with class & style attributes.');
         echo \$div->render();
         CODE;
-        $div = new Tag('div');
-        $div->id('some-css-class');
+        $div = Tag::make('#div1.some-css-class');
         $div->style('font-size: 2em;');
         $div->contents('Example <div> tag with class & style attributes.');
         new Demo($code, $div->render());
