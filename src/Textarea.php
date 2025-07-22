@@ -5,6 +5,7 @@ namespace Wongyip\HTML;
 /**
  * A basic (incomplete) implementation of a "\<textarea>" tag.
  *
+ * @method string|null|static autocomplete(string|null $set = null) Get or set the autocomplete attribute, set 'off' to disable auto-fill.
  * @method int|static cols(int $set = null)
  * @method bool|null|static disabled(bool|null $set = null) Disabled input is not editable, and is NOT transmitted when the form is submitted.
  * @method int|static maxlength(int $set = null)
@@ -26,17 +27,8 @@ class Textarea extends TagAbstract
     public function addAttrs(): array
     {
         return [
-            'autofocus',
-            'cols',
-            'dirname',
-            'disabled',
-            'form',
-            'maxlength',
-            'placeholder',
-            'readonly',
-            'required',
-            'rows',
-            'wrap'
+            'autocomplete', 'autofocus', 'cols', 'dirname', 'disabled', 'form',
+            'maxlength', 'placeholder', 'readonly', 'required', 'rows', 'wrap'
         ];
     }
 

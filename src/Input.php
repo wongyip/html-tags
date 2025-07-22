@@ -5,7 +5,7 @@ namespace Wongyip\HTML;
 /**
  * A basic implementation of an \<input\> tag.
  *
- * @method string|null|static autocomplete(string|null $set = null) Get or set the autocomplete attribute  Set 'off' to disable or set 'new-password' in case of requesting new password (whether to comply or not is up to the browser).
+ * @method string|null|static autocomplete(string|null $set = null) Get or set the autocomplete attribute  Set 'off' to disable or set 'new-password' in case of requesting new password (whether to comply or not is up to the browser). Search "WHATWG Standard" for more information.
  * @method bool|null|static checked(bool|null $set = null) Only for input with type of 'checkbox' and 'radio'.
  * @method bool|null|static disabled(bool|null $set = null) Disabled input is not editable, and is NOT transmitted when the form is submitted.
  * @method string|null|static pattern(string|null $set = null) A regular expression that an <input> element's value is checked against.
@@ -18,6 +18,8 @@ namespace Wongyip\HTML;
  * @see https://www.w3schools.com/tags/tag_input.asp
  * @see https://www.w3schools.com/tags/att_input_autocomplete.asp
  * @see https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Turning_off_form_autocompletion
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete
+ * @see https://html.spec.whatwg.org/multipage/forms.html#autofill
  */
 class Input extends TagAbstract
 {

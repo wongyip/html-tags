@@ -9,6 +9,8 @@ use Wongyip\PHPHelpers\Format;
 /**
  * A basic implementation of a "\<select>" tag, where \<optgroup> is not
  * supported, yet. Note that this tag implements contentsOverride
+ *
+ * @method string|null|static autocomplete(string|null $set = null) Get or set the autocomplete attribute, set 'off' to disable auto-select.
  */
 class Select extends TagAbstract implements ContentsOverride
 {
@@ -24,7 +26,10 @@ class Select extends TagAbstract implements ContentsOverride
      */
     public function addAttrs(): array
     {
-        return ['autofocus', 'disabled', 'form', 'multiple', 'required', 'size'];
+        return [
+            'autocomplete', 'autofocus', 'disabled', 'form', 'multiple',
+            'required', 'size'
+        ];
     }
 
     /**
