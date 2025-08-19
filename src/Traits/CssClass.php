@@ -55,6 +55,18 @@ trait CssClass
     }
 
     /**
+     * Filter the CSS classes list, keep those passed the $callback only.
+     *
+     * @param callable $callback
+     * @return $this
+     */
+    public function classFilter(Callable $callback): static
+    {
+        $this->cssClasses = array_filter($this->cssClasses, $callback);
+        return $this;
+    }
+
+    /**
      * Extract all CSS classes as an array.
      *
      * @return string[]|array
