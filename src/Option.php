@@ -15,17 +15,29 @@ class Option extends TagAbstract
     protected string $tagName = 'option';
 
     /**
+     * Attribute with empty string value is not render unless specified here.
+     *
+     * @see Attributes::$attrsAllowEmptyString
+     * @var array|string[]
+     */
+    protected array $attrsAllowEmptyString = [
+        'value'
+    ];
+    /**
+     * The above is crucial for select > option. Since empty value attribute and
+     * "not present" value attribute will have different results of form
+     * submissuion when the option is "selected", where server-side will get
+     * "" (empty string or NULL) and "whatever innerText of the option tag"
+     * respectively.
+     */
+
+    /**
      * @inheritdoc
      */
     public function addAttrs(): array
     {
         return ['disabled', 'selected', 'value',];
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected array $emptyValueAttributes = ['value'];
 
     /**
      * Create an Option tag.

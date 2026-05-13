@@ -2,6 +2,8 @@
 
 namespace Wongyip\HTML;
 
+use Wongyip\HTML\Traits\Attributes;
+
 /**
  * A basic implementation of an \<input\> tag.
  *
@@ -27,6 +29,23 @@ class Input extends TagAbstract
      * @var string
      */
     protected string $tagName = 'input';
+
+    /**
+     * Attribute with empty string value is not render unless specified here.
+     *
+     * @see Attributes::$attrsAllowEmptyString
+     * @var array|string[]
+     */
+    protected array $attrsAllowEmptyString = [
+        'value'
+    ];
+    /**
+     * The above is crucial for radio button and checkbox. Since empty value
+     * attribute and "not present" value attribute will have different results of
+     * form submissuion when the input is "checked", where server-side will get
+     * "" (empty string or NULL) and "on" (string indicates checked)
+     * respectively.
+     */
 
     /**
      * @inheritdoc

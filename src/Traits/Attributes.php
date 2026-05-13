@@ -29,12 +29,11 @@ trait Attributes
      */
     protected array $_attrsNames = [];
     /**
-     * Blank attribute value (empty string) is not store and not render unless
-     * specified here.
+     * Attribute with empty string value is not render unless specified here.
      *
-     * @var array
+     * @var array|string[]
      */
-    protected array $emptyValueAttributes = [];
+    protected array $attrsAllowEmptyString = [];
 
     /**
      * Add one or more attributes to the supported attributes list.
@@ -61,8 +60,8 @@ trait Attributes
      * and style, as they have more complex structure that this method is not
      * capable to handle.
      *
-     * Input empty value to unset the attribute, unless the attribute is in the
-     * $emptyValueAttributes array,
+     * Input EMPTY STRING to unset the attribute, unless the attribute is in the
+     * $attrsAllowEmptyString array,
      *
      * @param string $attribute
      * @param mixed|null $value
@@ -104,7 +103,7 @@ trait Attributes
             }
             else {
                 // Empty string to unset, unless attribute allows empty value.
-                if (is_string($value) && (strlen($value) === 0) && !in_array($attribute, $this->emptyValueAttributes)) {
+                if (is_string($value) && (strlen($value) === 0) && !in_array($attribute, $this->attrsAllowEmptyString)) {
                     unset($this->_attributes[$attribute]);
                 }
                 else {
