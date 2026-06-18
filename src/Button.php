@@ -9,6 +9,7 @@ use Wongyip\HTML\Interfaces\RendererInterface;
  *
  * @method bool|null|static disabled(bool|null $set = null) Disabled input is not editable, and is NOT transmitted when the form is submitted.
  * @method string|null|static type(string|null $set = null)
+ * @method string|null|static value(string|null $set = null) Set the value of the button (will submit as form field when name attribute is set).
  * @see https://www.w3schools.com/tags/tag_button.asp
  */
 class Button extends TagAbstract
