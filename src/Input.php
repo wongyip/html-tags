@@ -10,6 +10,7 @@ use Wongyip\HTML\Traits\Attributes;
  * @method string|null|static autocomplete(string|null $set = null) Get or set the autocomplete attribute  Set 'off' to disable or set 'new-password' in case of requesting new password (whether to comply or not is up to the browser). Search "WHATWG Standard" for more information.
  * @method bool|null|static checked(bool|null $set = null) Only for input with type of 'checkbox' and 'radio'.
  * @method bool|null|static disabled(bool|null $set = null) Disabled input is not editable, and is NOT transmitted when the form is submitted.
+ * @method string|null|static inputmode(string|null $set = null) Set 'numeric' to bring up the numeric keyboard on mobile device.
  * @method string|null|static pattern(string|null $set = null) A regular expression that an <input> element's value is checked against.
  * @method string|null|static placeholder(string|null $set = null) A short hint that describes the expected value of an <input> element
  * @method bool|null|static readonly(bool|null $set = null) [N.B.] Read-only input is not editable, but it is transmitted when the form is submitted.
@@ -55,7 +56,7 @@ class Input extends TagAbstract
         return [
             'type', 'value',
             'checked', 'disabled', 'readonly', 'required',
-            'pattern', 'placeholder', 'autocomplete',
+            'pattern', 'placeholder', 'autocomplete', 'inputmode',
         ];
     }
 
