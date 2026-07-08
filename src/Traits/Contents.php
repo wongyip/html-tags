@@ -166,33 +166,39 @@ trait Contents
     }
 
     /**
-     * [Mixed Usage] Give no input to get rendered contents of $siblingsAfter.
-     * Otherwise, replaces all contents in $siblingAfter and return current Tag.
+     * Getter retunr the siblingsAfter ContentsCollection. Setter replaces all
+     * contents of the siblingsAfter ContentsCollection wit the input contents
+     * and return this tag.
      *
      * @param array|string|RendererInterface|null ...$contents
-     * @return string|static
+     * @return ContentsCollection|static
      */
-    public function siblingsAfter(array|string|RendererInterface|null ...$contents): string|static
+    public function siblingsAfter(array|string|RendererInterface|null ...$contents): ContentsCollection|static
     {
+        // Get
         if (empty($contents)) {
-            return $this->siblingsAfter->render();
+            return $this->siblingsBefore;
         }
-        $this->siblingsAfter->empty()->contents(...$contents);
+        // Set
+        $this->siblingsBefore->empty()->contents(...$contents);
         return $this;
     }
 
     /**
-     * [Mixed Usage] Give no input to get rendered contents of $siblingsBefore.
-     * Otherwise, replaces all contents in $siblingsBefore and return current Tag.
+     * Getter retunr the siblingsBefore ContentsCollection. Setter replaces all
+     * contents of the siblingsBefore ContentsCollection wit the input contents
+     * and return this tag.
      *
      * @param array|string|RendererInterface|null ...$contents
-     * @return string|static
+     * @return ContentsCollection|static
      */
-    public function siblingsBefore(array|string|RendererInterface|null ...$contents): string|static
+    public function siblingsBefore(array|string|RendererInterface|null ...$contents): ContentsCollection|static
     {
+        // Get
         if (empty($contents)) {
-            return $this->siblingsBefore->render();
+            return $this->siblingsBefore;
         }
+        // Set
         $this->siblingsBefore->empty()->contents(...$contents);
         return $this;
     }
