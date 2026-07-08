@@ -177,10 +177,10 @@ trait Contents
     {
         // Get
         if (empty($contents)) {
-            return $this->siblingsBefore;
+            return $this->siblingsAfter;
         }
         // Set
-        $this->siblingsBefore->empty()->contents(...$contents);
+        $this->siblingsAfter->empty()->contents(...$contents);
         return $this;
     }
 
