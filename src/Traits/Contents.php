@@ -180,7 +180,7 @@ trait Contents
             return $this->siblingsAfter;
         }
         // Set
-        $this->siblingsAfter->empty()->contents(...$contents);
+        $this->siblingsAfter->replace(...$contents);
         return $this;
     }
 
@@ -199,7 +199,7 @@ trait Contents
             return $this->siblingsBefore;
         }
         // Set
-        $this->siblingsBefore->empty()->contents(...$contents);
+        $this->siblingsBefore->replace(...$contents);
         return $this;
     }
 }

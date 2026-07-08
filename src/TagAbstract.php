@@ -224,8 +224,12 @@ abstract class TagAbstract implements RendererInterface
      */
     public function render(array $adHocAttrs = null, array $adHocOptions = null): string
     {
-        $beforeTag = $this->siblingsBefore->render();
-        $afterTag  = $this->siblingsAfter->render();
+        /**
+         * Use getter methods intead of properties, so child class may extends
+         * and alter certain ContentsCollection right before render.
+         */
+        $beforeTag = $this->siblingsBefore()->render();
+        $afterTag  = $this->siblingsAfter()->render();
         // Render opening tag and siblings only for self-closing tags.
         if ($this->isSelfClosing()) {
             return $beforeTag . $this->open($adHocAttrs) . $afterTag;
